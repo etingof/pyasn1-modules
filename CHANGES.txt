@@ -1,0 +1,4 @@
+Revision 0.0.1a
+---------------
+
+- Initial revision, most code carried from pyasn1 examples.

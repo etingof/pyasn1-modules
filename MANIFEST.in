@@ -1,0 +1,2 @@
+include CHANGES README LICENSE
+recursive-include tools *.py
