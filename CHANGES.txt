@@ -1,3 +1,8 @@
+Revision 0.0.1b
+---------------
+
+- Require pyasn1 >= 0.0.13a
+
 Revision 0.0.1a
 ---------------
 
