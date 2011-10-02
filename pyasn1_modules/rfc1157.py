@@ -56,21 +56,21 @@ class Counter(univ.Integer):
         tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 1)
         )
     subtypeSpec = univ.Integer.subtypeSpec + constraint.ValueRangeConstraint(
-        0, 4294967295L
+        0, 4294967295
         )
 class Gauge(univ.Integer):
     tagSet = univ.Integer.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 2)
         )
     subtypeSpec = univ.Integer.subtypeSpec + constraint.ValueRangeConstraint(
-        0, 4294967295L
+        0, 4294967295
         )
 class TimeTicks(univ.Integer):
     tagSet = univ.Integer.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 3)
         )
     subtypeSpec = univ.Integer.subtypeSpec + constraint.ValueRangeConstraint(
-        0, 4294967295L
+        0, 4294967295
         )
 class Opaque(univ.OctetString):
     tagSet = univ.OctetString.tagSet.tagImplicitly(
