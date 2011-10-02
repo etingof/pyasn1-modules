@@ -5,9 +5,9 @@ from pyasn1_modules import rfc2459, pem
 import sys
 
 if len(sys.argv) != 1:
-    print """Usage:
+    print("""Usage:
 $ cat CACertificate.pem | %s
-$ cat userCertificate.pem | %s""" % (sys.argv[0], sys.argv[0])
+$ cat userCertificate.pem | %s""" % (sys.argv[0], sys.argv[0]))
     sys.exit(-1)
     
 certType = rfc2459.Certificate()
@@ -23,7 +23,7 @@ while 1:
 
     if rest: substrate = substrate[:-len(rest)]
         
-    print cert.prettyPrint()
+    print(cert.prettyPrint())
 
     assert encoder.encode(cert, defMode=False) == substrate or \
            encoder.encode(cert, defMode=True) == substrate, \
@@ -31,4 +31,4 @@ while 1:
         
     certCnt = certCnt + 1
     
-print '*** %s PEM cert(s) de/serialized' % certCnt
+print('*** %s PEM cert(s) de/serialized' % certCnt)

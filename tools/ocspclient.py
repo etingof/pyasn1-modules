@@ -91,8 +91,8 @@ def parseOcspResponse(ocspResponse):
         )
 
 if len(sys.argv) != 2:
-    print """Usage:
-$ cat CACertificate.pem userCertificate.pem | %s <ocsp-responder-url>""" % sys.argv[0]
+    print("""Usage:
+$ cat CACertificate.pem userCertificate.pem | %s <ocsp-responder-url>""" % sys.argv[0])
     sys.exit(-1)
 else:
     ocspUrl = sys.argv[1]
@@ -128,9 +128,8 @@ ocspRsp, _ = decoder.decode(httpRsp, asn1Spec=rfc2560.OCSPResponse())
 
 producedAt, certId, certStatus, thisUpdate = parseOcspResponse(ocspRsp)
 
-print 'Certificate ID %s is %s at %s till %s\n' % (
-    certId.getComponentByName('serialNumber'),
-    certStatus,
-    producedAt,
-    thisUpdate
-    )
+print('Certificate ID %s is %s at %s till %s\n' % (
+       certId.getComponentByName('serialNumber'),
+       certStatus,
+       producedAt,
+       thisUpdate))

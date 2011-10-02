@@ -5,8 +5,8 @@ from pyasn1.codec.der import encoder, decoder
 import sys
     
 if len(sys.argv) != 1:
-    print """Usage:
-$ cat pkcs7Certificate.pem | %s""" % (sys.argv[0],)
+    print("""Usage:
+$ cat pkcs7Certificate.pem | %s""" % (sys.argv[0],))
     sys.exit(-1)
     
 substrate = pem.readPemFromFile(
@@ -19,7 +19,7 @@ contentInfo, rest = decoder.decode(substrate, asn1Spec=rfc2315.ContentInfo())
 
 if rest: substrate = substrate[:-len(rest)]
     
-print contentInfo.prettyPrint()
+print(contentInfo.prettyPrint())
 
 assert encoder.encode(contentInfo, defMode=False) == substrate or \
        encoder.encode(contentInfo, defMode=True) == substrate, \
@@ -41,4 +41,4 @@ content, _ = decoder.decode(
     asn1Spec=contentInfoMap[contentType]
     )
 
-print content.prettyPrint()
+print(content.prettyPrint())
