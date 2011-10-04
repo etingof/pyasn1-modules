@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 import sys
-import string
 
 def howto_install_setuptools():
-    print """Error: You need setuptools Python package!
+    print("""
+   Error: You need setuptools Python package!
 
-It's very easy to install it, just type (as root on Linux):
+   It's very easy to install it, just type (as root on Linux):
    wget http://peak.telecommunity.com/dist/ez_setup.py
    python ez_setup.py
-"""
+""")
 
 try:
     from setuptools import setup
@@ -18,13 +18,13 @@ try:
         }    
 except ImportError:
     for arg in sys.argv:
-        if string.find(arg, 'egg') != -1:
+        if arg.find('egg') != -1:
             howto_install_setuptools()
             sys.exit(1)
     from distutils.core import setup
     if sys.version_info > (2, 2):
         params = {
-            'requires': [ 'pyasn1>=0.0.13a' ]
+            'requires': [ 'pyasn1(>=0.0.13)' ]
             }
     else:
         params = {}
@@ -40,4 +40,4 @@ params.update( {
     'packages': [ 'pyasn1_modules' ]
       } )
 
-apply(setup, (), params)
+setup(**params)
