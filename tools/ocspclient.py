@@ -1,7 +1,11 @@
 from pyasn1.codec.der import decoder, encoder
 from pyasn1_modules import rfc2560, rfc2459, pem
 from pyasn1.type import univ
-import sys, urllib2, hashlib
+import sys, hashlib
+try:
+  import urllib2
+except ImportError:
+  import urllib.request as urllib2
 
 sha1oid = univ.ObjectIdentifier((1, 3, 14, 3, 2, 26))
 
