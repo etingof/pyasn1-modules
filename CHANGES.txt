@@ -5,6 +5,8 @@ Revision 0.0.1b
 - Fixes towards Py3K compatibility
   + use either of existing urllib module
   + adopt to the new bytes type
+  + print operator is now a function
+  + new exception syntax
 
 Revision 0.0.1a
 ---------------
