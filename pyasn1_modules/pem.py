@@ -1,4 +1,4 @@
-import base64
+import base64, sys
 
 stSpam, stHam, stDump = 0, 1, 2
 
@@ -19,9 +19,16 @@ def readPemFromFile(fileObj, startMarker='-----BEGIN CERTIFICATE-----',
             if certLine == endMarker:
                 state = stDump
             else:
-                certLines.append(certLine.encode())
+                certLines.append(certLine)
         if state == stDump:
-            substrate = ''.encode()
+            substrate = ''
             for certLine in certLines:
-                substrate = substrate + base64.decodestring(certLine)
+                if sys.version_info[0] <= 2:
+                    substrate = substrate + base64.decodestring(certLine)
+                else:
+                    if not substrate:
+                        substrate = substrate.encode()
+                    substrate = substrate + base64.decodebytes(
+                        certLine.encode()
+                        )
             return substrate
