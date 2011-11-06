@@ -13,7 +13,7 @@ def howto_install_setuptools():
 try:
     from setuptools import setup
     params = {
-        'install_requires': [ 'pyasn1>=0.0.14' ],
+        'install_requires': [ 'pyasn1>=0.1.1' ],
         'zip_safe': True
         }    
 except ImportError:
@@ -23,7 +23,7 @@ except ImportError:
             sys.exit(1)
     from distutils.core import setup
     params = {
-        'requires': [ 'pyasn1(>=0.0.14)' ]
+        'requires': [ 'pyasn1(>=0.1.1)' ]
         }
 
 params.update( {

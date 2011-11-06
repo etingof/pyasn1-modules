@@ -1,7 +1,7 @@
-Revision 0.0.1b
----------------
+Revision 0.0.2
+--------------
 
-- Require pyasn1 >= 0.0.13a
+- Require pyasn1 >= 0.1.1
 - Fixes towards Py3K compatibility
   + use either of existing urllib module
   + adopt to the new bytes type
