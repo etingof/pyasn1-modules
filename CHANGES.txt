@@ -1,7 +1,7 @@
 Revision 0.0.3
 --------------
 
-- X.509 certificate request structure (RFC2511) added
+- X.509 CRMF structure (RFC2511) and crmfdump.py tool added
 
 Revision 0.0.2
 --------------
