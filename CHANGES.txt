@@ -2,6 +2,7 @@ Revision 0.0.3
 --------------
 
 - X.509 CRMF structure (RFC2511) and crmfdump.py tool added
+- PEM files read function generalized to be used more universally.
 
 Revision 0.0.2
 --------------
