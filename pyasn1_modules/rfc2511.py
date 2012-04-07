@@ -1,5 +1,5 @@
 #
-# X.509 certificate Request Message Format (CRMF) message syntax
+# X.509 certificate Request Message Format (CRMF) syntax
 #
 # ASN.1 source from:
 # http://tools.ietf.org/html/rfc2511
