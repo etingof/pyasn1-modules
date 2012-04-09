@@ -105,18 +105,14 @@ else:
 
 issuerCert, _ = decoder.decode(
     pem.readPemFromFile(
-        sys.stdin,
-        '-----BEGIN CERTIFICATE-----',
-        '-----END CERTIFICATE-----',
-    ),
+        sys.stdin, ('-----BEGIN CERTIFICATE-----', '-----END CERTIFICATE-----')
+    )[1],
     asn1Spec=rfc2459.Certificate()
     )
 userCert, _ = decoder.decode(
     pem.readPemFromFile(
-        sys.stdin,
-        '-----BEGIN CERTIFICATE-----',
-        '-----END CERTIFICATE-----',
-    ),
+        sys.stdin, ('-----BEGIN CERTIFICATE-----', '-----END CERTIFICATE-----')
+    )[1],
     asn1Spec=rfc2459.Certificate()
     )
 

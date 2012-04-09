@@ -15,11 +15,10 @@ certType = rfc2459.Certificate()
 certCnt = 0
 
 while 1:
-    substrate = pem.readPemFromFile(
-                    sys.stdin,
-                    '-----BEGIN CERTIFICATE-----',
-                    '-----END CERTIFICATE-----'
-                )
+    idx, substrate = pem.readPemFromFile(
+                        sys.stdin, ('-----BEGIN CERTIFICATE-----',
+                                    '-----END CERTIFICATE-----')
+                     )
     if not substrate:
         break
         

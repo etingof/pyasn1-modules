@@ -1,4 +1,4 @@
-# Read ASN.1/PEM PKCS#7 on stdin, parse each into plain text,
+# Read ASN.1/PEM PKCS#7 on stdin, parse it into plain text,
 # then build substrate from it
 from pyasn1_modules import rfc2315, pem
 from pyasn1.codec.der import encoder, decoder
@@ -9,8 +9,8 @@ if len(sys.argv) != 1:
 $ cat pkcs7Certificate.pem | %s""" % (sys.argv[0],))
     sys.exit(-1)
     
-substrate = pem.readPemFromFile(
-    sys.stdin, '-----BEGIN PKCS7-----', '-----END PKCS7-----'
+idx, substrate = pem.readPemFromFile(
+    sys.stdin, ('-----BEGIN PKCS7-----', '-----END PKCS7-----')
     )
 
 assert substrate, 'bad PKCS7 data on input'
