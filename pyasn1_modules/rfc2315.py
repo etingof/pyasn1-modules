@@ -5,7 +5,7 @@
 # http://www.trl.ibm.com/projects/xml/xss4j/data/asn1/grammars/pkcs7.asn
 #
 # Sample captures from:
-# http://wiki.wireshark.org/SampleCaptures/
+# openssl crl2pkcs7 -nocrl -certfile cert1.cer -out outfile.p7b
 #
 from pyasn1.type import tag,namedtype,namedval,univ,constraint,char,useful
 from pyasn1_modules.rfc2459 import *
