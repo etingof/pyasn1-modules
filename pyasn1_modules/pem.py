@@ -10,12 +10,12 @@ def readPemFromFile(fileObj, startMarker, endMarker):
             break
         certLine = certLine.strip()
         if state == stSpam:
-            if certLine == startMarker:
+            if certLine == startMarker or certLine in startMarker:
                 certLines = []
                 state = stHam
                 continue
         if state == stHam:
-            if certLine == endMarker:
+            if certLine == endMarker or certLine in endMarker:
                 state = stDump
             else:
                 certLines.append(certLine)
