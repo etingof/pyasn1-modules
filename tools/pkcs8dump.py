@@ -6,7 +6,7 @@ import sys
 
 if len(sys.argv) != 1:
     print("""Usage:
-$ cat pkcs8key.pem | %s""" % (sys.argv[0], sys.argv[0]))
+$ cat pkcs8key.pem | %s""" % sys.argv[0])
     sys.exit(-1)
     
 cnt = 0
@@ -17,15 +17,13 @@ while 1:
         break
 
     if idx == 0:
-        key, rest = decoder.decode(
-                       substrate, asn1Spec=rfc5208.PrivateKeyInfo()
-                    )
+        asn1Spec = rfc5208.PrivateKeyInfo()
     elif idx == 1:
-        key, rest = decoder.decode(
-                       substrate, asn1Spec=rfc5208.EncryptedPrivateKeyInfo()
-                    )
+        asn1Spec = rfc5208.EncryptedPrivateKeyInfo()
     else:
         break
+
+    key, rest = decoder.decode(substrate, asn1Spec=asn1Spec)
 
     if rest: substrate = substrate[:-len(rest)]
         

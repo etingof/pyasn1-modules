@@ -6,7 +6,7 @@ import sys
 
 if len(sys.argv) != 1:
     print("""Usage:
-$ cat certificateRequest.pem | %s""" % (sys.argv[0], sys.argv[0]))
+$ cat certificateRequest.pem | %s""" % sys.argv[0]
     sys.exit(-1)
     
 certType = rfc2314.CertificationRequest()

@@ -6,7 +6,7 @@ import sys
 
 if len(sys.argv) != 1:
     print("""Usage:
-$ cat crmf.pem | %s""" % (sys.argv[0],))
+$ cat crmf.pem | %s""" % sys.argv[0])
     sys.exit(-1)
     
 certReq = rfc2511.CertReqMessages()
