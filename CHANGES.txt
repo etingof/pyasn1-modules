@@ -8,6 +8,7 @@ Revision 0.0.3
 - PKCS#8 structures and pkcs8dump.py tool added
 - PKCS#1 (rfc3447) structures added
 - OCSP request & response dumping tool added
+- SNMPv2c & SNMPv3/USM structures added
 - keydump.py moved into pkcs1dump.py
 - PEM files read function generalized to be used more universally.
 - complete PKIX1 '88 code implemented at rfc2459.py
