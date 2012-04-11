@@ -1,13 +1,14 @@
 #
-# SNMP message syntax
+# SNMPv1 message syntax
 #
 # ASN.1 source from:
-# http://www.trl.ibm.com/projects/xml/xss4j/data/asn1/grammars/snmp.asn
+# http://www.ietf.org/rfc/rfc1157.txt
 #
 # Sample captures from:
 # http://wiki.wireshark.org/SampleCaptures/
 #
 from pyasn1.type import univ, namedtype, namedval, tag, constraint
+from pyasn1_modules import rfc1155
 
 class Version(univ.Integer):
     namedValues = namedval.NamedValues(
@@ -29,73 +30,10 @@ class ErrorStatus(univ.Integer):
         )
 class ErrorIndex(univ.Integer): pass
 
-class ObjectName(univ.ObjectIdentifier): pass
-
-class SimpleSyntax(univ.Choice):
-    componentType = namedtype.NamedTypes(
-        namedtype.NamedType('number', univ.Integer()),
-        namedtype.NamedType('string', univ.OctetString()),
-        namedtype.NamedType('object', univ.ObjectIdentifier()),
-        namedtype.NamedType('empty', univ.Null())
-        )
-
-class IpAddress(univ.OctetString):
-    tagSet = univ.OctetString.tagSet.tagImplicitly(
-        tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 0)
-        )
-    subtypeSpec = univ.Integer.subtypeSpec + constraint.ValueSizeConstraint(
-        4, 4
-        )
-class NetworkAddress(univ.Choice):
-    componentType = namedtype.NamedTypes(
-        namedtype.NamedType('internet', IpAddress())
-        )
-
-class Counter(univ.Integer):
-    tagSet = univ.Integer.tagSet.tagImplicitly(
-        tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 1)
-        )
-    subtypeSpec = univ.Integer.subtypeSpec + constraint.ValueRangeConstraint(
-        0, 4294967295
-        )
-class Gauge(univ.Integer):
-    tagSet = univ.Integer.tagSet.tagImplicitly(
-        tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 2)
-        )
-    subtypeSpec = univ.Integer.subtypeSpec + constraint.ValueRangeConstraint(
-        0, 4294967295
-        )
-class TimeTicks(univ.Integer):
-    tagSet = univ.Integer.tagSet.tagImplicitly(
-        tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 3)
-        )
-    subtypeSpec = univ.Integer.subtypeSpec + constraint.ValueRangeConstraint(
-        0, 4294967295
-        )
-class Opaque(univ.OctetString):
-    tagSet = univ.OctetString.tagSet.tagImplicitly(
-        tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 4)
-        )
-    
-class ApplicationSyntax(univ.Choice):
-    componentType = namedtype.NamedTypes(
-        namedtype.NamedType('address', NetworkAddress()),
-        namedtype.NamedType('counter', Counter()),
-        namedtype.NamedType('gauge', Gauge()),
-        namedtype.NamedType('ticks', TimeTicks()),
-        namedtype.NamedType('arbitrary', Opaque())
-        )
-    
-class ObjectSyntax(univ.Choice):
-    componentType = namedtype.NamedTypes(
-        namedtype.NamedType('simple', SimpleSyntax()),
-        namedtype.NamedType('application-wide', ApplicationSyntax())
-        )
-    
 class VarBind(univ.Sequence):
     componentType = namedtype.NamedTypes(
-        namedtype.NamedType('name', ObjectName()),
-        namedtype.NamedType('value', ObjectSyntax())
+        namedtype.NamedType('name', rfc1155.ObjectName()),
+        namedtype.NamedType('value', rfc1155.ObjectSyntax())
         )
 class VarBindList(univ.SequenceOf):
     componentType = VarBind()
@@ -128,10 +66,10 @@ class SetRequestPDU(_RequestBase):
 class TrapPDU(univ.Sequence):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('enterprise', univ.ObjectIdentifier()),
-        namedtype.NamedType('agent-addr', NetworkAddress()),
+        namedtype.NamedType('agent-addr', rfc1155.NetworkAddress()),
         namedtype.NamedType('generic-trap', univ.Integer().clone(namedValues=namedval.NamedValues(('coldStart', 0), ('warmStart', 1), ('linkDown', 2), ('linkUp', 3), ('authenticationFailure', 4), ('egpNeighborLoss', 5), ('enterpriseSpecific', 6)))),
         namedtype.NamedType('specific-trap', univ.Integer()),
-        namedtype.NamedType('time-stamp', TimeTicks()),
+        namedtype.NamedType('time-stamp', rfc1155.TimeTicks()),
         namedtype.NamedType('variable-bindings', VarBindList())
         )
     
