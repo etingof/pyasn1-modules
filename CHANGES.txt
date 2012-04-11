@@ -1,12 +1,17 @@
 Revision 0.0.3
 --------------
 
-- X.509 CRMF structure (RFC2511) and crmfdump.py tool added
+- Text cases implemented
+- X.509 CRMF structures (RFC2511) and crmfdump.py tool added
+- X.509 CRL structures and crldump.py tool added
 - PKCS#10 structures and pkcs10dump.py tool added
 - PKCS#8 structures and pkcs8dump.py tool added
 - PKCS#1 (rfc3447) structures added
+- OCSP request & response dumping tool added
 - keydump.py moved into pkcs1dump.py
 - PEM files read function generalized to be used more universally.
+- complete PKIX1 '88 code implemented at rfc2459.py
+
 
 Revision 0.0.2
 --------------
