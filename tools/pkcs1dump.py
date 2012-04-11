@@ -1,6 +1,9 @@
+#!/usr/bin/python
+#
 # Read unencrypted PKCS#1/PKIX-compliant, PEM&DER encoded private keys on
 # stdin, print them pretty and encode back into original wire format.
 # Private keys can be generated with "openssl genrsa|gendsa" commands.
+#
 from pyasn1_modules import rfc2459, rfc2437, pem
 from pyasn1.codec.der import encoder, decoder
 import sys

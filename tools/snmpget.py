@@ -1,4 +1,7 @@
+#!/usr/bin/python
+#
 # Generate SNMPGET request, parse response
+#
 from pyasn1.codec.ber import encoder, decoder
 from pyasn1_modules import rfc1157
 import sys, socket

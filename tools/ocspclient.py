@@ -1,3 +1,5 @@
+#!/usr/bin/python
+#
 from pyasn1.codec.der import decoder, encoder
 from pyasn1_modules import rfc2560, rfc2459, pem
 from pyasn1.type import univ

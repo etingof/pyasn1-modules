@@ -1,5 +1,8 @@
+#!/usr/bin/python
+#
 # Read ASN.1/PEM X.509 certificates on stdin, parse each into plain text,
 # then build substrate from it
+#
 from pyasn1.codec.der import decoder, encoder
 from pyasn1_modules import rfc2459, pem
 import sys
