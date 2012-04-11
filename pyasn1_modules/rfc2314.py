@@ -8,10 +8,9 @@
 #
 from pyasn1.type import tag, namedtype, namedval, univ, constraint
 from pyasn1_modules.rfc2459 import *
-from pyasn1_modules import rfc2251
 
 class Attributes(univ.SetOf):
-    componentType = rfc2251.Attribute()
+    componentType = Attribute()
 
 class Version(univ.Integer): pass
 
