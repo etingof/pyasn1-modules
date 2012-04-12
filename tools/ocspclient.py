@@ -106,13 +106,13 @@ else:
 # Parse CA and user certificates
 
 issuerCert, _ = decoder.decode(
-    pem.readPemFromFile(
+    pem.readPemBlocksFromFile(
         sys.stdin, ('-----BEGIN CERTIFICATE-----', '-----END CERTIFICATE-----')
     )[1],
     asn1Spec=rfc2459.Certificate()
     )
 userCert, _ = decoder.decode(
-    pem.readPemFromFile(
+    pem.readPemBlocksFromFile(
         sys.stdin, ('-----BEGIN CERTIFICATE-----', '-----END CERTIFICATE-----')
     )[1],
     asn1Spec=rfc2459.Certificate()

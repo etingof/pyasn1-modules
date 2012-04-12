@@ -18,7 +18,7 @@ asn1Spec = rfc2459.CertificateList()
 cnt = 0
 
 while 1:
-    idx, substrate = pem.readPemFromFile(sys.stdin, ('-----BEGIN X509 CRL-----', '-----END X509 CRL-----'))
+    idx, substrate = pem.readPemBlocksFromFile(sys.stdin, ('-----BEGIN X509 CRL-----', '-----END X509 CRL-----'))
     if not substrate:
         break
 

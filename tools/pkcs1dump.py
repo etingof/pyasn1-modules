@@ -16,7 +16,7 @@ $ cat rsakey.pem | %s""" % sys.argv[0])
 cnt = 0
 
 while 1:
-    idx, substrate = pem.readPemFromFile(sys.stdin, ('-----BEGIN RSA PRIVATE KEY-----', '-----END RSA PRIVATE KEY-----'), ('-----BEGIN DSA PRIVATE KEY-----', '-----END DSA PRIVATE KEY-----') )
+    idx, substrate = pem.readPemBlocksFromFile(sys.stdin, ('-----BEGIN RSA PRIVATE KEY-----', '-----END RSA PRIVATE KEY-----'), ('-----BEGIN DSA PRIVATE KEY-----', '-----END DSA PRIVATE KEY-----') )
     if not substrate:
         break
 

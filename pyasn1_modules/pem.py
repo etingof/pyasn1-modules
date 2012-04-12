@@ -4,7 +4,7 @@ stSpam, stHam, stDump = 0, 1, 2
 
 # The markers parameters is in form ('start1', 'stop1'), ('start2', 'stop2')...
 # Return is (marker-index, substrate)
-def readPemFromFile(fileObj, *markers):
+def readPemBlocksFromFile(fileObj, *markers):
     startMarkers = dict(map(lambda x: (x[1],x[0]),
                             enumerate(map(lambda x: x[0], markers))))
     stopMarkers = dict(map(lambda x: (x[1],x[0]),
@@ -34,6 +34,13 @@ def readPemFromFile(fileObj, *markers):
                 substrate = ''.encode().join([ base64.b64decode(x.encode()) for x in certLines ])
             break
     return idx, substrate
+
+# Backward compatibility routine
+def readPemFromFile(fileObj, 
+                    startMarker='-----BEGIN CERTIFICATE-----',
+                    endMarker='-----END CERTIFICATE-----'):
+    idx, substrate = readPemBlocksFromFile(fileObj, (startMarker, endMarker))
+    return substrate
 
 def readBase64FromFile(fileObj):
     if sys.version_info[0] <= 2:
