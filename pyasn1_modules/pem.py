@@ -29,16 +29,16 @@ def readPemFromFile(fileObj, *markers):
                 certLines.append(certLine)
         if state == stDump:
             if sys.version_info[0] <= 2:
-                substrate = ''.join([ base64.decodestring(x) for x in certLines ])
+                substrate = ''.join([ base64.b64decode(x) for x in certLines ])
             else:
-                substrate = ''.encode().join([ base64.decodebytes(x.encode()) for x in certLines ])
+                substrate = ''.encode().join([ base64.b64decode(x.encode()) for x in certLines ])
             break
     return idx, substrate
 
 def readBase64FromFile(fileObj):
     if sys.version_info[0] <= 2:
-        return ''.join([ base64.decodestring(x) for x in fileObj.readlines() ])
+        return ''.join([ base64.b64decode(x) for x in fileObj.readlines() ])
     else:
         return ''.encode().join(
-            [ base64.decodebytes(x.encode()) for x in fileObj.readlines() ]
+            [ base64.b64decode(x.encode()) for x in fileObj.readlines() ]
         )
