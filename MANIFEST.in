@@ -1,2 +1,3 @@
 include CHANGES README LICENSE
-recursive-include tools test *.py
+recursive-include tools *.py
+recursive-include test *.sh
