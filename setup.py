@@ -22,9 +22,9 @@ except ImportError:
             howto_install_setuptools()
             sys.exit(1)
     from distutils.core import setup
-    params = {
-        'requires': [ 'pyasn1(>=0.1.1)' ]
-        }
+    params = {}
+    if sys.version_info[:2] > (2, 4):
+        params['requires'] = [ 'pyasn1(>=0.1.1)' ]
 
 params.update( {
     'name': 'pyasn1-modules',
