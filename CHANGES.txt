@@ -1,3 +1,8 @@
+Revision 0.0.4
+--------------
+
+- CMP structures (RFC4210) added
+
 Revision 0.0.3
 --------------
 
