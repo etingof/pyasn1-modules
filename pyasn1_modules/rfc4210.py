@@ -672,10 +672,13 @@ class PKIMessage(univ.Sequence):
         namedtype.OptionalNamedType('protection', PKIProtection().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
         namedtype.OptionalNamedType( 'extraCerts',
             univ.SequenceOf(
-                CMPCertificate().subtype(subtypeSpec=constraint.ValueSizeConstraint(1, MAX))
-                )
+                componentType=CMPCertificate()
+            ).subtype(
+                subtypeSpec=constraint.ValueSizeConstraint(1, MAX),
+                explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1)
             )
         )
+    )
 
 class PKIMessages(univ.SequenceOf):
     """
