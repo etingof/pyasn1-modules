@@ -1,7 +1,7 @@
 Revision 0.0.4
 --------------
 
-- CMP structures (RFC4210) added
+- CMP structures (RFC4210) and cmpdump.py tool added
 
 Revision 0.0.3
 --------------
