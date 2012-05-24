@@ -3,11 +3,14 @@
 # plain text, then build substrate from it
 from pyasn1.codec.der import decoder, encoder
 from pyasn1_modules import rfc4210, pem
+from pyasn1 import debug
 import sys
 
-if len(sys.argv) != 1:
+if len(sys.argv) == 2 and sys.argv[1] == '-d':
+    debug.setLogger(debug.Debug('all'))
+elif len(sys.argv) != 1:
     print("""Usage:
-$ cat cmp.pem | %s""" % sys.argv[0])
+$ cat cmp.pem | %s [-d]""" % sys.argv[0])
     sys.exit(-1)
     
 pkiMessage = rfc4210.PKIMessage()
