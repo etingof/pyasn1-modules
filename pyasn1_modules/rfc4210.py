@@ -399,7 +399,9 @@ class CertRepMessage(univ.Sequence):
                 explicitTag=tag.Tag(tag.tagClassContext,tag.tagFormatConstructed,1)
             )
         ),
-        namedtype.NamedType('response', CertResponse())
+        namedtype.NamedType('response', univ.SequenceOf(
+                componentType=CertResponse())
+            )
     )
 
 class POPODecKeyChallContent(univ.SequenceOf):
