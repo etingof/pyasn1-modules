@@ -28,7 +28,7 @@ except ImportError:
 
 params.update( {
     'name': 'pyasn1-modules',
-    'version': '0.0.4',
+    'version': open('pyasn1_modules/__init__.py').read().split('\'')[1],
     'description': 'ASN.1 modules',
     'author': 'Ilya Etingof',
     'author_email': 'ilya@glas.net',
