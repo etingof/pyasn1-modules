@@ -1,5 +1,29 @@
 #!/usr/bin/env python
-import sys
+"""A collection of ASN.1-based protocols modules.
+
+   A collection of ASN.1 modules expressed in form of pyasn1 classes.
+   Includes protocols PDUs definition (SNMP, LDAP etc.) and various
+   data structures (X.509, PKCS etc.).
+"""
+
+classifiers = """\
+Development Status :: 5 - Production/Stable
+Environment :: Console
+Intended Audience :: Developers
+Intended Audience :: Education
+Intended Audience :: Information Technology
+Intended Audience :: Science/Research
+Intended Audience :: System Administrators
+Intended Audience :: Telecommunications Industry
+License :: OSI Approved :: BSD License
+Natural Language :: English
+Operating System :: OS Independent
+Programming Language :: Python :: 2
+Programming Language :: Python :: 3
+Topic :: Communications,
+Topic :: Security :: Cryptography
+Topic :: Software Development :: Libraries :: Python Modules
+"""
 
 def howto_install_setuptools():
     print("""
@@ -17,6 +41,7 @@ try:
         'zip_safe': True
         }    
 except ImportError:
+    import sys
     for arg in sys.argv:
         if arg.find('egg') != -1:
             howto_install_setuptools()
@@ -26,26 +51,19 @@ except ImportError:
     if sys.version_info[:2] > (2, 4):
         params['requires'] = [ 'pyasn1(>=0.1.4)' ]
 
+doclines = [ x.strip() for x in __doc__.split('\n') if x ]
+
 params.update( {
     'name': 'pyasn1-modules',
     'version': open('pyasn1_modules/__init__.py').read().split('\'')[1],
-    'description': 'ASN.1 modules',
+    'description': doclines[0],
+    'long_description': ' '.join(doclines[1:]),
+    'maintainer': 'Ilya Etingof <ilya@glas.net>',
     'author': 'Ilya Etingof',
     'author_email': 'ilya@glas.net',
     'url': 'http://sourceforge.net/projects/pyasn1/',
-    'classifiers': [
-      'Development Status :: 5 - Production/Stable',
-      'Intended Audience :: Developers',
-      'Intended Audience :: Information Technology',
-      'Intended Audience :: Telecommunications Industry',
-      'Operating System :: OS Independent',
-      'Programming Language :: Python :: 2',
-      'Programming Language :: Python :: 3',
-      'Topic :: Communications',
-      'Topic :: Security :: Cryptography',
-      'Topic :: Software Development :: Libraries :: Python Modules',
-      'License :: OSI Approved :: BSD License'
-    ],
+    'platforms': ['any'],
+    'classifiers': [ x for x in classifiers.split('\n') if x ],
     'license': 'BSD',
     'packages': [ 'pyasn1_modules' ]
     } )
