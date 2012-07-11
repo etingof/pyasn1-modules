@@ -1,7 +1,8 @@
 Revision 0.0.4
 --------------
 
-- CMP structures (RFC4210), cmpdump.py tool and test case added
+- CMP structures (RFC4210), cmpdump.py tool and test case added.
+- SNMPv2c Message syntax (RFC1901) properly defined.
 - Package version established in form of __init__.__version__
   which is in-sync with distutils.
 - Package meta information and classifiers updated.
