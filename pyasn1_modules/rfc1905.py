@@ -1,5 +1,5 @@
 #
-# SNMPv2c message syntax
+# SNMPv2c PDU syntax
 #
 # ASN.1 source from:
 # http://www.ietf.org/rfc/rfc1905.txt
