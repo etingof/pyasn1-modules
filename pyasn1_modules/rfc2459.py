@@ -761,7 +761,7 @@ class BaseDistance(univ.Integer):
 id_ce_cRLDistributionPoints = univ.ObjectIdentifier('2.5.29.31')
 
 class CRLDistPointsSyntax(univ.SequenceOf):
-    componentType = DistributionPoint
+    componentType = DistributionPoint()
     subtypeSpec = univ.SequenceOf.subtypeSpec + constraint.ValueSizeConstraint(1, MAX)
 id_ce_issuingDistributionPoint = univ.ObjectIdentifier('2.5.29.28')
 
