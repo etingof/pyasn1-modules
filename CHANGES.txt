@@ -5,6 +5,7 @@ Revision 0.0.5
   (http://opensource.org/licenses/BSD-2-Clause).
 - Missing components added to rfc4210.PKIBody.
 - Fix to rfc2459.CRLDistPointsSyntax typo.
+- Fix to rfc2511.CertReqMsg typo.
 
 Revision 0.0.4
 --------------
