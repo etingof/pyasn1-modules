@@ -1,3 +1,8 @@
+Revision 0.0.6
+--------------
+
+- Typo fix to id_kp_serverAuth object value
+
 Revision 0.0.5
 --------------
 
