@@ -648,7 +648,7 @@ class CRLNumber(univ.Integer):
 
 class BaseCRLNumber(CRLNumber): pass
 
-id_kp_serverAuth = univ.ObjectIdentifier('1.3.6.1.5.5.7.3.1.1')
+id_kp_serverAuth = univ.ObjectIdentifier('1.3.6.1.5.5.7.3.1')
 id_kp_clientAuth = univ.ObjectIdentifier('1.3.6.1.5.5.7.3.2')
 id_kp_codeSigning = univ.ObjectIdentifier('1.3.6.1.5.5.7.3.3')
 id_kp_emailProtection = univ.ObjectIdentifier('1.3.6.1.5.5.7.3.4')
