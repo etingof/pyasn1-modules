@@ -1,5 +1,10 @@
-Revision 0.0.6
+Revision 0.0.7
 --------------
+
+- Extensions added to text files, CVS attic flushed.
+
+Revision 0.0.6, released 21-06-2015
+-----------------------------------
 
 - Typo fix to id_kp_serverAuth object value
 - A test case for indefinite length encoding eliminated as it's
