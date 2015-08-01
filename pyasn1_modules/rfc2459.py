@@ -692,7 +692,7 @@ id_ce_basicConstraints = univ.ObjectIdentifier('2.5.29.19')
 
 class BasicConstraints(univ.Sequence):
     componentType = namedtype.NamedTypes(
-        namedtype.NamedType('cA', univ.Boolean(False)),
+        namedtype.DefaultedNamedType('cA', univ.Boolean(False)),
         namedtype.OptionalNamedType('pathLenConstraint', univ.Integer().subtype(subtypeSpec=constraint.ValueRangeConstraint(0, MAX)))
     )
 
