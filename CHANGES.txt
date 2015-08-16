@@ -1,6 +1,8 @@
 Revision 0.0.8
 --------------
 
+- Fix to misspelled rfc2459.id_at_sutname variable
+
 Revision 0.0.7
 --------------
 

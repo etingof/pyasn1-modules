@@ -87,7 +87,8 @@ class Attribute(univ.Sequence):
 
 id_at = univ.ObjectIdentifier('2.5.4')
 id_at_name = univ.ObjectIdentifier('2.5.4.41')
-id_at_sutname = univ.ObjectIdentifier('2.5.4.4')
+# preserve misspelled variable for compatibility
+id_at_sutname = id_at_surname = univ.ObjectIdentifier('2.5.4.4')
 id_at_givenName = univ.ObjectIdentifier('2.5.4.42')
 id_at_initials = univ.ObjectIdentifier('2.5.4.43')
 id_at_generationQualifier = univ.ObjectIdentifier('2.5.4.44')
