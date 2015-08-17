@@ -2,6 +2,8 @@ Revision 0.0.8
 --------------
 
 - Fix to misspelled rfc2459.id_at_sutname variable
+- Fix to misspelled rfc2459.NameConstraints component tag ID
+- Fix to misspelled rfc2459.GeneralSubtree component default status
 
 Revision 0.0.7
 --------------

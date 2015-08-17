@@ -778,7 +778,7 @@ class IssuingDistributionPoint(univ.Sequence):
 class GeneralSubtree(univ.Sequence):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('base', GeneralName()),
-        namedtype.NamedType('minimum', BaseDistance(0).subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
+        namedtype.DefaultedNamedType('minimum', BaseDistance(0).subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
         namedtype.OptionalNamedType('maximum', BaseDistance().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1)))
     )
 
@@ -791,7 +791,7 @@ id_ce_nameConstraints = univ.ObjectIdentifier('2.5.29.30')
 class NameConstraints(univ.Sequence):
     componentType = namedtype.NamedTypes(
         namedtype.OptionalNamedType('permittedSubtrees', GeneralSubtrees().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
-        namedtype.OptionalNamedType('excludedSubtrees', GeneralSubtrees().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0)))
+        namedtype.OptionalNamedType('excludedSubtrees', GeneralSubtrees().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1)))
     )
 
 
