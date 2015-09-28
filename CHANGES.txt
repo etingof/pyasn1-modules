@@ -1,13 +1,13 @@
-Revision 0.0.8
---------------
+Revision 0.0.8, released 28-09-2015
+-----------------------------------
 
 - Wheel distribution format now supported
 - Fix to misspelled rfc2459.id_at_sutname variable
 - Fix to misspelled rfc2459.NameConstraints component tag ID
 - Fix to misspelled rfc2459.GeneralSubtree component default status
 
-Revision 0.0.7
---------------
+Revision 0.0.7, released 01-08-2015
+-----------------------------------
 
 - Extensions added to text files, CVS attic flushed.
 - Fix to rfc2459.BasicConstraints syntax.
