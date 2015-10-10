@@ -69,21 +69,21 @@ except ImportError:
     if sys.version_info[:2] > (2, 4):
         params['requires'] = [ 'pyasn1(>=0.1.8)' ]
 
-doclines = [ x.strip() for x in __doc__.split('\n') if x ]
+doclines = [x.strip() for x in (__doc__ or '').split('\n') if x]
 
-params.update( {
-    'name': 'pyasn1-modules',
-    'version': open('pyasn1_modules/__init__.py').read().split('\'')[1],
-    'description': doclines[0],
-    'long_description': ' '.join(doclines[1:]),
-    'maintainer': 'Ilya Etingof <ilya@glas.net>',
-    'author': 'Ilya Etingof',
-    'author_email': 'ilya@glas.net',
-    'url': 'http://sourceforge.net/projects/pyasn1/',
-    'platforms': ['any'],
-    'classifiers': [ x for x in classifiers.split('\n') if x ],
-    'license': 'BSD',
-    'packages': [ 'pyasn1_modules' ]
-    } )
+params.update(
+    {'name': 'pyasn1-modules',
+     'version': open('pyasn1_modules/__init__.py').read().split('\'')[1],
+     'description': doclines[0],
+     'long_description': ' '.join(doclines[1:]),
+     'maintainer': 'Ilya Etingof <ilya@glas.net>',
+     'author': 'Ilya Etingof',
+     'author_email': 'ilya@glas.net',
+     'url': 'http://sourceforge.net/projects/pyasn1/',
+     'platforms': ['any'],
+     'classifiers': [x for x in classifiers.split('\n') if x],
+     'license': 'BSD',
+     'packages': ['pyasn1_modules']}
+)
 
 setup(**params)
