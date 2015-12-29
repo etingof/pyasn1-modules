@@ -1,4 +1,9 @@
 #
+# This file is part of pyasn1-modules software.
+#
+# Copyright (c) 2005-2016, Ilya Etingof <ilya@glas.net>
+# License: http://pyasn1.sf.net/license.html
+#
 # OCSP request/response syntax
 #
 # Derived from a minimal OCSP library (RFC2560) code written by

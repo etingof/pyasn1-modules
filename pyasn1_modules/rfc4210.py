@@ -1,4 +1,9 @@
 #
+# This file is part of pyasn1-modules software.
+#
+# Copyright (c) 2005-2016, Ilya Etingof <ilya@glas.net>
+# License: http://pyasn1.sf.net/license.html
+#
 # Certificate Management Protocol structures as per RFC4210
 #
 # Based on Alex Railean's work

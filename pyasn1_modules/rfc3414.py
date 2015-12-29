@@ -1,4 +1,9 @@
 #
+# This file is part of pyasn1-modules software.
+#
+# Copyright (c) 2005-2016, Ilya Etingof <ilya@glas.net>
+# License: http://pyasn1.sf.net/license.html
+#
 # SNMPv3 message syntax
 #
 # ASN.1 source from:

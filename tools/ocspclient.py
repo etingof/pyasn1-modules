@@ -1,5 +1,10 @@
 #!/usr/bin/python
 #
+# This file is part of pyasn1-modules software.
+#
+# Copyright (c) 2005-2016, Ilya Etingof <ilya@glas.net>
+# License: http://pyasn1.sf.net/license.html
+#
 from pyasn1.codec.der import decoder, encoder
 from pyasn1_modules import rfc2560, rfc2459, pem
 from pyasn1.type import univ

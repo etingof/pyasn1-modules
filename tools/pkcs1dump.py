@@ -1,5 +1,10 @@
 #!/usr/bin/python
 #
+# This file is part of pyasn1-modules software.
+#
+# Copyright (c) 2005-2016, Ilya Etingof <ilya@glas.net>
+# License: http://pyasn1.sf.net/license.html
+#
 # Read unencrypted PKCS#1/PKIX-compliant, PEM&DER encoded private keys on
 # stdin, print them pretty and encode back into original wire format.
 # Private keys can be generated with "openssl genrsa|gendsa" commands.

@@ -1,4 +1,10 @@
 #!/usr/bin/env python
+#
+# This file is part of pyasn1-modules software.
+#
+# Copyright (c) 2005-2016, Ilya Etingof <ilya@glas.net>
+# License: http://pyasn1.sf.net/license.html
+#
 """A collection of ASN.1-based protocols modules.
 
    A collection of ASN.1 modules expressed in form of pyasn1 classes.
