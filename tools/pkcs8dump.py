@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 #
 # This file is part of pyasn1-modules software.
 #
@@ -19,7 +19,7 @@ $ cat pkcs8key.pem | %s""" % sys.argv[0])
     
 cnt = 0
 
-while 1:
+while True:
     idx, substrate = pem.readPemBlocksFromFile(sys.stdin, ('-----BEGIN PRIVATE KEY-----', '-----END PRIVATE KEY-----'), ('-----BEGIN ENCRYPTED PRIVATE KEY-----', '-----END ENCRYPTED PRIVATE KEY-----') )
     if not substrate:
         break
@@ -39,6 +39,6 @@ while 1:
 
     assert encoder.encode(key) == substrate, 'pkcs8 recode fails'
         
-    cnt = cnt + 1
+    cnt += 1
     
 print('*** %s PKCS#8 key(s) de/serialized' % cnt)

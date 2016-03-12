@@ -1,6 +1,6 @@
 #!/bin/sh
 
-python x509dump.py <<EOT
+x509dump.py <<EOT
 -----BEGIN CERTIFICATE-----
 MIIC5zCCAlACAQEwDQYJKoZIhvcNAQEFBQAwgbsxJDAiBgNVBAcTG1ZhbGlDZXJ0
 IFZhbGlkYXRpb24gTmV0d29yazEXMBUGA1UEChMOVmFsaUNlcnQsIEluYy4xNTAz

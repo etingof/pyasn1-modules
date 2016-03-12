@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 #
 # This file is part of pyasn1-modules software.
 #
@@ -25,7 +25,8 @@ assert substrate, 'bad PKCS7 data on input'
         
 contentInfo, rest = decoder.decode(substrate, asn1Spec=rfc2315.ContentInfo())
 
-if rest: substrate = substrate[:-len(rest)]
+if rest:
+    substrate = substrate[:-len(rest)]
     
 print(contentInfo.prettyPrint())
 

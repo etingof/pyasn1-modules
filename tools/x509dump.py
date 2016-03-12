@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 #
 # This file is part of pyasn1-modules software.
 #
@@ -22,7 +22,7 @@ certType = rfc2459.Certificate()
 
 certCnt = 0
 
-while 1:
+while True:
     idx, substrate = pem.readPemBlocksFromFile(
                         sys.stdin, ('-----BEGIN CERTIFICATE-----',
                                     '-----END CERTIFICATE-----')
@@ -38,6 +38,6 @@ while 1:
 
     assert encoder.encode(cert) == substrate, 'cert recode fails'
         
-    certCnt = certCnt + 1
+    certCnt += 1
     
 print('*** %s PEM cert(s) de/serialized' % certCnt)

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 #
 # This file is part of pyasn1-modules software.
 #
@@ -20,7 +20,7 @@ $ cat rsakey.pem | %s""" % sys.argv[0])
     
 cnt = 0
 
-while 1:
+while True:
     idx, substrate = pem.readPemBlocksFromFile(sys.stdin, ('-----BEGIN RSA PRIVATE KEY-----', '-----END RSA PRIVATE KEY-----'), ('-----BEGIN DSA PRIVATE KEY-----', '-----END DSA PRIVATE KEY-----') )
     if not substrate:
         break
@@ -34,12 +34,13 @@ while 1:
 
     key, rest = decoder.decode(substrate, asn1Spec=asn1Spec)
 
-    if rest: substrate = substrate[:-len(rest)]
+    if rest:
+        substrate = substrate[:-len(rest)]
         
     print(key.prettyPrint())
 
     assert encoder.encode(key) == substrate, 'pkcs8 recode fails'
         
-    cnt = cnt + 1
+    cnt += 1
  
 print('*** %s key(s) re/serialized' % cnt)

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 #
 # This file is part of pyasn1-modules software.
 #
@@ -22,7 +22,7 @@ asn1Spec = rfc2459.CertificateList()
 
 cnt = 0
 
-while 1:
+while True:
     idx, substrate = pem.readPemBlocksFromFile(sys.stdin, ('-----BEGIN X509 CRL-----', '-----END X509 CRL-----'))
     if not substrate:
         break
@@ -36,6 +36,6 @@ while 1:
 
     assert encoder.encode(key) == substrate, 'pkcs8 recode fails'
         
-    cnt = cnt + 1
+    cnt += 1
  
 print('*** %s CRL(s) re/serialized' % cnt)

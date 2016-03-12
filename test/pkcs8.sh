@@ -1,6 +1,6 @@
 #!/bin/sh
 
-python pkcs8dump.py <<EOT
+pkcs8dump.py <<EOT
 -----BEGIN ENCRYPTED PRIVATE KEY-----
 MIIBgTAbBgkqhkiG9w0BBQMwDgQIdtFgDWnipT8CAggABIIBYN0hkm2xqkTCt8dJ
 iZS8+HNiyHxy8g+rmWSXv/i+bTHFUReZA2GINtTRUkWpXqWcSHxNslgf7QdfgbVJ

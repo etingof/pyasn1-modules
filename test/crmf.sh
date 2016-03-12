@@ -1,6 +1,6 @@
 #!/bin/sh
 
-python crmfdump.py <<EOT
+crmfdump.py <<EOT
 MIIBozCCAZ8wggEFAgUAwTnj2jCByoABAqURMA8xDTALBgNVBAMTBHVzZXKmgZ8w
 DQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAJ6ZQ2cYbn/lFsmBOlRltbRbFQUvvE0Q
 nbopOu1kC7Bmaaz7QTx8nxeiHi4m7uxCbGGxHNoGCt7EmdG8eZUBNAcHyGlXrJdm
