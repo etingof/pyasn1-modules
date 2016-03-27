@@ -1,4 +1,11 @@
 #!/usr/bin/env python
+# coding: utf-8
+#
+# This file is part of pyasn1-modules software.
+#
+# Created by Stanisław Pitucha with asn1ate tool.
+# Copyright (c) 2005-2016, Ilya Etingof <ilya@glas.net>
+# License: http://pyasn1.sf.net/license.html
 #
 # Read ASN.1/PEM X.509 certificates on stdin, parse each into plain text,
 # then build substrate from it (using RFC5280)
