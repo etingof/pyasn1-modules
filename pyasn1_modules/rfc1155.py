@@ -15,7 +15,8 @@
 from pyasn1.type import univ, namedtype, tag, constraint
 
 
-class ObjectName(univ.ObjectIdentifier): pass
+class ObjectName(univ.ObjectIdentifier):
+    pass
 
 
 class SimpleSyntax(univ.Choice):

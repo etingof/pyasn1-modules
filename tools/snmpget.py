@@ -9,7 +9,8 @@
 #
 from pyasn1.codec.ber import encoder, decoder
 from pyasn1_modules import rfc1157
-import sys, socket
+import sys
+import socket
 
 if len(sys.argv) != 4:
     print("""Usage:
@@ -37,6 +38,7 @@ sock.sendto(encoder.encode(msg), (sys.argv[2], 161))
 
 substrate, _ = sock.recvfrom(2048)
 
+# noinspection PyRedeclaration
 rMsg, _ = decoder.decode(substrate, asn1Spec=msg)
 
 print('received: %s' % rMsg.prettyPrint())

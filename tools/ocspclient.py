@@ -128,6 +128,7 @@ issuerCert, _ = decoder.decode(
     )[1],
     asn1Spec=rfc2459.Certificate()
 )
+# noinspection PyRedeclaration
 userCert, _ = decoder.decode(
     pem.readPemBlocksFromFile(
         sys.stdin, ('-----BEGIN CERTIFICATE-----', '-----END CERTIFICATE-----')
@@ -151,6 +152,7 @@ httpRsp = urllib2.urlopen(httpReq).read()
 
 # Process OCSP response
 
+# noinspection PyRedeclaration
 ocspRsp, _ = decoder.decode(httpRsp, asn1Spec=rfc2560.OCSPResponse())
 
 producedAt, certId, certStatus, thisUpdate = parseOcspResponse(ocspRsp)

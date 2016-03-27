@@ -4,7 +4,8 @@
 # Copyright (c) 2005-2016, Ilya Etingof <ilya@glas.net>
 # License: http://pyasn1.sf.net/license.html
 #
-import base64, sys
+import base64
+import sys
 
 stSpam, stHam, stDump = 0, 1, 2
 
@@ -13,9 +14,9 @@ stSpam, stHam, stDump = 0, 1, 2
 # Return is (marker-index, substrate)
 def readPemBlocksFromFile(fileObj, *markers):
     startMarkers = dict(map(lambda x: (x[1], x[0]),
-                            enumerate(map(lambda x: x[0], markers))))
+                            enumerate(map(lambda y: y[0], markers))))
     stopMarkers = dict(map(lambda x: (x[1], x[0]),
-                           enumerate(map(lambda x: x[1], markers))))
+                           enumerate(map(lambda y: y[1], markers))))
     idx = -1
     substrate = ''
     certLines = []

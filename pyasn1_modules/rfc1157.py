@@ -42,7 +42,8 @@ class ErrorStatus(univ.Integer):
     )
 
 
-class ErrorIndex(univ.Integer): pass
+class ErrorIndex(univ.Integer):
+    pass
 
 
 class VarBind(univ.Sequence):

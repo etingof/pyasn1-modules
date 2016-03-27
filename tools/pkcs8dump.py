@@ -21,9 +21,9 @@ cnt = 0
 
 while True:
     idx, substrate = pem.readPemBlocksFromFile(
-        sys.stdin, ('-----BEGIN PRIVATE KEY-----', '-----END PRIVATE KEY-----'),
-        ('-----BEGIN ENCRYPTED PRIVATE KEY-----',
-        '-----END ENCRYPTED PRIVATE KEY-----')
+        sys.stdin,
+        ('-----BEGIN PRIVATE KEY-----', '-----END PRIVATE KEY-----'),
+        ('-----BEGIN ENCRYPTED PRIVATE KEY-----', '-----END ENCRYPTED PRIVATE KEY-----')
     )
     if not substrate:
         break
