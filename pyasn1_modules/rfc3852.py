@@ -13,12 +13,13 @@
 #
 from pyasn1.type import univ, namedtype, namedval, tag, constraint, useful
 
-MAX = 64
-
 from pyasn1_modules import rfc3280
 from pyasn1_modules import rfc3281
 
-def _OID(*components):
+MAX = 64
+
+
+def _buildOid(*components):
     output = []
     for x in tuple(components):
         if isinstance(x, univ.ObjectIdentifier):
@@ -48,7 +49,7 @@ class SignedAttributes(univ.SetOf):
 
 
 SignedAttributes.componentType = Attribute()
-SignedAttributes.subtypeSpec=constraint.ValueSizeConstraint(1, MAX)
+SignedAttributes.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class OtherRevocationInfoFormat(univ.Sequence):
@@ -67,7 +68,8 @@ class RevocationInfoChoice(univ.Choice):
 
 RevocationInfoChoice.componentType = namedtype.NamedTypes(
     namedtype.NamedType('crl', rfc3280.CertificateList()),
-    namedtype.NamedType('other', OtherRevocationInfoFormat().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1)))
+    namedtype.NamedType('other', OtherRevocationInfoFormat().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1)))
 )
 
 
@@ -87,8 +89,7 @@ OtherKeyAttribute.componentType = namedtype.NamedTypes(
     namedtype.OptionalNamedType('keyAttr', univ.Any())
 )
 
-
-id_signedData = _OID(1, 2, 840, 113549, 1, 7, 2)
+id_signedData = _buildOid(1, 2, 840, 113549, 1, 7, 2)
 
 
 class KeyEncryptionAlgorithmIdentifier(rfc3280.AlgorithmIdentifier):
@@ -146,7 +147,8 @@ class PasswordRecipientInfo(univ.Sequence):
 
 PasswordRecipientInfo.componentType = namedtype.NamedTypes(
     namedtype.NamedType('version', CMSVersion()),
-    namedtype.OptionalNamedType('keyDerivationAlgorithm', KeyDerivationAlgorithmIdentifier().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
+    namedtype.OptionalNamedType('keyDerivationAlgorithm', KeyDerivationAlgorithmIdentifier().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
     namedtype.NamedType('keyEncryptionAlgorithm', KeyEncryptionAlgorithmIdentifier()),
     namedtype.NamedType('encryptedKey', EncryptedKey())
 )
@@ -193,7 +195,8 @@ class KeyAgreeRecipientIdentifier(univ.Choice):
 
 KeyAgreeRecipientIdentifier.componentType = namedtype.NamedTypes(
     namedtype.NamedType('issuerAndSerialNumber', IssuerAndSerialNumber()),
-    namedtype.NamedType('rKeyId', RecipientKeyIdentifier().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0)))
+    namedtype.NamedType('rKeyId', RecipientKeyIdentifier().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0)))
 )
 
 
@@ -234,8 +237,10 @@ class OriginatorIdentifierOrKey(univ.Choice):
 
 OriginatorIdentifierOrKey.componentType = namedtype.NamedTypes(
     namedtype.NamedType('issuerAndSerialNumber', IssuerAndSerialNumber()),
-    namedtype.NamedType('subjectKeyIdentifier', SubjectKeyIdentifier().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
-    namedtype.NamedType('originatorKey', OriginatorPublicKey().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1)))
+    namedtype.NamedType('subjectKeyIdentifier', SubjectKeyIdentifier().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
+    namedtype.NamedType('originatorKey', OriginatorPublicKey().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1)))
 )
 
 
@@ -245,8 +250,10 @@ class KeyAgreeRecipientInfo(univ.Sequence):
 
 KeyAgreeRecipientInfo.componentType = namedtype.NamedTypes(
     namedtype.NamedType('version', CMSVersion()),
-    namedtype.NamedType('originator', OriginatorIdentifierOrKey().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
-    namedtype.OptionalNamedType('ukm', UserKeyingMaterial().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))),
+    namedtype.NamedType('originator', OriginatorIdentifierOrKey().subtype(
+        explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
+    namedtype.OptionalNamedType('ukm', UserKeyingMaterial().subtype(
+        explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))),
     namedtype.NamedType('keyEncryptionAlgorithm', KeyEncryptionAlgorithmIdentifier()),
     namedtype.NamedType('recipientEncryptedKeys', RecipientEncryptedKeys())
 )
@@ -258,7 +265,8 @@ class RecipientIdentifier(univ.Choice):
 
 RecipientIdentifier.componentType = namedtype.NamedTypes(
     namedtype.NamedType('issuerAndSerialNumber', IssuerAndSerialNumber()),
-    namedtype.NamedType('subjectKeyIdentifier', SubjectKeyIdentifier().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)))
+    namedtype.NamedType('subjectKeyIdentifier', SubjectKeyIdentifier().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)))
 )
 
 
@@ -280,10 +288,14 @@ class RecipientInfo(univ.Choice):
 
 RecipientInfo.componentType = namedtype.NamedTypes(
     namedtype.NamedType('ktri', KeyTransRecipientInfo()),
-    namedtype.NamedType('kari', KeyAgreeRecipientInfo().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1))),
-    namedtype.NamedType('kekri', KEKRecipientInfo().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 2))),
-    namedtype.NamedType('pwri', PasswordRecipientInfo().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 3))),
-    namedtype.NamedType('ori', OtherRecipientInfo().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 4)))
+    namedtype.NamedType('kari', KeyAgreeRecipientInfo().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1))),
+    namedtype.NamedType('kekri', KEKRecipientInfo().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 2))),
+    namedtype.NamedType('pwri', PasswordRecipientInfo().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 3))),
+    namedtype.NamedType('ori', OtherRecipientInfo().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 4)))
 )
 
 
@@ -292,7 +304,7 @@ class RecipientInfos(univ.SetOf):
 
 
 RecipientInfos.componentType = RecipientInfo()
-RecipientInfos.subtypeSpec=constraint.ValueSizeConstraint(1, MAX)
+RecipientInfos.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class DigestAlgorithmIdentifier(rfc3280.AlgorithmIdentifier):
@@ -309,7 +321,8 @@ class SignerIdentifier(univ.Choice):
 
 SignerIdentifier.componentType = namedtype.NamedTypes(
     namedtype.NamedType('issuerAndSerialNumber', IssuerAndSerialNumber()),
-    namedtype.NamedType('subjectKeyIdentifier', SubjectKeyIdentifier().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)))
+    namedtype.NamedType('subjectKeyIdentifier', SubjectKeyIdentifier().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)))
 )
 
 
@@ -318,7 +331,7 @@ class UnprotectedAttributes(univ.SetOf):
 
 
 UnprotectedAttributes.componentType = Attribute()
-UnprotectedAttributes.subtypeSpec=constraint.ValueSizeConstraint(1, MAX)
+UnprotectedAttributes.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class ContentType(univ.ObjectIdentifier):
@@ -340,7 +353,8 @@ class EncryptedContentInfo(univ.Sequence):
 EncryptedContentInfo.componentType = namedtype.NamedTypes(
     namedtype.NamedType('contentType', ContentType()),
     namedtype.NamedType('contentEncryptionAlgorithm', ContentEncryptionAlgorithmIdentifier()),
-    namedtype.OptionalNamedType('encryptedContent', EncryptedContent().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)))
+    namedtype.OptionalNamedType('encryptedContent', EncryptedContent().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)))
 )
 
 
@@ -351,17 +365,15 @@ class EncryptedData(univ.Sequence):
 EncryptedData.componentType = namedtype.NamedTypes(
     namedtype.NamedType('version', CMSVersion()),
     namedtype.NamedType('encryptedContentInfo', EncryptedContentInfo()),
-    namedtype.OptionalNamedType('unprotectedAttrs', UnprotectedAttributes().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
+    namedtype.OptionalNamedType('unprotectedAttrs', UnprotectedAttributes().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
 )
 
+id_contentType = _buildOid(1, 2, 840, 113549, 1, 9, 3)
 
-id_contentType = _OID(1, 2, 840, 113549, 1, 9, 3)
+id_data = _buildOid(1, 2, 840, 113549, 1, 7, 1)
 
-
-id_data = _OID(1, 2, 840, 113549, 1, 7, 1)
-
-
-id_messageDigest = _OID(1, 2, 840, 113549, 1, 9, 4)
+id_messageDigest = _buildOid(1, 2, 840, 113549, 1, 9, 4)
 
 
 class DigestAlgorithmIdentifiers(univ.SetOf):
@@ -377,7 +389,8 @@ class EncapsulatedContentInfo(univ.Sequence):
 
 EncapsulatedContentInfo.componentType = namedtype.NamedTypes(
     namedtype.NamedType('eContentType', ContentType()),
-    namedtype.OptionalNamedType('eContent', univ.OctetString().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)))
+    namedtype.OptionalNamedType('eContent', univ.OctetString().subtype(
+        explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)))
 )
 
 
@@ -412,7 +425,7 @@ class UnauthAttributes(univ.SetOf):
 
 
 UnauthAttributes.componentType = Attribute()
-UnauthAttributes.subtypeSpec=constraint.ValueSizeConstraint(1, MAX)
+UnauthAttributes.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class ExtendedCertificateInfo(univ.Sequence):
@@ -471,10 +484,12 @@ class AttributeCertificateInfoV1(univ.Sequence):
 AttributeCertificateInfoV1.componentType = namedtype.NamedTypes(
     namedtype.DefaultedNamedType('version', AttCertVersionV1().subtype(value="v1")),
     namedtype.NamedType('subject', univ.Choice(componentType=namedtype.NamedTypes(
-        namedtype.NamedType('baseCertificateID', rfc3281.IssuerSerial().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
-        namedtype.NamedType('subjectName', rfc3280.GeneralNames().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
+        namedtype.NamedType('baseCertificateID', rfc3281.IssuerSerial().subtype(
+            explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
+        namedtype.NamedType('subjectName', rfc3280.GeneralNames().subtype(
+            explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
     ))
-    ),
+                        ),
     namedtype.NamedType('issuer', rfc3280.GeneralNames()),
     namedtype.NamedType('signature', rfc3280.AlgorithmIdentifier()),
     namedtype.NamedType('serialNumber', rfc3280.CertificateSerialNumber()),
@@ -502,10 +517,14 @@ class CertificateChoices(univ.Choice):
 
 CertificateChoices.componentType = namedtype.NamedTypes(
     namedtype.NamedType('certificate', rfc3280.Certificate()),
-    namedtype.NamedType('extendedCertificate', ExtendedCertificate().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
-    namedtype.NamedType('v1AttrCert', AttributeCertificateV1().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))),
-    namedtype.NamedType('v2AttrCert', AttributeCertificateV2().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 2))),
-    namedtype.NamedType('other', OtherCertificateFormat().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 3)))
+    namedtype.NamedType('extendedCertificate', ExtendedCertificate().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
+    namedtype.NamedType('v1AttrCert', AttributeCertificateV1().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))),
+    namedtype.NamedType('v2AttrCert', AttributeCertificateV2().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 2))),
+    namedtype.NamedType('other', OtherCertificateFormat().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 3)))
 )
 
 
@@ -525,7 +544,7 @@ class UnsignedAttributes(univ.SetOf):
 
 
 UnsignedAttributes.componentType = Attribute()
-UnsignedAttributes.subtypeSpec=constraint.ValueSizeConstraint(1, MAX)
+UnsignedAttributes.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class SignatureValue(univ.OctetString):
@@ -540,10 +559,12 @@ SignerInfo.componentType = namedtype.NamedTypes(
     namedtype.NamedType('version', CMSVersion()),
     namedtype.NamedType('sid', SignerIdentifier()),
     namedtype.NamedType('digestAlgorithm', DigestAlgorithmIdentifier()),
-    namedtype.OptionalNamedType('signedAttrs', SignedAttributes().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
+    namedtype.OptionalNamedType('signedAttrs', SignedAttributes().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
     namedtype.NamedType('signatureAlgorithm', SignatureAlgorithmIdentifier()),
     namedtype.NamedType('signature', SignatureValue()),
-    namedtype.OptionalNamedType('unsignedAttrs', UnsignedAttributes().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
+    namedtype.OptionalNamedType('unsignedAttrs', UnsignedAttributes().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
 )
 
 
@@ -562,8 +583,10 @@ SignedData.componentType = namedtype.NamedTypes(
     namedtype.NamedType('version', CMSVersion()),
     namedtype.NamedType('digestAlgorithms', DigestAlgorithmIdentifiers()),
     namedtype.NamedType('encapContentInfo', EncapsulatedContentInfo()),
-    namedtype.OptionalNamedType('certificates', CertificateSet().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
-    namedtype.OptionalNamedType('crls', RevocationInfoChoices().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))),
+    namedtype.OptionalNamedType('certificates', CertificateSet().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
+    namedtype.OptionalNamedType('crls', RevocationInfoChoices().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))),
     namedtype.NamedType('signerInfos', SignerInfos())
 )
 
@@ -591,8 +614,10 @@ class OriginatorInfo(univ.Sequence):
 
 
 OriginatorInfo.componentType = namedtype.NamedTypes(
-    namedtype.OptionalNamedType('certs', CertificateSet().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
-    namedtype.OptionalNamedType('crls', RevocationInfoChoices().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
+    namedtype.OptionalNamedType('certs', CertificateSet().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
+    namedtype.OptionalNamedType('crls', RevocationInfoChoices().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
 )
 
 
@@ -601,7 +626,7 @@ class AuthAttributes(univ.SetOf):
 
 
 AuthAttributes.componentType = Attribute()
-AuthAttributes.subtypeSpec=constraint.ValueSizeConstraint(1, MAX)
+AuthAttributes.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class AuthenticatedData(univ.Sequence):
@@ -610,21 +635,23 @@ class AuthenticatedData(univ.Sequence):
 
 AuthenticatedData.componentType = namedtype.NamedTypes(
     namedtype.NamedType('version', CMSVersion()),
-    namedtype.OptionalNamedType('originatorInfo', OriginatorInfo().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
+    namedtype.OptionalNamedType('originatorInfo', OriginatorInfo().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
     namedtype.NamedType('recipientInfos', RecipientInfos()),
     namedtype.NamedType('macAlgorithm', MessageAuthenticationCodeAlgorithm()),
-    namedtype.OptionalNamedType('digestAlgorithm', DigestAlgorithmIdentifier().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))),
+    namedtype.OptionalNamedType('digestAlgorithm', DigestAlgorithmIdentifier().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))),
     namedtype.NamedType('encapContentInfo', EncapsulatedContentInfo()),
-    namedtype.OptionalNamedType('authAttrs', AuthAttributes().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 2))),
+    namedtype.OptionalNamedType('authAttrs', AuthAttributes().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 2))),
     namedtype.NamedType('mac', MessageAuthenticationCode()),
-    namedtype.OptionalNamedType('unauthAttrs', UnauthAttributes().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 3)))
+    namedtype.OptionalNamedType('unauthAttrs', UnauthAttributes().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 3)))
 )
 
+id_ct_contentInfo = _buildOid(1, 2, 840, 113549, 1, 9, 16, 1, 6)
 
-id_ct_contentInfo = _OID(1, 2, 840, 113549, 1, 9, 16, 1, 6)
-
-
-id_envelopedData = _OID(1, 2, 840, 113549, 1, 7, 3)
+id_envelopedData = _buildOid(1, 2, 840, 113549, 1, 7, 3)
 
 
 class EnvelopedData(univ.Sequence):
@@ -633,10 +660,12 @@ class EnvelopedData(univ.Sequence):
 
 EnvelopedData.componentType = namedtype.NamedTypes(
     namedtype.NamedType('version', CMSVersion()),
-    namedtype.OptionalNamedType('originatorInfo', OriginatorInfo().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
+    namedtype.OptionalNamedType('originatorInfo', OriginatorInfo().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
     namedtype.NamedType('recipientInfos', RecipientInfos()),
     namedtype.NamedType('encryptedContentInfo', EncryptedContentInfo()),
-    namedtype.OptionalNamedType('unprotectedAttrs', UnprotectedAttributes().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
+    namedtype.OptionalNamedType('unprotectedAttrs', UnprotectedAttributes().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
 )
 
 
@@ -644,10 +673,9 @@ class Countersignature(SignerInfo):
     pass
 
 
-id_digestedData = _OID(1, 2, 840, 113549, 1, 7, 5)
+id_digestedData = _buildOid(1, 2, 840, 113549, 1, 7, 5)
 
-
-id_signingTime = _OID(1, 2, 840, 113549, 1, 9, 5)
+id_signingTime = _buildOid(1, 2, 840, 113549, 1, 9, 5)
 
 
 class ExtendedCertificateOrCertificate(univ.Choice):
@@ -656,20 +684,17 @@ class ExtendedCertificateOrCertificate(univ.Choice):
 
 ExtendedCertificateOrCertificate.componentType = namedtype.NamedTypes(
     namedtype.NamedType('certificate', rfc3280.Certificate()),
-    namedtype.NamedType('extendedCertificate', ExtendedCertificate().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0)))
+    namedtype.NamedType('extendedCertificate', ExtendedCertificate().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0)))
 )
 
+id_encryptedData = _buildOid(1, 2, 840, 113549, 1, 7, 6)
 
-id_encryptedData = _OID(1, 2, 840, 113549, 1, 7, 6)
-
-
-id_ct_authData = _OID(1, 2, 840, 113549, 1, 9, 16, 1, 2)
+id_ct_authData = _buildOid(1, 2, 840, 113549, 1, 9, 16, 1, 2)
 
 
 class SigningTime(Time):
     pass
 
 
-id_countersignature = _OID(1, 2, 840, 113549, 1, 9, 6)
-
-
+id_countersignature = _buildOid(1, 2, 840, 113549, 1, 9, 6)

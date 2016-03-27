@@ -16,11 +16,15 @@ if len(sys.argv) != 1:
     print("""Usage:
 $ cat pkcs8key.pem | %s""" % sys.argv[0])
     sys.exit(-1)
-    
+
 cnt = 0
 
 while True:
-    idx, substrate = pem.readPemBlocksFromFile(sys.stdin, ('-----BEGIN PRIVATE KEY-----', '-----END PRIVATE KEY-----'), ('-----BEGIN ENCRYPTED PRIVATE KEY-----', '-----END ENCRYPTED PRIVATE KEY-----') )
+    idx, substrate = pem.readPemBlocksFromFile(
+        sys.stdin, ('-----BEGIN PRIVATE KEY-----', '-----END PRIVATE KEY-----'),
+        ('-----BEGIN ENCRYPTED PRIVATE KEY-----',
+        '-----END ENCRYPTED PRIVATE KEY-----')
+    )
     if not substrate:
         break
 
@@ -33,12 +37,13 @@ while True:
 
     key, rest = decoder.decode(substrate, asn1Spec=asn1Spec)
 
-    if rest: substrate = substrate[:-len(rest)]
-        
+    if rest:
+        substrate = substrate[:-len(rest)]
+
     print(key.prettyPrint())
 
     assert encoder.encode(key) == substrate, 'pkcs8 recode fails'
-        
+
     cnt += 1
-    
+
 print('*** %s PKCS#8 key(s) de/serialized' % cnt)

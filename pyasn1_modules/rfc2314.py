@@ -11,24 +11,34 @@
 #
 # Sample captures could be obtained with "openssl req" command
 #
-from pyasn1.type import tag, namedtype, namedval, univ, constraint
 from pyasn1_modules.rfc2459 import *
+
 
 class Attributes(univ.SetOf):
     componentType = Attribute()
 
-class Version(univ.Integer): pass
+
+class Version(univ.Integer):
+    pass
+
 
 class CertificationRequestInfo(univ.Sequence):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('version', Version()),
         namedtype.NamedType('subject', Name()),
         namedtype.NamedType('subjectPublicKeyInfo', SubjectPublicKeyInfo()),
-        namedtype.NamedType('attributes', Attributes().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0)))
+        namedtype.NamedType('attributes',
+                            Attributes().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0)))
     )
 
-class Signature(univ.BitString): pass
-class SignatureAlgorithmIdentifier(AlgorithmIdentifier): pass
+
+class Signature(univ.BitString):
+    pass
+
+
+class SignatureAlgorithmIdentifier(AlgorithmIdentifier):
+    pass
+
 
 class CertificationRequest(univ.Sequence):
     componentType = namedtype.NamedTypes(

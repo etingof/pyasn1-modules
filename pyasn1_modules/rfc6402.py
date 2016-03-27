@@ -20,7 +20,7 @@ from pyasn1_modules import rfc5652
 MAX = 64
 
 
-def _OID(*components):
+def _buildOid(*components):
     output = []
     for x in tuple(components):
         if isinstance(x, univ.ObjectIdentifier):
@@ -69,7 +69,6 @@ PendInfo.componentType = namedtype.NamedTypes(
     namedtype.NamedType('pendTime', useful.GeneralizedTime())
 )
 
-
 bodyIdMax = univ.Integer(4294967295)
 
 
@@ -85,7 +84,7 @@ class BodyPartPath(univ.SequenceOf):
 
 
 BodyPartPath.componentType = BodyPartID()
-BodyPartPath.subtypeSpec=constraint.ValueSizeConstraint(1, MAX)
+BodyPartPath.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class BodyPartReference(univ.Choice):
@@ -135,9 +134,9 @@ CMCStatusInfoV2.componentType = namedtype.NamedTypes(
             namedtype.NamedType('failInfoOID', univ.ObjectIdentifier()),
             namedtype.NamedType('failInfoValue', AttributeValue())
         ))
-        )
+                            )
     ))
-    )
+                                )
 )
 
 
@@ -152,17 +151,13 @@ GetCRL.componentType = namedtype.NamedTypes(
     namedtype.OptionalNamedType('reasons', rfc5280.ReasonFlags())
 )
 
+id_pkix = _buildOid(1, 3, 6, 1, 5, 5, 7)
 
-id_pkix = _OID(1, 3, 6, 1, 5, 5, 7)
+id_cmc = _buildOid(id_pkix, 7)
 
+id_cmc_batchResponses = _buildOid(id_cmc, 29)
 
-id_cmc = _OID(id_pkix, 7)
-
-
-id_cmc_batchResponses = _OID(id_cmc, 29)
-
-
-id_cmc_popLinkWitness = _OID(id_cmc, 23)
+id_cmc_popLinkWitness = _buildOid(id_cmc, 23)
 
 
 class PopLinkWitnessV2(univ.Sequence):
@@ -175,17 +170,13 @@ PopLinkWitnessV2.componentType = namedtype.NamedTypes(
     namedtype.NamedType('witness', univ.OctetString())
 )
 
+id_cmc_popLinkWitnessV2 = _buildOid(id_cmc, 33)
 
-id_cmc_popLinkWitnessV2 = _OID(id_cmc, 33)
+id_cmc_identityProofV2 = _buildOid(id_cmc, 34)
 
+id_cmc_revokeRequest = _buildOid(id_cmc, 17)
 
-id_cmc_identityProofV2 = _OID(id_cmc, 34)
-
-
-id_cmc_revokeRequest = _OID(id_cmc, 17)
-
-
-id_cmc_recipientNonce = _OID(id_cmc, 7)
+id_cmc_recipientNonce = _buildOid(id_cmc, 7)
 
 
 class ControlsProcessed(univ.Sequence):
@@ -209,10 +200,11 @@ CertificationRequest.componentType = namedtype.NamedTypes(
             namedtype.NamedType('algorithm', rfc5280.AlgorithmIdentifier()),
             namedtype.NamedType('subjectPublicKey', univ.BitString())
         ))
-        ),
-        namedtype.NamedType('attributes', univ.SetOf(componentType=rfc5652.Attribute()).subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)))
+                            ),
+        namedtype.NamedType('attributes', univ.SetOf(componentType=rfc5652.Attribute()).subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)))
     ))
-    ),
+                        ),
     namedtype.NamedType('signatureAlgorithm', rfc5280.AlgorithmIdentifier()),
     namedtype.NamedType('signature', univ.BitString())
 )
@@ -233,30 +225,27 @@ class TaggedRequest(univ.Choice):
 
 
 TaggedRequest.componentType = namedtype.NamedTypes(
-    namedtype.NamedType('tcr', TaggedCertificationRequest().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
-    namedtype.NamedType('crm', rfc4211.CertReqMsg().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))),
+    namedtype.NamedType('tcr', TaggedCertificationRequest().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
+    namedtype.NamedType('crm',
+                        rfc4211.CertReqMsg().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))),
     namedtype.NamedType('orm', univ.Sequence(componentType=namedtype.NamedTypes(
         namedtype.NamedType('bodyPartID', BodyPartID()),
         namedtype.NamedType('requestMessageType', univ.ObjectIdentifier()),
         namedtype.NamedType('requestMessageValue', univ.Any())
     ))
-    .subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 2)))
+                        .subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 2)))
 )
 
+id_cmc_popLinkRandom = _buildOid(id_cmc, 22)
 
-id_cmc_popLinkRandom = _OID(id_cmc, 22)
+id_cmc_statusInfo = _buildOid(id_cmc, 1)
 
+id_cmc_trustedAnchors = _buildOid(id_cmc, 26)
 
-id_cmc_statusInfo = _OID(id_cmc, 1)
+id_cmc_transactionId = _buildOid(id_cmc, 5)
 
-
-id_cmc_trustedAnchors = _OID(id_cmc, 26)
-
-
-id_cmc_transactionId = _OID(id_cmc, 5)
-
-
-id_cmc_encryptedPOP = _OID(id_cmc, 9)
+id_cmc_encryptedPOP = _buildOid(id_cmc, 9)
 
 
 class PublishTrustAnchors(univ.Sequence):
@@ -283,11 +272,9 @@ RevokeRequest.componentType = namedtype.NamedTypes(
     namedtype.OptionalNamedType('comment', char.UTF8String())
 )
 
+id_cmc_senderNonce = _buildOid(id_cmc, 6)
 
-id_cmc_senderNonce = _OID(id_cmc, 6)
-
-
-id_cmc_authData = _OID(id_cmc, 27)
+id_cmc_authData = _buildOid(id_cmc, 27)
 
 
 class TaggedContentInfo(univ.Sequence):
@@ -321,26 +308,19 @@ CMCPublicationInfo.componentType = namedtype.NamedTypes(
     namedtype.NamedType('pubInfo', rfc4211.PKIPublicationInfo())
 )
 
+id_kp_cmcCA = _buildOid(rfc5280.id_kp, 27)
 
-id_kp_cmcCA = _OID(rfc5280.id_kp, 27)
+id_cmc_confirmCertAcceptance = _buildOid(id_cmc, 24)
 
+id_cmc_raIdentityWitness = _buildOid(id_cmc, 35)
 
-id_cmc_confirmCertAcceptance = _OID(id_cmc, 24)
+id_ExtensionReq = _buildOid(1, 2, 840, 113549, 1, 9, 14)
 
+id_cct = _buildOid(id_pkix, 12)
 
-id_cmc_raIdentityWitness = _OID(id_cmc, 35)
+id_cct_PKIData = _buildOid(id_cct, 2)
 
-
-id_ExtensionReq = _OID(1, 2, 840, 113549, 1, 9, 14)
-
-
-id_cct = _OID(id_pkix, 12)
-
-
-id_cct_PKIData = _OID(id_cct, 2)
-
-
-id_kp_cmcRA = _OID(rfc5280.id_kp, 28)
+id_kp_cmcRA = _buildOid(rfc5280.id_kp, 28)
 
 
 class CMCStatusInfo(univ.Sequence):
@@ -355,7 +335,7 @@ CMCStatusInfo.componentType = namedtype.NamedTypes(
         namedtype.NamedType('failInfo', CMCFailInfo()),
         namedtype.NamedType('pendInfo', PendInfo())
     ))
-    )
+                                )
 )
 
 
@@ -369,11 +349,9 @@ DecryptedPOP.componentType = namedtype.NamedTypes(
     namedtype.NamedType('thePOP', univ.OctetString())
 )
 
+id_cmc_addExtensions = _buildOid(id_cmc, 8)
 
-id_cmc_addExtensions = _OID(id_cmc, 8)
-
-
-id_cmc_modCertTemplate = _OID(id_cmc, 31)
+id_cmc_modCertTemplate = _buildOid(id_cmc, 31)
 
 
 class TaggedAttribute(univ.Sequence):
@@ -415,10 +393,9 @@ class BodyPartList(univ.SequenceOf):
 
 
 BodyPartList.componentType = BodyPartID()
-BodyPartList.subtypeSpec=constraint.ValueSizeConstraint(1, MAX)
+BodyPartList.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
 
-
-id_cmc_responseBody = _OID(id_cmc, 37)
+id_cmc_responseBody = _buildOid(id_cmc, 37)
 
 
 class AuthPublish(BodyPartID):
@@ -455,10 +432,9 @@ class ResponseBody(PKIResponse):
     pass
 
 
-id_cmc_statusInfoV2 = _OID(id_cmc, 25)
+id_cmc_statusInfoV2 = _buildOid(id_cmc, 25)
 
-
-id_cmc_lraPOPWitness = _OID(id_cmc, 11)
+id_cmc_lraPOPWitness = _buildOid(id_cmc, 11)
 
 
 class ModCertTemplate(univ.Sequence):
@@ -472,11 +448,9 @@ ModCertTemplate.componentType = namedtype.NamedTypes(
     namedtype.NamedType('certTemplate', rfc4211.CertTemplate())
 )
 
+id_cmc_regInfo = _buildOid(id_cmc, 18)
 
-id_cmc_regInfo = _OID(id_cmc, 18)
-
-
-id_cmc_identityProof = _OID(id_cmc, 3)
+id_cmc_identityProof = _buildOid(id_cmc, 3)
 
 
 class ExtensionReq(univ.SequenceOf):
@@ -484,16 +458,13 @@ class ExtensionReq(univ.SequenceOf):
 
 
 ExtensionReq.componentType = rfc5280.Extension()
-ExtensionReq.subtypeSpec=constraint.ValueSizeConstraint(1, MAX)
+ExtensionReq.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
 
+id_kp_cmcArchive = _buildOid(rfc5280.id_kp, 28)
 
-id_kp_cmcArchive = _OID(rfc5280.id_kp, 28)
+id_cmc_publishCert = _buildOid(id_cmc, 30)
 
-
-id_cmc_publishCert = _OID(id_cmc, 30)
-
-
-id_cmc_dataReturn = _OID(id_cmc, 4)
+id_cmc_dataReturn = _buildOid(id_cmc, 4)
 
 
 class LraPopWitness(univ.Sequence):
@@ -505,26 +476,19 @@ LraPopWitness.componentType = namedtype.NamedTypes(
     namedtype.NamedType('bodyIds', univ.SequenceOf(componentType=BodyPartID()))
 )
 
+id_aa = _buildOid(1, 2, 840, 113549, 1, 9, 16, 2)
 
-id_aa = _OID(1, 2, 840, 113549, 1, 9, 16, 2)
+id_aa_cmc_unsignedData = _buildOid(id_aa, 34)
 
+id_cmc_getCert = _buildOid(id_cmc, 15)
 
-id_aa_cmc_unsignedData = _OID(id_aa, 34)
+id_cmc_batchRequests = _buildOid(id_cmc, 28)
 
+id_cmc_decryptedPOP = _buildOid(id_cmc, 10)
 
-id_cmc_getCert = _OID(id_cmc, 15)
+id_cmc_responseInfo = _buildOid(id_cmc, 19)
 
-
-id_cmc_batchRequests = _OID(id_cmc, 28)
-
-
-id_cmc_decryptedPOP = _OID(id_cmc, 10)
-
-
-id_cmc_responseInfo = _OID(id_cmc, 19)
-
-
-id_cmc_changeSubjectName = _OID(id_cmc, 36)
+id_cmc_changeSubjectName = _buildOid(id_cmc, 36)
 
 
 class GetCert(univ.Sequence):
@@ -536,11 +500,9 @@ GetCert.componentType = namedtype.NamedTypes(
     namedtype.NamedType('serialNumber', univ.Integer())
 )
 
+id_cmc_identification = _buildOid(id_cmc, 2)
 
-id_cmc_identification = _OID(id_cmc, 2)
-
-
-id_cmc_queryPending = _OID(id_cmc, 21)
+id_cmc_queryPending = _buildOid(id_cmc, 21)
 
 
 class AddExtensions(univ.Sequence):
@@ -566,23 +528,17 @@ EncryptedPOP.componentType = namedtype.NamedTypes(
     namedtype.NamedType('witness', univ.OctetString())
 )
 
+id_cmc_getCRL = _buildOid(id_cmc, 16)
 
-id_cmc_getCRL = _OID(id_cmc, 16)
+id_cct_PKIResponse = _buildOid(id_cct, 3)
 
-
-id_cct_PKIResponse = _OID(id_cct, 3)
-
-
-id_cmc_controlProcessed = _OID(id_cmc, 32)
+id_cmc_controlProcessed = _buildOid(id_cmc, 32)
 
 
 class NoSignatureValue(univ.OctetString):
     pass
 
 
-id_ad_cmc = _OID(rfc5280.id_ad, 12)
+id_ad_cmc = _buildOid(rfc5280.id_ad, 12)
 
-
-id_alg_noSignature = _OID(id_pkix, 6, 2)
-
-
+id_alg_noSignature = _buildOid(id_pkix, 6, 2)

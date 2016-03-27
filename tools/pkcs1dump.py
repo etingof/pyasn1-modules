@@ -17,11 +17,15 @@ if len(sys.argv) != 1:
     print("""Usage:
 $ cat rsakey.pem | %s""" % sys.argv[0])
     sys.exit(-1)
-    
+
 cnt = 0
 
 while True:
-    idx, substrate = pem.readPemBlocksFromFile(sys.stdin, ('-----BEGIN RSA PRIVATE KEY-----', '-----END RSA PRIVATE KEY-----'), ('-----BEGIN DSA PRIVATE KEY-----', '-----END DSA PRIVATE KEY-----') )
+    idx, substrate = pem.readPemBlocksFromFile(
+        sys.stdin,
+        ('-----BEGIN RSA PRIVATE KEY-----', '-----END RSA PRIVATE KEY-----'),
+        ('-----BEGIN DSA PRIVATE KEY-----', '-----END DSA PRIVATE KEY-----')
+    )
     if not substrate:
         break
 
@@ -36,11 +40,11 @@ while True:
 
     if rest:
         substrate = substrate[:-len(rest)]
-        
+
     print(key.prettyPrint())
 
     assert encoder.encode(key) == substrate, 'pkcs8 recode fails'
-        
+
     cnt += 1
- 
+
 print('*** %s key(s) re/serialized' % cnt)

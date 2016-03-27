@@ -16,13 +16,13 @@ if len(sys.argv) != 1:
     print("""Usage:
 $ cat ocsp-response.pem | %s""" % sys.argv[0])
     sys.exit(-1)
-    
+
 ocspReq = rfc2560.OCSPResponse()
 
 substrate = pem.readBase64FromFile(sys.stdin)
 if not substrate:
     sys.exit(0)
-        
+
 cr, rest = decoder.decode(substrate, asn1Spec=ocspReq)
 
 print(cr.prettyPrint())

@@ -16,27 +16,28 @@ if len(sys.argv) != 1:
     print("""Usage:
 $ cat certificateRequest.pem | %s""" % sys.argv[0])
     sys.exit(-1)
-    
+
 certType = rfc2314.CertificationRequest()
 
 certCnt = 0
 
 while True:
     idx, substrate = pem.readPemBlocksFromFile(
-                      sys.stdin, ('-----BEGIN CERTIFICATE REQUEST-----',
-                                  '-----END CERTIFICATE REQUEST-----')
-                     )
+        sys.stdin, ('-----BEGIN CERTIFICATE REQUEST-----',
+                    '-----END CERTIFICATE REQUEST-----')
+    )
     if not substrate:
         break
-        
+
     cert, rest = decoder.decode(substrate, asn1Spec=certType)
 
-    if rest: substrate = substrate[:-len(rest)]
-        
+    if rest:
+        substrate = substrate[:-len(rest)]
+
     print(cert.prettyPrint())
 
     assert encoder.encode(cert) == substrate, 'cert recode fails'
-        
+
     certCnt += 1
-    
+
 print('*** %s PEM certificate request(s) de/serialized' % certCnt)

@@ -31,6 +31,7 @@ Topic :: Security :: Cryptography
 Topic :: Software Development :: Libraries :: Python Modules
 """
 
+
 def howto_install_distribute():
     print("""
    Error: You need the distribute Python package!
@@ -42,6 +43,7 @@ def howto_install_distribute():
 
    Then you could make eggs from this package.
 """)
+
 
 def howto_install_setuptools():
     print("""
@@ -55,14 +57,17 @@ def howto_install_setuptools():
    Then you could make eggs from this package.
 """)
 
+
 try:
     from setuptools import setup
+
     params = {
-        'install_requires': [ 'pyasn1>=0.1.8' ],
+        'install_requires': ['pyasn1>=0.1.8'],
         'zip_safe': True
-        }    
+    }
 except ImportError:
     import sys
+
     for arg in sys.argv:
         if arg.find('egg') != -1:
             if sys.version_info[0] > 2:
@@ -71,9 +76,10 @@ except ImportError:
                 howto_install_setuptools()
             sys.exit(1)
     from distutils.core import setup
+
     params = {}
     if sys.version_info[:2] > (2, 4):
-        params['requires'] = [ 'pyasn1(>=0.1.8)' ]
+        params['requires'] = ['pyasn1(>=0.1.8)']
 
 doclines = [x.strip() for x in (__doc__ or '').split('\n') if x]
 

@@ -13,17 +13,19 @@
 #
 from pyasn1_modules.rfc2437 import *
 
+
 class OtherPrimeInfo(univ.Sequence):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('prime', univ.Integer()),
         namedtype.NamedType('exponent', univ.Integer()),
         namedtype.NamedType('coefficient', univ.Integer())
-        )
+    )
+
 
 class OtherPrimeInfos(univ.SequenceOf):
     componentType = OtherPrimeInfo()
-    subtypeSpec = univ.SequenceOf.subtypeSpec + \
-                  constraint.ValueSizeConstraint(1, MAX)
+    subtypeSpec = univ.SequenceOf.subtypeSpec + constraint.ValueSizeConstraint(1, MAX)
+
 
 class RSAPrivateKey(univ.Sequence):
     componentType = namedtype.NamedTypes(
