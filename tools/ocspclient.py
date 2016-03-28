@@ -40,6 +40,7 @@ class ValueOnlyBitStringEncoder(encoder.encoder.BitStringEncoder):
 valueOnlyBitStringEncoder = ValueOnlyBitStringEncoder()
 
 
+# noinspection PyShadowingNames
 def mkOcspRequest(issuerCert, userCert):
     issuerTbsCertificate = issuerCert.getComponentByName('tbsCertificate')
     issuerSubject = issuerTbsCertificate.getComponentByName('subject')
