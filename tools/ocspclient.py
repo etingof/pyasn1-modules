@@ -21,11 +21,14 @@ from pyasn1_modules import rfc2560, rfc2459, pem
 sha1oid = univ.ObjectIdentifier((1, 3, 14, 3, 2, 26))
 
 
+# noinspection PyClassHasNoInit
 class ValueOnlyBitStringEncoder(encoder.encoder.BitStringEncoder):
     # These methods just do not encode tag and length fields of TLV
-    def encodeTag(self, *args): return ''
+    def encodeTag(self, *args):
+        return ''
 
-    def encodeLength(self, *args): return ''
+    def encodeLength(self, *args):
+        return ''
 
     def encodeValue(*args):
         substrate, isConstructed = encoder.encoder.BitStringEncoder.encodeValue(*args)
@@ -158,8 +161,5 @@ ocspRsp, _ = decoder.decode(httpRsp, asn1Spec=rfc2560.OCSPResponse())
 
 producedAt, certId, certStatus, thisUpdate = parseOcspResponse(ocspRsp)
 
-print('Certificate ID %s is %s at %s till %s\n' % (
-    certId.getComponentByName('serialNumber'),
-    certStatus,
-    producedAt,
-    thisUpdate))
+print('Certificate ID %s is %s at %s till %s\n' % (certId.getComponentByName('serialNumber'),
+                                                   certStatus, producedAt, thisUpdate))
