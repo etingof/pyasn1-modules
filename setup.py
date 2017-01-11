@@ -2,7 +2,7 @@
 #
 # This file is part of pyasn1-modules software.
 #
-# Copyright (c) 2005-2016, Ilya Etingof <ilya@glas.net>
+# Copyright (c) 2005-2017, Ilya Etingof <etingof@gmail.com>
 # License: http://pyasn1.sf.net/license.html
 #
 """A collection of ASN.1-based protocols modules.
