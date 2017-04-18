@@ -10,7 +10,8 @@ python:
   - "3.6"
   - "nightly"
   - "pypy"
-  - "pypy3"
+# disable pypy till pyasn1 0.2.4+
+#  - "pypy3"
 install:
   - pip install pyasn1
   - python setup.py install
