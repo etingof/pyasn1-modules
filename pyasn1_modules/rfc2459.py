@@ -1279,7 +1279,7 @@ certificateExtensionsMap = {
     id_ce_nameConstraints: NameConstraints,
     id_ce_policyConstraints: PolicyConstraints,
     id_ce_extKeyUsage: ExtKeyUsageSyntax,
-    id_ce_cRLDistributionPoints: CRLDistPointsSyntax,
+    id_ce_cRLDistributionPoints: CRLDistributionPoints,
     id_pe_authorityInfoAccess: AuthorityInfoAccessSyntax,
     id_ce_cRLNumber: univ.Integer,
     id_ce_deltaCRLIndicator: BaseCRLNumber,
