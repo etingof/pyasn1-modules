@@ -1,6 +1,7 @@
 Revision 0.0.9, released XX-XX-2017
 -----------------------------------
 
+* Added X.509 certificate extensions map
 * Fix to __doc__ use in setup.py to make -O0 installation mode working.
 * Copyright added to source files.
 * Author's e-mail changed

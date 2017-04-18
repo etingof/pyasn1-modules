@@ -1542,3 +1542,30 @@ id_kp_clientAuth = _buildOid(id_kp, 2)
 id_ce_subjectKeyIdentifier = _buildOid(id_ce, 14)
 
 id_ce_inhibitAnyPolicy = _buildOid(id_ce, 54)
+
+# map of Certificate Extension OIDs to Extensions
+
+certificateExtensionsMap = {
+    id_ce_authorityKeyIdentifier: AuthorityKeyIdentifier,
+    id_ce_subjectKeyIdentifier: SubjectKeyIdentifier,
+    id_ce_keyUsage: KeyUsage,
+    id_ce_privateKeyUsagePeriod: PrivateKeyUsagePeriod,
+    id_ce_certificatePolicies: PolicyInformation,  # could be a sequence of concat'ed objects?
+    id_ce_policyMappings: PolicyMappings,
+    id_ce_subjectAltName: SubjectAltName,
+    id_ce_issuerAltName: IssuerAltName,
+    id_ce_subjectDirectoryAttributes: SubjectDirectoryAttributes,
+    id_ce_basicConstraints: BasicConstraints,
+    id_ce_nameConstraints: NameConstraints,
+    id_ce_policyConstraints: PolicyConstraints,
+    id_ce_extKeyUsage: ExtKeyUsageSyntax,
+    id_ce_cRLDistributionPoints: CRLDistPointsSyntax,
+    id_pe_authorityInfoAccess: AuthorityInfoAccessSyntax,
+    id_ce_cRLNumber: univ.Integer,
+    id_ce_deltaCRLIndicator: BaseCRLNumber,
+    id_ce_issuingDistributionPoint: IssuingDistributionPoint,
+    id_ce_cRLReasons: CRLReason,
+    id_ce_holdInstructionCode: univ.ObjectIdentifier,
+    id_ce_invalidityDate: useful.GeneralizedTime,
+    id_ce_certificateIssuer: GeneralNames,
+}
