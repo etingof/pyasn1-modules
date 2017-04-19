@@ -1263,6 +1263,26 @@ id_ce_issuerAltName = univ.ObjectIdentifier('2.5.29.18')
 class IssuerAltName(GeneralNames):
     pass
 
+
+# map of AttributeType -> AttributeValue
+
+certificateAttributesMap = {
+    id_at_name: X520name,
+    id_at_surname: X520name,
+    id_at_givenName: X520name,
+    id_at_initials: X520name,
+    id_at_generationQualifier: X520name,
+    id_at_commonName: X520CommonName,
+    id_at_localityName: X520LocalityName,
+    id_at_stateOrProvinceName: X520StateOrProvinceName,
+    id_at_organizationName: X520OrganizationName,
+    id_at_organizationalUnitName: X520OrganizationalUnitName,
+    id_at_title: X520Title,
+    id_at_dnQualifier: X520dnQualifier,
+    id_at_countryName: X520countryName,
+    emailAddress: Pkcs9email,
+}
+
 # map of Certificate Extension OIDs to Extensions
 
 certificateExtensionsMap = {

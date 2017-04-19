@@ -1543,6 +1543,28 @@ id_ce_subjectKeyIdentifier = _buildOid(id_ce, 14)
 
 id_ce_inhibitAnyPolicy = _buildOid(id_ce, 54)
 
+# map of AttributeType -> AttributeValue
+
+certificateAttributesMap = {
+    id_at_name: X520name,
+    id_at_surname: X520name,
+    id_at_givenName: X520name,
+    id_at_initials: X520name,
+    id_at_generationQualifier: X520name,
+    id_at_commonName: X520CommonName,
+    id_at_localityName: X520LocalityName,
+    id_at_stateOrProvinceName: X520StateOrProvinceName,
+    id_at_organizationName: X520OrganizationName,
+    id_at_organizationalUnitName: X520OrganizationalUnitName,
+    id_at_title: X520Title,
+    id_at_dnQualifier: X520dnQualifier,
+    id_at_countryName: X520countryName,
+    id_at_serialNumber: X520SerialNumber,
+    id_at_pseudonym: X520Pseudonym,
+    id_domainComponent: DomainComponent,
+    id_emailAddress: EmailAddress,
+}
+
 # map of Certificate Extension OIDs to Extensions
 
 certificateExtensionsMap = {
