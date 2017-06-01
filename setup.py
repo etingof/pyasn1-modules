@@ -5,12 +5,17 @@
 # Copyright (c) 2005-2017, Ilya Etingof <etingof@gmail.com>
 # License: http://pyasn1.sf.net/license.html
 #
-"""A collection of ASN.1-based protocols modules.
+import sys
+
+doclines = """A collection of ASN.1-based protocols modules.
 
    A collection of ASN.1 modules expressed in form of pyasn1 classes.
    Includes protocols PDUs definition (SNMP, LDAP etc.) and various
    data structures (X.509, PKCS etc.).
 """
+
+doclines = [x.strip() for x in doclines.split('\n') if x]
+
 
 classifiers = """\
 Development Status :: 5 - Production/Stable
@@ -41,56 +46,42 @@ Topic :: Software Development :: Libraries :: Python Modules
 """
 
 
-def howto_install_distribute():
-    print("""
-   Error: You need the distribute Python package!
-
-   It's very easy to install it, just type (as root on Linux):
-
-   wget http://python-distribute.org/distribute_setup.py
-   python distribute_setup.py
-
-   Then you could make eggs from this package.
-""")
-
-
 def howto_install_setuptools():
     print("""
    Error: You need setuptools Python package!
 
    It's very easy to install it, just type (as root on Linux):
 
-   wget http://peak.telecommunity.com/dist/ez_setup.py
+   wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py
    python ez_setup.py
 
    Then you could make eggs from this package.
 """)
 
 
+if sys.version_info[:2] < (2, 4):
+    print("ERROR: this package requires Python 2.4 or later!")
+    sys.exit(1)
+
 try:
-    from setuptools import setup
+    from setuptools import setup, Command
 
     params = {
         'install_requires': ['pyasn1>=0.1.8'],
         'zip_safe': True
     }
-except ImportError:
-    import sys
 
+except ImportError:
     for arg in sys.argv:
-        if arg.find('egg') != -1:
-            if sys.version_info[0] > 2:
-                howto_install_distribute()
-            else:
-                howto_install_setuptools()
+        if 'egg' in arg:
+            howto_install_setuptools()
             sys.exit(1)
-    from distutils.core import setup
+    from distutils.core import setup, Command
 
     params = {}
+
     if sys.version_info[:2] > (2, 4):
         params['requires'] = ['pyasn1(>=0.1.8)']
-
-doclines = [x.strip() for x in (__doc__ or '').split('\n') if x]
 
 params.update(
     {'name': 'pyasn1-modules',
