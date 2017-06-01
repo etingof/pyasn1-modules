@@ -1,7 +1,7 @@
 #
 # This file is part of pyasn1-modules.
 #
-# Copyright (c) 2017, Danielle Madeley <danielle@madeley.id.au>A
+# Copyright (c) 2017, Danielle Madeley <danielle@madeley.id.au>
 # License: http://pyasn1.sf.net/license.html
 #
 # Derived from RFC 3279
@@ -220,7 +220,6 @@ c2pnb304w1 = _OID(c_TwoCurve, 17)
 c2tnb359v1 = _OID(c_TwoCurve, 18)
 c2pnb368w1 = _OID(c_TwoCurve, 19)
 c2tnb431r1 = _OID(c_TwoCurve, 20)
-
 
 primeCurve = _OID(ellipticCurve, 1)
 prime192v1 = _OID(primeCurve, 1)

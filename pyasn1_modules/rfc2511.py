@@ -157,12 +157,16 @@ class PKMACValue(univ.Sequence):
 
 class POPOSigningKeyInput(univ.Sequence):
     componentType = namedtype.NamedTypes(
-        namedtype.NamedType('authInfo', univ.Choice(
-            componentType=namedtype.NamedTypes(
-                namedtype.NamedType('sender', GeneralName().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
-                namedtype.NamedType('publicKeyMAC', PKMACValue())
+        namedtype.NamedType(
+            'authInfo', univ.Choice(
+                componentType=namedtype.NamedTypes(
+                    namedtype.NamedType(
+                        'sender', GeneralName().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))
+                    ),
+                    namedtype.NamedType('publicKeyMAC', PKMACValue())
+                )
             )
-        )),
+        ),
         namedtype.NamedType('publicKey', SubjectPublicKeyInfo())
     )
 

@@ -127,16 +127,21 @@ CMCStatusInfoV2.componentType = namedtype.NamedTypes(
     namedtype.NamedType('cMCStatus', CMCStatus()),
     namedtype.NamedType('bodyList', univ.SequenceOf(componentType=BodyPartReference())),
     namedtype.OptionalNamedType('statusString', char.UTF8String()),
-    namedtype.OptionalNamedType('otherInfo', univ.Choice(componentType=namedtype.NamedTypes(
-        namedtype.NamedType('failInfo', CMCFailInfo()),
-        namedtype.NamedType('pendInfo', PendInfo()),
-        namedtype.NamedType('extendedFailInfo', univ.Sequence(componentType=namedtype.NamedTypes(
-            namedtype.NamedType('failInfoOID', univ.ObjectIdentifier()),
-            namedtype.NamedType('failInfoValue', AttributeValue())
-        ))
-                            )
-    ))
-                                )
+    namedtype.OptionalNamedType(
+        'otherInfo', univ.Choice(
+            componentType=namedtype.NamedTypes(
+                namedtype.NamedType('failInfo', CMCFailInfo()),
+                namedtype.NamedType('pendInfo', PendInfo()),
+                namedtype.NamedType(
+                    'extendedFailInfo', univ.Sequence(
+                    componentType=namedtype.NamedTypes(
+                        namedtype.NamedType('failInfoOID', univ.ObjectIdentifier()),
+                        namedtype.NamedType('failInfoValue', AttributeValue()))
+                    )
+                )
+            )
+        )
+    )
 )
 
 
@@ -193,18 +198,27 @@ class CertificationRequest(univ.Sequence):
 
 
 CertificationRequest.componentType = namedtype.NamedTypes(
-    namedtype.NamedType('certificationRequestInfo', univ.Sequence(componentType=namedtype.NamedTypes(
-        namedtype.NamedType('version', univ.Integer()),
-        namedtype.NamedType('subject', rfc5280.Name()),
-        namedtype.NamedType('subjectPublicKeyInfo', univ.Sequence(componentType=namedtype.NamedTypes(
-            namedtype.NamedType('algorithm', rfc5280.AlgorithmIdentifier()),
-            namedtype.NamedType('subjectPublicKey', univ.BitString())
-        ))
-                            ),
-        namedtype.NamedType('attributes', univ.SetOf(componentType=rfc5652.Attribute()).subtype(
-            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)))
-    ))
-                        ),
+    namedtype.NamedType(
+        'certificationRequestInfo', univ.Sequence(
+            componentType=namedtype.NamedTypes(
+                namedtype.NamedType('version', univ.Integer()),
+                namedtype.NamedType('subject', rfc5280.Name()),
+                namedtype.NamedType(
+                    'subjectPublicKeyInfo', univ.Sequence(
+                        componentType=namedtype.NamedTypes(
+                            namedtype.NamedType('algorithm', rfc5280.AlgorithmIdentifier()),
+                            namedtype.NamedType('subjectPublicKey', univ.BitString())
+                        )
+                    )
+                ),
+                namedtype.NamedType(
+                    'attributes', univ.SetOf(
+                        componentType=rfc5652.Attribute()).subtype(
+                        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))
+                )
+            )
+        )
+    ),
     namedtype.NamedType('signatureAlgorithm', rfc5280.AlgorithmIdentifier()),
     namedtype.NamedType('signature', univ.BitString())
 )
@@ -331,11 +345,14 @@ CMCStatusInfo.componentType = namedtype.NamedTypes(
     namedtype.NamedType('cMCStatus', CMCStatus()),
     namedtype.NamedType('bodyList', univ.SequenceOf(componentType=BodyPartID())),
     namedtype.OptionalNamedType('statusString', char.UTF8String()),
-    namedtype.OptionalNamedType('otherInfo', univ.Choice(componentType=namedtype.NamedTypes(
-        namedtype.NamedType('failInfo', CMCFailInfo()),
-        namedtype.NamedType('pendInfo', PendInfo())
-    ))
-                                )
+    namedtype.OptionalNamedType(
+        'otherInfo', univ.Choice(
+            componentType=namedtype.NamedTypes(
+                namedtype.NamedType('failInfo', CMCFailInfo()),
+                namedtype.NamedType('pendInfo', PendInfo())
+            )
+        )
+    )
 )
 
 

@@ -68,12 +68,18 @@ class POPOSigningKeyInput(univ.Sequence):
 
 
 POPOSigningKeyInput.componentType = namedtype.NamedTypes(
-    namedtype.NamedType('authInfo', univ.Choice(componentType=namedtype.NamedTypes(
-        namedtype.NamedType('sender', rfc3280.GeneralName().subtype(
-            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
-        namedtype.NamedType('publicKeyMAC', PKMACValue())
-    ))
-                        ),
+    namedtype.NamedType(
+        'authInfo', univ.Choice(
+            componentType=namedtype.NamedTypes(
+                namedtype.NamedType(
+                    'sender', rfc3280.GeneralName().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))
+                ),
+                namedtype.NamedType(
+                    'publicKeyMAC', PKMACValue()
+                )
+            )
+        )
+    ),
     namedtype.NamedType('publicKey', rfc3280.SubjectPublicKeyInfo())
 )
 
@@ -342,11 +348,14 @@ class EncKeyWithID(univ.Sequence):
 
 EncKeyWithID.componentType = namedtype.NamedTypes(
     namedtype.NamedType('privateKey', PrivateKeyInfo()),
-    namedtype.OptionalNamedType('identifier', univ.Choice(componentType=namedtype.NamedTypes(
-        namedtype.NamedType('string', char.UTF8String()),
-        namedtype.NamedType('generalName', rfc3280.GeneralName())
-    ))
-                                )
+    namedtype.OptionalNamedType(
+        'identifier', univ.Choice(
+            componentType=namedtype.NamedTypes(
+                namedtype.NamedType('string', char.UTF8String()),
+                namedtype.NamedType('generalName', rfc3280.GeneralName())
+            )
+        )
+    )
 )
 
 id_regCtrl_protocolEncrKey = _buildOid(id_regCtrl, 6)

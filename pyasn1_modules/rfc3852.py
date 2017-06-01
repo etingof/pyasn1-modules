@@ -483,13 +483,14 @@ class AttributeCertificateInfoV1(univ.Sequence):
 
 AttributeCertificateInfoV1.componentType = namedtype.NamedTypes(
     namedtype.DefaultedNamedType('version', AttCertVersionV1().subtype(value="v1")),
-    namedtype.NamedType('subject', univ.Choice(componentType=namedtype.NamedTypes(
-        namedtype.NamedType('baseCertificateID', rfc3281.IssuerSerial().subtype(
-            explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
-        namedtype.NamedType('subjectName', rfc3280.GeneralNames().subtype(
-            explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
-    ))
-                        ),
+    namedtype.NamedType(
+        'subject', univ.Choice(
+            componentType=namedtype.NamedTypes(
+                namedtype.NamedType('baseCertificateID', rfc3281.IssuerSerial().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
+                namedtype.NamedType('subjectName', rfc3280.GeneralNames().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
+            )
+        )
+    ),
     namedtype.NamedType('issuer', rfc3280.GeneralNames()),
     namedtype.NamedType('signature', rfc3280.AlgorithmIdentifier()),
     namedtype.NamedType('serialNumber', rfc3280.CertificateSerialNumber()),

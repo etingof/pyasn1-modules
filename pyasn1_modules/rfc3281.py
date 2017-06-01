@@ -312,14 +312,20 @@ class IetfAttrSyntax(univ.Sequence):
 
 
 IetfAttrSyntax.componentType = namedtype.NamedTypes(
-    namedtype.OptionalNamedType('policyAuthority', rfc3280.GeneralNames().subtype(
-        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
-    namedtype.NamedType('values', univ.SequenceOf(componentType=univ.Choice(componentType=namedtype.NamedTypes(
-        namedtype.NamedType('octets', univ.OctetString()),
-        namedtype.NamedType('oid', univ.ObjectIdentifier()),
-        namedtype.NamedType('string', char.UTF8String())
-    ))
-    ))
+    namedtype.OptionalNamedType(
+        'policyAuthority', rfc3280.GeneralNames().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))
+    ),
+    namedtype.NamedType(
+        'values', univ.SequenceOf(
+            componentType=univ.Choice(
+                componentType=namedtype.NamedTypes(
+                    namedtype.NamedType('octets', univ.OctetString()),
+                    namedtype.NamedType('oid', univ.ObjectIdentifier()),
+                    namedtype.NamedType('string', char.UTF8String())
+                )
+            )
+        )
+    )
 )
 
 id_aca_encAttrs = _buildOid(id_aca, 6)

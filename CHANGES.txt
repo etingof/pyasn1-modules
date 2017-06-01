@@ -1,10 +1,12 @@
-Revision 0.0.9, released XX-XX-2017
+Revision 0.0.9, released 01-06-2017
 -----------------------------------
 
+* More CRL data structures added (RFC3279)
 * Added X.509 certificate extensions map
 * Added X.509 attribute type map
-* Fix to __doc__ use in setup.py to make -O0 installation mode working.
-* Copyright added to source files.
+* Fix to __doc__ use in setup.py to make -O0 installation mode working
+* Copyright added to source files
+* More PEP-8'ing done on the code
 * Author's e-mail changed
 
 Revision 0.0.8, released 28-09-2015

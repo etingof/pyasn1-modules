@@ -124,8 +124,11 @@ class BindRequest(univ.Sequence):
 
 class PartialAttributeList(univ.SequenceOf):
     componentType = univ.Sequence(
-        componentType=namedtype.NamedTypes(namedtype.NamedType('type', AttributeDescription()),
-                                           namedtype.NamedType('vals', univ.SetOf(componentType=AttributeValue()))))
+        componentType=namedtype.NamedTypes(
+            namedtype.NamedType('type', AttributeDescription()),
+            namedtype.NamedType('vals', univ.SetOf(componentType=AttributeValue()))
+        )
+    )
 
 
 class SearchResultEntry(univ.Sequence):
@@ -154,13 +157,23 @@ class MatchingRuleAssertion(univ.Sequence):
 class SubstringFilter(univ.Sequence):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('type', AttributeDescription()),
-        namedtype.NamedType('substrings', univ.SequenceOf(componentType=univ.Choice(componentType=namedtype.NamedTypes(
-            namedtype.NamedType('initial',
-                                LDAPString().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
-            namedtype.NamedType('any',
-                                LDAPString().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))),
-            namedtype.NamedType('final', LDAPString().subtype(
-                implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 2)))))))
+        namedtype.NamedType('substrings',
+            univ.SequenceOf(
+                componentType=univ.Choice(
+                    componentType=namedtype.NamedTypes(
+                        namedtype.NamedType(
+                            'initial', LDAPString().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))
+                        ),
+                        namedtype.NamedType(
+                            'any', LDAPString().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))
+                        ),
+                        namedtype.NamedType(
+                            'final', LDAPString().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 2))
+                        )
+                    )
+                )
+            )
+        )
     )
 
 
@@ -357,10 +370,16 @@ class ModifyRequest(univ.Sequence):
     )
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('object', LDAPDN()),
-        namedtype.NamedType('modification', univ.SequenceOf(componentType=univ.Sequence(
-            componentType=namedtype.NamedTypes(namedtype.NamedType('operation', univ.Enumerated(
-                namedValues=namedval.NamedValues(('add', 0), ('delete', 1), ('replace', 2)))),
-                                               namedtype.NamedType('modification', AttributeTypeAndValues())))))
+        namedtype.NamedType('modification',
+            univ.SequenceOf(
+                componentType=univ.Sequence(
+                    componentType=namedtype.NamedTypes(
+                        namedtype.NamedType(
+                            'operation', univ.Enumerated(namedValues=namedval.NamedValues(('add', 0), ('delete', 1), ('replace', 2)))
+                        ),
+                        namedtype.NamedType('modification', AttributeTypeAndValues())))
+            )
+        )
     )
 
 
@@ -372,8 +391,11 @@ class ModifyResponse(LDAPResult):
 
 class AttributeList(univ.SequenceOf):
     componentType = univ.Sequence(
-        componentType=namedtype.NamedTypes(namedtype.NamedType('type', AttributeDescription()),
-                                           namedtype.NamedType('vals', univ.SetOf(componentType=AttributeValue()))))
+        componentType=namedtype.NamedTypes(
+           namedtype.NamedType('type', AttributeDescription()),
+           namedtype.NamedType('vals', univ.SetOf(componentType=AttributeValue()))
+        )
+    )
 
 
 class AddRequest(univ.Sequence):
@@ -506,27 +528,32 @@ class MessageID(univ.Integer):
 class LDAPMessage(univ.Sequence):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('messageID', MessageID()),
-        namedtype.NamedType('protocolOp', univ.Choice(
-            componentType=namedtype.NamedTypes(namedtype.NamedType('bindRequest', BindRequest()),
-                                               namedtype.NamedType('bindResponse', BindResponse()),
-                                               namedtype.NamedType('unbindRequest', UnbindRequest()),
-                                               namedtype.NamedType('searchRequest', SearchRequest()),
-                                               namedtype.NamedType('searchResEntry', SearchResultEntry()),
-                                               namedtype.NamedType('searchResDone', SearchResultDone()),
-                                               namedtype.NamedType('searchResRef', SearchResultReference()),
-                                               namedtype.NamedType('modifyRequest', ModifyRequest()),
-                                               namedtype.NamedType('modifyResponse', ModifyResponse()),
-                                               namedtype.NamedType('addRequest', AddRequest()),
-                                               namedtype.NamedType('addResponse', AddResponse()),
-                                               namedtype.NamedType('delRequest', DelRequest()),
-                                               namedtype.NamedType('delResponse', DelResponse()),
-                                               namedtype.NamedType('modDNRequest', ModifyDNRequest()),
-                                               namedtype.NamedType('modDNResponse', ModifyDNResponse()),
-                                               namedtype.NamedType('compareRequest', CompareRequest()),
-                                               namedtype.NamedType('compareResponse', CompareResponse()),
-                                               namedtype.NamedType('abandonRequest', AbandonRequest()),
-                                               namedtype.NamedType('extendedReq', ExtendedRequest()),
-                                               namedtype.NamedType('extendedResp', ExtendedResponse())))),
+        namedtype.NamedType(
+            'protocolOp', univ.Choice(
+                componentType=namedtype.NamedTypes(
+                    namedtype.NamedType('bindRequest', BindRequest()),
+                    namedtype.NamedType('bindResponse', BindResponse()),
+                    namedtype.NamedType('unbindRequest', UnbindRequest()),
+                    namedtype.NamedType('searchRequest', SearchRequest()),
+                    namedtype.NamedType('searchResEntry', SearchResultEntry()),
+                    namedtype.NamedType('searchResDone', SearchResultDone()),
+                    namedtype.NamedType('searchResRef', SearchResultReference()),
+                    namedtype.NamedType('modifyRequest', ModifyRequest()),
+                    namedtype.NamedType('modifyResponse', ModifyResponse()),
+                    namedtype.NamedType('addRequest', AddRequest()),
+                    namedtype.NamedType('addResponse', AddResponse()),
+                    namedtype.NamedType('delRequest', DelRequest()),
+                    namedtype.NamedType('delResponse', DelResponse()),
+                    namedtype.NamedType('modDNRequest', ModifyDNRequest()),
+                    namedtype.NamedType('modDNResponse', ModifyDNResponse()),
+                    namedtype.NamedType('compareRequest', CompareRequest()),
+                    namedtype.NamedType('compareResponse', CompareResponse()),
+                    namedtype.NamedType('abandonRequest', AbandonRequest()),
+                    namedtype.NamedType('extendedReq', ExtendedRequest()),
+                    namedtype.NamedType('extendedResp', ExtendedResponse())
+                )
+            )
+        ),
         namedtype.OptionalNamedType('controls', Controls().subtype(
             implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0)))
     )
