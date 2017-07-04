@@ -20,8 +20,7 @@ from pyasn1.type import tag
 from pyasn1.type import constraint
 from pyasn1.type import useful
 
-MAX = 64
-
+MAX = float('inf')
 
 def _buildOid(*components):
     output = []

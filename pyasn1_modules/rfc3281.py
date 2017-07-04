@@ -21,7 +21,7 @@ from pyasn1.type import useful
 
 from pyasn1_modules import rfc3280
 
-MAX = 64
+MAX = float('inf')
 
 
 def _buildOid(*components):

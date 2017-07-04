@@ -17,7 +17,7 @@ from pyasn1.type import univ, char, namedtype, namedval, tag, constraint
 from pyasn1_modules import rfc3280
 from pyasn1_modules import rfc3852
 
-MAX = 64
+MAX = float('inf')
 
 
 def _buildOid(*components):

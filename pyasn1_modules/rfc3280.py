@@ -14,7 +14,7 @@
 #
 from pyasn1.type import univ, char, namedtype, namedval, tag, constraint, useful
 
-MAX = 64
+MAX = float('inf')
 
 
 def _OID(*components):
