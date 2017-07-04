@@ -26,8 +26,6 @@ id_mgf1 = univ.ObjectIdentifier('1.2.840.113549.1.1.8')
 id_pSpecified = univ.ObjectIdentifier('1.2.840.113549.1.1.9')
 id_sha1 = univ.ObjectIdentifier('1.3.14.3.2.26')
 
-MAX = 16
-
 
 class Version(univ.Integer):
     pass

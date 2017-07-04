@@ -14,7 +14,7 @@
 from pyasn1_modules.rfc2459 import *
 from pyasn1_modules import rfc2315
 
-MAX = 16
+MAX = float('inf')
 
 id_pkix = univ.ObjectIdentifier('1.3.6.1.5.5.7')
 id_pkip = univ.ObjectIdentifier('1.3.6.1.5.5.7.5')

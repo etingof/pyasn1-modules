@@ -15,7 +15,7 @@
 #
 from pyasn1.type import tag, namedtype, namedval, univ, constraint, char, useful
 
-MAX = 64  # XXX ?
+MAX = float('inf')
 
 #
 # PKIX1Explicit88
