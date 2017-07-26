@@ -140,7 +140,7 @@ class ResponseData(univ.Sequence):
             explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
         namedtype.NamedType('responderID', ResponderID()),
         namedtype.NamedType('producedAt', useful.GeneralizedTime()),
-        namedtype.NamedType('responses', univ.SequenceOf(SingleResponse())),
+        namedtype.NamedType('responses', univ.SequenceOf(componentType=SingleResponse())),
         namedtype.OptionalNamedType('responseExtensions', rfc2459.Extensions().subtype(
             explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
     )
@@ -151,7 +151,7 @@ class BasicOCSPResponse(univ.Sequence):
         namedtype.NamedType('tbsResponseData', ResponseData()),
         namedtype.NamedType('signatureAlgorithm', rfc2459.AlgorithmIdentifier()),
         namedtype.NamedType('signature', univ.BitString()),
-        namedtype.OptionalNamedType('certs', univ.SequenceOf(rfc2459.Certificate()).subtype(
+        namedtype.OptionalNamedType('certs', univ.SequenceOf(componentType=rfc2459.Certificate()).subtype(
             explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)))
     )
 
@@ -195,7 +195,7 @@ class Signature(univ.Sequence):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('signatureAlgorithm', rfc2459.AlgorithmIdentifier()),
         namedtype.NamedType('signature', univ.BitString()),
-        namedtype.OptionalNamedType('certs', univ.SequenceOf(rfc2459.Certificate()).subtype(
+        namedtype.OptionalNamedType('certs', univ.SequenceOf(componentType=rfc2459.Certificate()).subtype(
             explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)))
     )
 
@@ -206,7 +206,7 @@ class TBSRequest(univ.Sequence):
             explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
         namedtype.OptionalNamedType('requestorName', GeneralName().subtype(
             explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))),
-        namedtype.NamedType('requestList', univ.SequenceOf(Request())),
+        namedtype.NamedType('requestList', univ.SequenceOf(componentType=Request())),
         namedtype.OptionalNamedType('requestExtensions', rfc2459.Extensions().subtype(
             explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 2)))
     )
