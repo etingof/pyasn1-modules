@@ -784,5 +784,5 @@ class PKIMessages(univ.SequenceOf):
 
 # pyasn1 does not naturally handle recursive definitions, thus this hack:
 # NestedMessageContent ::= PKIMessages
-NestedMessageContent.componentType = PKIMessages()
-nestedMessageContent.componentType = PKIMessages()
+NestedMessageContent._componentType = PKIMessages()
+nestedMessageContent._componentType = PKIMessages()
