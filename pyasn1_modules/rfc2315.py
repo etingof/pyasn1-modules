@@ -95,7 +95,7 @@ class DigestedData(univ.Sequence):
         namedtype.NamedType('version', Version()),
         namedtype.NamedType('digestAlgorithm', DigestAlgorithmIdentifier()),
         namedtype.NamedType('contentInfo', ContentInfo()),
-        namedtype.NamedType('digest', Digest)
+        namedtype.NamedType('digest', Digest())
     )
 
 
