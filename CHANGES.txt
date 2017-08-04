@@ -1,5 +1,5 @@
 
-Revision 0.0.11, released XX-07-2017
+Revision 0.0.11, released 04-08-2017
 ------------------------------------
 
 - Fixed typo in ASN.1 definitions at rfc2315.py
