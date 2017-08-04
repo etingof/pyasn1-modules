@@ -67,7 +67,7 @@ try:
     from setuptools import setup, Command
 
     params = {
-        'install_requires': ['pyasn1>=0.1.8'],
+        'install_requires': ['pyasn1==0.3.2'],
         'zip_safe': True
     }
 
@@ -81,7 +81,7 @@ except ImportError:
     params = {}
 
     if sys.version_info[:2] > (2, 4):
-        params['requires'] = ['pyasn1(>=0.1.8)']
+        params['requires'] = ['pyasn1(==0.3.2)']
 
 params.update(
     {'name': 'pyasn1-modules',
