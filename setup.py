@@ -98,4 +98,33 @@ params.update(
      'packages': ['pyasn1_modules']}
 )
 
+
+# handle unittest discovery feature
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
+
+
+class PyTest(Command):
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        suite = unittest.TestLoader().loadTestsFromNames(
+            ['tests.__main__.suite']
+        )
+
+        unittest.TextTestRunner(verbosity=2).run(suite)
+
+params['cmdclass'] = {
+    'test': PyTest,
+    'tests': PyTest
+}
+
 setup(**params)

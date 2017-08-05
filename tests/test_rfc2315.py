@@ -1,7 +1,23 @@
-#!/bin/sh
+#
+# This file is part of pyasn1-modules software.
+#
+# Copyright (c) 2005-2017, Ilya Etingof <etingof@gmail.com>
+# License: http://pyasn1.sf.net/license.html
+#
+import sys
+from pyasn1.codec.der import decoder as der_decoder
+from pyasn1.codec.der import encoder as der_encoder
 
-pkcs7dump.py <<EOT
------BEGIN PKCS7-----
+from pyasn1_modules import rfc2315, pem
+
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
+
+
+class Pkcs7TestCase(unittest.TestCase):
+    pem_text = """\
 MIIKdQYJKoZIhvcNAQcCoIIKZjCCCmICAQExADALBgkqhkiG9w0BBwGgggpIMIIC
 XjCCAcegAwIBAgIBADANBgkqhkiG9w0BAQQFADB1MQswCQYDVQQGEwJSVTEPMA0G
 A1UEBxMGTW9zY293MRcwFQYDVQQKEw5Tb3ZhbSBUZWxlcG9ydDEMMAoGA1UECxMD
@@ -58,6 +74,44 @@ AgMBAAGjGzAZMBcGCWCGSAGG+EIBDQQKFghDPS07Uz0tOzANBgkqhkiG9w0BAQQF
 AAOBgQDEttS70qYCA+MGBA3hOR88XiBcTmuBarJDwn/rj31vRjYZUgp9bbFwscRI
 Ic4lDnlyvunwNitl+341bDg7u6Ebu9hCMbciyu4EtrsDh77DlLzbmNcXbnhlvbFL
 K9GiPz3dNyvQMfmaA0twd62zJDOVJ1SmO04lLmu/pAx8GhBZkqEAMQA=
------END PKCS7-----
-EOT
+"""
 
+    def setUp(self):
+        self.asn1Spec = rfc2315.ContentInfo()
+
+    def testDerCodec(self):
+
+        substrate = pem.readBase64fromText(self.pem_text)
+
+        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
+
+        assert not rest
+        assert asn1Object.prettyPrint()
+        assert der_encoder.encode(asn1Object) == substrate
+
+        contentType = asn1Object.getComponentByName('contentType')
+
+        contentInfoMap = {
+            (1, 2, 840, 113549, 1, 7, 1): rfc2315.Data(),
+            (1, 2, 840, 113549, 1, 7, 2): rfc2315.SignedData(),
+            (1, 2, 840, 113549, 1, 7, 3): rfc2315.EnvelopedData(),
+            (1, 2, 840, 113549, 1, 7, 4): rfc2315.SignedAndEnvelopedData(),
+            (1, 2, 840, 113549, 1, 7, 5): rfc2315.DigestedData(),
+            (1, 2, 840, 113549, 1, 7, 6): rfc2315.EncryptedData()
+        }
+
+        substrate = asn1Object.getComponentByName('content')
+
+        asn1Object, rest = der_decoder.decode(
+            substrate, asn1Spec=contentInfoMap[contentType]
+        )
+
+        assert not rest
+        assert asn1Object.prettyPrint()
+        assert der_encoder.encode(asn1Object) == substrate
+
+
+suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
+
+if __name__ == '__main__':
+    unittest.TextTestRunner(verbosity=2).run(suite)
