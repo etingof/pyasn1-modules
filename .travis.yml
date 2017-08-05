@@ -10,10 +10,13 @@ python:
   - "3.6"
   - "nightly"
   - "pypy"
-# disable pypy till pyasn1 0.2.4+
-#  - "pypy3"
+  - "pypy3"
 install:
-  - pip install pyasn1
-  - python setup.py install
+  - pip install codecov
+  - pip install -r requirements.txt
+  - pip install --no-deps .
 script:
-  - sh runtests.sh
+  - PYTHONPATH=.:$PYTHONPATH python tests/__main__.py
+after_success:
+  - PYTHONPATH=.:$PYTHONPATH coverage run --omit=*test* tests/__main__.py
+  - codecov

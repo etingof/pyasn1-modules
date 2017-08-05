@@ -1,6 +1,43 @@
-#!/bin/sh
+#
+# This file is part of pyasn1-modules software.
+#
+# Copyright (c) 2005-2017, Ilya Etingof <etingof@gmail.com>
+# License: http://pyasn1.sf.net/license.html
+#
+import sys
+from pyasn1.codec.der import decoder as der_decoder
+from pyasn1.codec.der import encoder as der_encoder
 
-ocsprspdump.py <<EOT
+from pyasn1_modules import rfc2560, pem
+
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
+
+
+class OCSPRequestTestCase(unittest.TestCase):
+    pem_text = """\
+MGowaDBBMD8wPTAJBgUrDgMCGgUABBS3ZrMV9C5Dko03aH13cEZeppg3wgQUkqR1LKSevoFE63n8
+isWVpesQdXMCBDXe9M+iIzAhMB8GCSsGAQUFBzABAgQSBBBjdJOiIW9EKJGELNNf/rdA
+"""
+
+    def setUp(self):
+        self.asn1Spec = rfc2560.OCSPRequest()
+
+    def testDerCodec(self):
+
+        substrate = pem.readBase64fromText(self.pem_text)
+
+        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
+
+        assert not rest
+        assert asn1Object.prettyPrint()
+        assert der_encoder.encode(asn1Object) == substrate
+
+
+class OCSPResponseTestCase(unittest.TestCase):
+    pem_text = """\
 MIIExAoBAKCCBL0wggS5BgkrBgEFBQcwAQEkggSqBIID6DCCBJ8wggEPoYGAMH4xCzAJBgNVBAYT
 AkFVMRMwEQYDVQQIEwpTb21lLVN0YXRlMSEwHwYDVQQKExhJbnRlcm5ldCBXaWRnaXRzIFB0eSBM
 dGQxFTATBgNVBAMTDHNubXBsYWJzLmNvbTEgMB4GCSqGSIb3DQEJARYRaW5mb0Bzbm1wbGFicy5j
@@ -23,4 +60,23 @@ RSzB5cmOew8EgbuATZpapxHGMB8GA1UdIwQYMBaAFPGLNnaSRSzB5cmOew+ATZpapxHGMA0GCSqG
 SIb3DQEBBQUAA4GBAFkdLhSVZUCHeoVaVG4FxU6csLTYrTVxYmGJEUb++zHEiaiwmv3NcJ7i5qnB
 XLkVCtKDevGSQz9hwwynvDAmfPrMfgheeHjPFQoDfbkPV8hO8fV61w3d1MPUSVWlkiHs5DSjXgRN
 JQzNo1IwuBwBEnX+53m89cLagDlxNY1hf8vI
-EOT
+"""
+
+    def setUp(self):
+        self.asn1Spec = rfc2560.OCSPResponse()
+
+    def testDerCodec(self):
+
+        substrate = pem.readBase64fromText(self.pem_text)
+
+        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
+
+        assert not rest
+        assert asn1Object.prettyPrint()
+        assert der_encoder.encode(asn1Object) == substrate
+
+
+suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
+
+if __name__ == '__main__':
+    unittest.TextTestRunner(verbosity=2).run(suite)
