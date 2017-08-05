@@ -12,8 +12,9 @@ python:
   - "pypy"
   - "pypy3"
 install:
-  - pip install codecov pyasn1
-  - python setup.py install
+  - pip install codecov
+  - pip install -r requirements.txt
+  - pip install --no-deps .
 script:
   - PYTHONPATH=.:$PYTHONPATH python tests/__main__.py
 after_success:
