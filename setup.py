@@ -67,28 +67,26 @@ try:
     from setuptools import setup, Command
 
     params = {
-        'zip_safe': True
+        'zip_safe': True,
+        'install_requires': ['pyasn1>=0.3.4,<0.4.0']
     }
-
-    if sys.version_info[:2] < (2, 6):
-        params['install_requires'] = ['pyasn1>=0.3.4,<0.4.0']
-    else:
-        params['install_requires'] = ['pyasn1~=0.3.4']
 
 except ImportError:
     for arg in sys.argv:
         if 'egg' in arg:
             howto_install_setuptools()
             sys.exit(1)
+
     from distutils.core import setup, Command
 
-    params = {}
-
     if sys.version_info[:2] > (2, 4):
-        if sys.version_info[:2] < (2, 6):
-            params['requires'] = ['pyasn1>=0.3.4,<0.4.0']
-        else:
-            params['requires'] = ['pyasn1(~=0.3.4)']
+        params = {
+            'requires': ['pyasn1(>=0.3.4,<0.4.0)']
+        }
+    else:
+        params = {
+            'requires': ['pyasn1']
+        }
 
 params.update(
     {'name': 'pyasn1-modules',
