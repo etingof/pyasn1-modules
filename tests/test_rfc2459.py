@@ -49,6 +49,16 @@ PhmcGcwTTYJBtYze4D1gCCAPRX5ron+jjBXu
         assert asn1Object.prettyPrint()
         assert der_encoder.encode(asn1Object) == substrate
 
+    def testDerCodecDecodeOpenTypes(self):
+
+        substrate = pem.readBase64fromText(self.pem_text)
+
+        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+
+        assert not rest
+        assert asn1Object.prettyPrint()
+        assert der_encoder.encode(asn1Object) == substrate
+
 
 class CertificateListTestCase(unittest.TestCase):
     pem_text = """\
@@ -70,6 +80,16 @@ vjnIhxTFoCb5vA==
         substrate = pem.readBase64fromText(self.pem_text)
 
         asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
+
+        assert not rest
+        assert asn1Object.prettyPrint()
+        assert der_encoder.encode(asn1Object) == substrate
+
+    def testDerCodecDecodeOpenTypes(self):
+
+        substrate = pem.readBase64fromText(self.pem_text)
+
+        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
 
         assert not rest
         assert asn1Object.prettyPrint()
@@ -98,6 +118,16 @@ INow2I3/ks+0MxDabTY=
         substrate = pem.readBase64fromText(self.pem_text)
 
         asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
+
+        assert not rest
+        assert asn1Object.prettyPrint()
+        assert der_encoder.encode(asn1Object) == substrate
+
+    def testDerCodecDecodeOpenTypes(self):
+
+        substrate = pem.readBase64fromText(self.pem_text)
+
+        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
 
         assert not rest
         assert asn1Object.prettyPrint()
