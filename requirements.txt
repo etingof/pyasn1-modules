@@ -1,1 +1,2 @@
-pyasn1>=0.3.4,<0.4.0
+#pyasn1>=0.3.4,<0.4.0
+-e git+https://github.com/etingof/pyasn1-modules/tree/open-types-support#egg=pyasn1-modules
