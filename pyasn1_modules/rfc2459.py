@@ -990,32 +990,14 @@ id_ce_subjectAltName = univ.ObjectIdentifier('2.5.29.17')
 id_ce_issuerAltName = univ.ObjectIdentifier('2.5.29.18')
 
 
-# map of AttributeType -> AttributeValue
-
-certificateAttributesMap = {
-    id_at_name: X520name(),
-    id_at_surname: X520name(),
-    id_at_givenName: X520name(),
-    id_at_initials: X520name(),
-    id_at_generationQualifier: X520name(),
-    id_at_commonName: X520CommonName(),
-    id_at_localityName: X520LocalityName(),
-    id_at_stateOrProvinceName: X520StateOrProvinceName(),
-    id_at_organizationName: X520OrganizationName(),
-    id_at_organizationalUnitName: X520OrganizationalUnitName(),
-    id_at_title: X520Title(),
-    id_at_dnQualifier: X520dnQualifier(),
-    id_at_countryName: X520countryName(),
-    emailAddress: Pkcs9email(),
-}
-
-
 class AttributeValue(univ.Any):
     pass
 
 
 class AttributeType(univ.ObjectIdentifier):
     pass
+
+certificateAttributesMap = {}
 
 
 class AttributeTypeAndValue(univ.Sequence):
@@ -1190,34 +1172,7 @@ class IssuerAltName(GeneralNames):
     pass
 
 
-# map of Certificate Extension OIDs to Extensions
-
-certificateExtensionsMap = {
-    id_ce_authorityKeyIdentifier: AuthorityKeyIdentifier(),
-    id_ce_subjectKeyIdentifier: SubjectKeyIdentifier(),
-    id_ce_keyUsage: KeyUsage(),
-    id_ce_privateKeyUsagePeriod: PrivateKeyUsagePeriod(),
-# TODO
-#    id_ce_certificatePolicies: PolicyInformation(),  # could be a sequence of concat'ed objects?
-    id_ce_policyMappings: PolicyMappings(),
-    id_ce_subjectAltName: SubjectAltName(),
-    id_ce_issuerAltName: IssuerAltName(),
-    id_ce_subjectDirectoryAttributes: SubjectDirectoryAttributes(),
-    id_ce_basicConstraints: BasicConstraints(),
-    id_ce_nameConstraints: NameConstraints(),
-    id_ce_policyConstraints: PolicyConstraints(),
-    id_ce_extKeyUsage: ExtKeyUsageSyntax(),
-    id_ce_cRLDistributionPoints: CRLDistPointsSyntax(),
-    id_pe_authorityInfoAccess: AuthorityInfoAccessSyntax(),
-    id_ce_cRLNumber: univ.Integer(),
-    id_ce_deltaCRLIndicator: BaseCRLNumber(),
-    id_ce_issuingDistributionPoint: IssuingDistributionPoint(),
-    id_ce_cRLReasons: CRLReason(),
-    id_ce_holdInstructionCode: univ.ObjectIdentifier(),
-    id_ce_invalidityDate: useful.GeneralizedTime(),
-    id_ce_certificateIssuer: GeneralNames(),
-}
-
+certificateExtensionsMap = {}
 
 
 class Extension(univ.Sequence):
@@ -1320,4 +1275,56 @@ class CertificateList(univ.Sequence):
         namedtype.NamedType('signatureAlgorithm', AlgorithmIdentifier()),
         namedtype.NamedType('signature', univ.BitString())
     )
+
+# map of AttributeType -> AttributeValue
+
+_certificateAttributesMapUpdate = {
+    id_at_name: X520name(),
+    id_at_surname: X520name(),
+    id_at_givenName: X520name(),
+    id_at_initials: X520name(),
+    id_at_generationQualifier: X520name(),
+    id_at_commonName: X520CommonName(),
+    id_at_localityName: X520LocalityName(),
+    id_at_stateOrProvinceName: X520StateOrProvinceName(),
+    id_at_organizationName: X520OrganizationName(),
+    id_at_organizationalUnitName: X520OrganizationalUnitName(),
+    id_at_title: X520Title(),
+    id_at_dnQualifier: X520dnQualifier(),
+    id_at_countryName: X520countryName(),
+    emailAddress: Pkcs9email(),
+}
+
+certificateAttributesMap.update(_certificateAttributesMapUpdate)
+
+
+# map of Certificate Extension OIDs to Extensions
+
+_certificateExtensionsMapUpdate = {
+    id_ce_authorityKeyIdentifier: AuthorityKeyIdentifier(),
+    id_ce_subjectKeyIdentifier: SubjectKeyIdentifier(),
+    id_ce_keyUsage: KeyUsage(),
+    id_ce_privateKeyUsagePeriod: PrivateKeyUsagePeriod(),
+# TODO
+#    id_ce_certificatePolicies: PolicyInformation(),  # could be a sequence of concat'ed objects?
+    id_ce_policyMappings: PolicyMappings(),
+    id_ce_subjectAltName: SubjectAltName(),
+    id_ce_issuerAltName: IssuerAltName(),
+    id_ce_subjectDirectoryAttributes: SubjectDirectoryAttributes(),
+    id_ce_basicConstraints: BasicConstraints(),
+    id_ce_nameConstraints: NameConstraints(),
+    id_ce_policyConstraints: PolicyConstraints(),
+    id_ce_extKeyUsage: ExtKeyUsageSyntax(),
+    id_ce_cRLDistributionPoints: CRLDistPointsSyntax(),
+    id_pe_authorityInfoAccess: AuthorityInfoAccessSyntax(),
+    id_ce_cRLNumber: univ.Integer(),
+    id_ce_deltaCRLIndicator: BaseCRLNumber(),
+    id_ce_issuingDistributionPoint: IssuingDistributionPoint(),
+    id_ce_cRLReasons: CRLReason(),
+    id_ce_holdInstructionCode: univ.ObjectIdentifier(),
+    id_ce_invalidityDate: useful.GeneralizedTime(),
+    id_ce_certificateIssuer: GeneralNames(),
+}
+
+certificateExtensionsMap.update(_certificateExtensionsMapUpdate)
 
