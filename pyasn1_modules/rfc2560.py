@@ -124,9 +124,9 @@ class KeyHash(univ.OctetString):
 class ResponderID(univ.Choice):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('byName',
-                            rfc2459.Name().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))),
+                            rfc2459.Name().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))),
         namedtype.NamedType('byKey',
-                            KeyHash().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 2)))
+                            KeyHash().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 2)))
     )
 
 
