@@ -68,7 +68,7 @@ try:
 
     params = {
         'zip_safe': True,
-        'install_requires': ['pyasn1>=0.3.4,<0.4.0']
+        'install_requires': ['pyasn1>=0.4.1,<0.5.0']
     }
 
 except ImportError:
@@ -81,7 +81,7 @@ except ImportError:
 
     if sys.version_info[:2] > (2, 4):
         params = {
-            'requires': ['pyasn1(>=0.3.4,<0.4.0)']
+            'requires': ['pyasn1(>=0.4.1,<0.5.0)']
         }
     else:
         params = {
