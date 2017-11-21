@@ -1,4 +1,9 @@
 
+Revision 0.2.1, released 21-11-2017
+-----------------------------------
+
+- Allow ANY DEFINED BY objects expanding automatically if requested
+
 Revision 0.1.5, released 10-10-2017
 -----------------------------------
 

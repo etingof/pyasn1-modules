@@ -76,6 +76,7 @@ Ic4lDnlyvunwNitl+341bDg7u6Ebu9hCMbciyu4EtrsDh77DlLzbmNcXbnhlvbFL
 K9GiPz3dNyvQMfmaA0twd62zJDOVJ1SmO04lLmu/pAx8GhBZkqEAMQA=
 """
 
+    # canonically ordered SET components
     pem_text_reordered = """\
 MIIKcwYJKoZIhvcNAQcCoIIKZDCCCmACAQExADALBgkqhkiG9w0BBwGgggpIMIIC
 XjCCAcegAwIBAgIBADANBgkqhkiG9w0BAQQFADB1MQswCQYDVQQGEwJSVTEPMA0G
@@ -148,30 +149,15 @@ Kv0xuR3b3Le+ZqolT8wQELd5Mmw5JPofZ+O2cGNvet8tYwOKFjEA
         assert asn1Object.prettyPrint()
         assert der_encoder.encode(asn1Object) == substrate
 
-        contentType = asn1Object['contentType']
-        substrate = asn1Object['content']
-
-        contentInfoMap = {
-            (1, 2, 840, 113549, 1, 7, 1): rfc2315.Data(),
-            (1, 2, 840, 113549, 1, 7, 2): rfc2315.SignedData(),
-            (1, 2, 840, 113549, 1, 7, 3): rfc2315.EnvelopedData(),
-            (1, 2, 840, 113549, 1, 7, 4): rfc2315.SignedAndEnvelopedData(),
-            (1, 2, 840, 113549, 1, 7, 5): rfc2315.DigestedData(),
-            (1, 2, 840, 113549, 1, 7, 6): rfc2315.EncryptedData()
-        }
-
-        innerAsn1Object, rest = der_decoder.decode(
-            substrate, asn1Spec=contentInfoMap[contentType]
-        )
-
-        asn1Object['content'] = der_encoder.encode(innerAsn1Object)
+    def testDerCodecDecodeOpenTypes(self):
 
         substrate = pem.readBase64fromText(self.pem_text_reordered)
+
+        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
 
         assert not rest
         assert asn1Object.prettyPrint()
         assert der_encoder.encode(asn1Object) == substrate
-
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
