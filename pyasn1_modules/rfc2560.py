@@ -21,7 +21,12 @@
 # * dates are left as strings in GeneralizedTime format -- datetime.datetime
 # would be nicer
 #
-from pyasn1.type import tag, namedtype, namedval, univ, useful
+from pyasn1.type import namedtype
+from pyasn1.type import namedval
+from pyasn1.type import tag
+from pyasn1.type import univ
+from pyasn1.type import useful
+
 from pyasn1_modules import rfc2459
 
 

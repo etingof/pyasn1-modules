@@ -13,7 +13,14 @@
 # Sample captures from:
 # http://wiki.wireshark.org/SampleCaptures/
 #
-from pyasn1.type import tag, namedtype, namedval, opentype, univ, constraint, char, useful
+from pyasn1.type import char
+from pyasn1.type import constraint
+from pyasn1.type import namedtype
+from pyasn1.type import namedval
+from pyasn1.type import opentype
+from pyasn1.type import tag
+from pyasn1.type import univ
+from pyasn1.type import useful
 
 MAX = float('inf')
 

@@ -6,7 +6,9 @@
 #
 # Derived from RFC 3279
 #
-from pyasn1.type import univ, char, namedtype, namedval, tag, constraint, useful
+from pyasn1.type import namedtype
+from pyasn1.type import namedval
+from pyasn1.type import univ
 
 
 def _OID(*components):

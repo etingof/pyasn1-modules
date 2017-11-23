@@ -9,7 +9,9 @@
 # ASN.1 source from:
 # http://www.ietf.org/rfc/rfc1901.txt
 #
-from pyasn1.type import univ, namedtype, namedval
+from pyasn1.type import namedtype
+from pyasn1.type import namedval
+from pyasn1.type import univ
 
 
 class Message(univ.Sequence):

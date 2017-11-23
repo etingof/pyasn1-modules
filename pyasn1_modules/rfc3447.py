@@ -11,7 +11,9 @@
 #
 # Sample captures could be obtained with "openssl genrsa" command
 #
-from pyasn1.type import constraint, namedval
+from pyasn1.type import constraint
+from pyasn1.type import namedval
+
 from pyasn1_modules.rfc2437 import *
 
 

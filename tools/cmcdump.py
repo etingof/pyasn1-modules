@@ -3,15 +3,20 @@
 # Read CMC certificate request with wrappers on stdin, parse each into
 # plain text, then build substrate from it
 #
-from pyasn1.codec.der import decoder, encoder
-from pyasn1_modules import rfc5652, rfc6402, pem
 import sys
+
+from pyasn1.codec.der import decoder
+from pyasn1.codec.der import encoder
+
+from pyasn1_modules import pem
+from pyasn1_modules import rfc5652
+from pyasn1_modules import rfc6402
 
 if len(sys.argv) != 1:
     print("""Usage:
 $ cat cmc_request.pem | %s""" % (sys.argv[0],))
     sys.exit(-1)
-    
+
 reqCnt = 0
 
 substrate = pem.readBase64FromFile(sys.stdin)
@@ -26,7 +31,7 @@ while next_layer:
         layer, rest = decoder.decode(data, asn1Spec=rfc5652.ContentInfo())
         assert encoder.encode(layer) == data, 'wrapper recode fails'
         assert not rest
-    
+
         print(" * New layer (wrapper):")
         print(layer.prettyPrint())
 

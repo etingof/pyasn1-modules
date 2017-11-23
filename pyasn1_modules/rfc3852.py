@@ -11,7 +11,12 @@
 # ASN.1 source from:
 # http://www.ietf.org/rfc/rfc3852.txt
 #
-from pyasn1.type import univ, namedtype, namedval, tag, constraint, useful
+from pyasn1.type import constraint
+from pyasn1.type import namedtype
+from pyasn1.type import namedval
+from pyasn1.type import tag
+from pyasn1.type import univ
+from pyasn1.type import useful
 
 from pyasn1_modules import rfc3280
 from pyasn1_modules import rfc3281

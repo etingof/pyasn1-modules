@@ -11,7 +11,10 @@
 #
 # Sample captures could be obtained with "openssl genrsa" command
 #
-from pyasn1.type import tag, namedtype, univ
+from pyasn1.type import namedtype
+from pyasn1.type import tag
+from pyasn1.type import univ
+
 from pyasn1_modules.rfc2459 import AlgorithmIdentifier
 
 pkcs_1 = univ.ObjectIdentifier('1.2.840.113549.1.1')

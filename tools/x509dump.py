@@ -8,9 +8,13 @@
 # Read ASN.1/PEM X.509 certificates on stdin, parse each into plain text,
 # then build substrate from it
 #
-from pyasn1.codec.der import decoder, encoder
-from pyasn1_modules import rfc2459, pem
 import sys
+
+from pyasn1.codec.der import decoder
+from pyasn1.codec.der import encoder
+
+from pyasn1_modules import pem
+from pyasn1_modules import rfc2459
 
 if len(sys.argv) != 1:
     print("""Usage:

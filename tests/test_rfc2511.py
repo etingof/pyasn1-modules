@@ -5,13 +5,16 @@
 # License: http://pyasn1.sf.net/license.html
 #
 import sys
+
 from pyasn1.codec.der import decoder as der_decoder
 from pyasn1.codec.der import encoder as der_encoder
 
-from pyasn1_modules import rfc2511, pem
+from pyasn1_modules import pem
+from pyasn1_modules import rfc2511
 
 try:
     import unittest2 as unittest
+
 except ImportError:
     import unittest
 

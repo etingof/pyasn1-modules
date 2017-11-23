@@ -8,9 +8,13 @@
 # Read ASN.1/PEM PKCS#7 on stdin, parse it into plain text,
 # then build substrate from it
 #
-from pyasn1_modules import rfc2315, pem
-from pyasn1.codec.der import encoder, decoder
 import sys
+
+from pyasn1.codec.der import decoder
+from pyasn1.codec.der import encoder
+
+from pyasn1_modules import pem
+from pyasn1_modules import rfc2315
 
 if len(sys.argv) != 1:
     print("""Usage:

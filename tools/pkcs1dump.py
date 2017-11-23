@@ -9,9 +9,14 @@
 # stdin, print them pretty and encode back into original wire format.
 # Private keys can be generated with "openssl genrsa|gendsa" commands.
 #
-from pyasn1_modules import rfc2459, rfc2437, pem
-from pyasn1.codec.der import encoder, decoder
 import sys
+
+from pyasn1.codec.der import decoder
+from pyasn1.codec.der import encoder
+
+from pyasn1_modules import pem
+from pyasn1_modules import rfc2437
+from pyasn1_modules import rfc2459
 
 if len(sys.argv) != 1:
     print("""Usage:

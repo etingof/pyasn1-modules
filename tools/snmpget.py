@@ -7,10 +7,13 @@
 #
 # Generate SNMPGET request, parse response
 #
-from pyasn1.codec.ber import encoder, decoder
-from pyasn1_modules import rfc1157
-import sys
 import socket
+import sys
+
+from pyasn1.codec.ber import decoder
+from pyasn1.codec.ber import encoder
+
+from pyasn1_modules import rfc1157
 
 if len(sys.argv) != 4:
     print("""Usage:

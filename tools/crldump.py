@@ -9,9 +9,13 @@
 # original wire format.
 # CRL can be generated with "openssl openssl ca -gencrl ..." commands.
 #
-from pyasn1_modules import rfc2459, pem
-from pyasn1.codec.der import encoder, decoder
 import sys
+
+from pyasn1.codec.der import decoder
+from pyasn1.codec.der import encoder
+
+from pyasn1_modules import pem
+from pyasn1_modules import rfc2459
 
 if len(sys.argv) != 1:
     print("""Usage:

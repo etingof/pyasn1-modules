@@ -11,8 +11,8 @@
 #
 # Sample captures could be obtained with OpenSSL
 #
-from pyasn1_modules.rfc2459 import *
 from pyasn1_modules import rfc2315
+from pyasn1_modules.rfc2459 import *
 
 MAX = float('inf')
 

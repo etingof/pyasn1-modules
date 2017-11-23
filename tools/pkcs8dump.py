@@ -8,9 +8,13 @@
 # Read  bunch of ASN.1/PEM plain/encrypted private keys in PKCS#8 
 # format on stdin, parse each into plain text, then build substrate from it
 #
-from pyasn1.codec.der import decoder, encoder
-from pyasn1_modules import rfc5208, pem
 import sys
+
+from pyasn1.codec.der import decoder
+from pyasn1.codec.der import encoder
+
+from pyasn1_modules import pem
+from pyasn1_modules import rfc5208
 
 if len(sys.argv) != 1:
     print("""Usage:
