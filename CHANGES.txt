@@ -1,4 +1,11 @@
 
+Revision 0.2.2, released XX-XX-2018
+-----------------------------------
+
+- Copyright notice extended to the year 2018
+- Migrated references from SourceForge
+- rfc2986 module added
+
 Revision 0.2.1, released 23-11-2017
 -----------------------------------
 
