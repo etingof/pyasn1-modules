@@ -1,19 +1,57 @@
 language: python
 cache: pip
-dist: xenial
-python:
-  - "2.6"
-  - "2.7"
-  - "3.2"
-  - "3.3"
-  - "3.4"
-  - "3.5"
-  - "3.6"
-  - "3.7"
-  - "3.8-dev"
-  - "nightly"
-  - "pypy"
-  - "pypy3"
+matrix:
+  include:
+  - os: linux
+    dist: xenial
+    sudo: false
+    python: '2.6'
+  - os: linux
+    dist: xenial
+    sudo: false
+    python: '2.7'
+  - os: linux
+    dist: xenial
+    sudo: false
+    python: '3.2'
+  - os: linux
+    dist: xenial
+    sudo: false
+    python: '3.3'
+  - os: linux
+    dist: xenial
+    sudo: false
+    python: '3.4'
+  - os: linux
+    dist: xenial
+    sudo: false
+    python: '3.5'
+  - os: linux
+    dist: xenial
+    sudo: false
+    python: '3.6'
+  - os: linux
+    dist: xenial
+    sudo: false
+    python: '3.7-dev'
+  - os: linux
+    dist: xenial
+    sudo: false
+    python: 'nightly'
+  - os: linux
+    dist: xenial
+    sudo: false
+    python: 'pypy'
+  - os: linux
+    dist: xenial
+    sudo: false
+    python: 'pypy3'
+  - os: osx
+    language: objective-c
+    env: PYENV_VERSION=2.7.12
+  - os: osx
+    language: objective-c
+    env: PYENV_VERSION=3.5.2
 install:
   - pip install codecov
   - pip install -r requirements.txt
