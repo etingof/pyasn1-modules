@@ -29,13 +29,8 @@ License :: OSI Approved :: BSD License
 Natural Language :: English
 Operating System :: OS Independent
 Programming Language :: Python :: 2
-Programming Language :: Python :: 2.4
-Programming Language :: Python :: 2.5
-Programming Language :: Python :: 2.6
 Programming Language :: Python :: 2.7
 Programming Language :: Python :: 3
-Programming Language :: Python :: 3.2
-Programming Language :: Python :: 3.3
 Programming Language :: Python :: 3.4
 Programming Language :: Python :: 3.5
 Programming Language :: Python :: 3.6
@@ -60,8 +55,8 @@ def howto_install_setuptools():
 """)
 
 
-if sys.version_info[:2] < (2, 4):
-    print("ERROR: this package requires Python 2.4 or later!")
+if sys.version_info[:2] < (2, 7):
+    print("ERROR: this package requires Python 2.7 or later!")
     sys.exit(1)
 
 try:
@@ -80,14 +75,9 @@ except ImportError:
 
     from distutils.core import setup, Command
 
-    if sys.version_info[:2] > (2, 4):
-        params = {
-            'requires': ['pyasn1(>=0.4.1,<0.5.0)']
-        }
-    else:
-        params = {
-            'requires': ['pyasn1']
-        }
+    params = {
+        'requires': ['pyasn1(>=0.4.1,<0.5.0)']
+    }
 
 params.update(
     {'name': 'pyasn1-modules',
@@ -105,11 +95,7 @@ params.update(
 )
 
 
-# handle unittest discovery feature
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
+import unittest
 
 
 class PyTest(Command):

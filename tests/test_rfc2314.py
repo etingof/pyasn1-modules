@@ -5,18 +5,13 @@
 # License: http://snmplabs.com/pyasn1/license.html
 #
 import sys
+import unittest
 
 from pyasn1.codec.der import decoder as der_decoder
 from pyasn1.codec.der import encoder as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc2314
-
-try:
-    import unittest2 as unittest
-
-except ImportError:
-    import unittest
 
 
 class CertificationRequestTestCase(unittest.TestCase):
