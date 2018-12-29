@@ -25,6 +25,6 @@ or post your question
 If you want to contribute ASN.1 modules you have converted into pyasn1,
 please send me a pull request.
 
-Copyright (c) 2005-2018, [Ilya Etingof](mailto:etingof@gmail.com).
+Copyright (c) 2005-2019, [Ilya Etingof](mailto:etingof@gmail.com).
 All rights reserved.
 
