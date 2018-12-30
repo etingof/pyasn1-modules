@@ -1,7 +1,8 @@
 
-Revision 0.2.3, released XX-12-2018
+Revision 0.2.3, released 30-12-2018
 -----------------------------------
 
+- Added modules for RFC5083 and RFC5084 (CMS)
 - Copyright notice extended to the year 2019
 
 Revision 0.2.2, released 28-06-2018
