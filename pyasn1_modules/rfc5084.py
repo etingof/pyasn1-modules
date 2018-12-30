@@ -38,12 +38,19 @@ class CCMParameters(univ.Sequence):
     pass
 
 
+AES_CCM_ICVlen.subtypeSpec = constraint.ValueRangeConstraint(4, 16)
+
+
+AES_GCM_ICVlen.subtypeSpec = constraint.ValueRangeConstraint(12, 16)
+
+
 CCMParameters.componentType = namedtype.NamedTypes(
     namedtype.NamedType('aes-nonce', univ.OctetString().subtype(subtypeSpec=constraint.ValueSizeConstraint(7, 13))),
     # The aes-nonce parameter contains 15-L octets, where L is the size of the length field. L=8 is RECOMMENDED.
     # Within the scope of any content-authenticated-encryption key, the nonce value MUST be unique.
     namedtype.DefaultedNamedType('aes-ICVlen', AES_CCM_ICVlen().subtype(value=12))
-    # the programmer must make sure that the AES_CCM_ICVlen is 4, 6, 8, 10, 12, 14, or 16
+    # The programmer must make sure that the AES_CCM_ICVlen is 4, 6, 8, 10, 12, 14, or 16.
+    # The contraint above will only limit it to 4..16, but will not prohibit the odd numbers.
 )
 
 
@@ -57,7 +64,6 @@ GCMParameters.componentType = namedtype.NamedTypes(
     # Within the scope of any content-authenticated-encryption key, the nonce value MUST be unique.
     # A nonce value of 12 octets can be processed more efficiently, so that length is RECOMMENDED.
     namedtype.DefaultedNamedType('aes-ICVlen', AES_GCM_ICVlen().subtype(value=12))
-    # the programmer must make sure that the AES_GCM_ICVlen is 12, 13, 14, 15, or 16
 )
 
 
