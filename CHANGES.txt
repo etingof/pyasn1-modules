@@ -1,4 +1,11 @@
 
+Revision 0.2.4, released 26-01-2018
+-----------------------------------
+
+- Added modules for RFC8226 implementing JWT Claim Constraints
+  and TN Authorization List for X.509 certificate extensions
+- Fixed bug in `rfc5280.AlgorithmIdentifier` ANY type definition
+
 Revision 0.2.3, released 30-12-2018
 -----------------------------------
 
