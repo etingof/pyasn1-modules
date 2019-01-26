@@ -1,15 +1,16 @@
-# This file is being contributed to of pyasn1-modules software.
+# This file is being contributed to pyasn1-modules software.
 #
-# Created by Russ Housley with assistance from the asn1ate tool, with
-#   a few comments added afterwards
-# Copyright (c) 2018, Vigil Security, LLC
+# Created by Russ Housley with assistance from the asn1ate tool, with manual
+#   changes to AES_CCM_ICVlen.subtypeSpec and added comments
+#
+# Copyright (c) 2018-2019, Vigil Security, LLC
 # License: http://snmplabs.com/pyasn1/license.html
 #
 #  AES-CCM and AES-GCM Algorithms fo use with the Authenticated-Enveloped-Data
 #  protecting content type for the Cryptographic Message Syntax (CMS)
 #
 # ASN.1 source from:
-# https://www.rfc-editor.org/rfc/rfc5083.txt
+# https://www.rfc-editor.org/rfc/rfc5084.txt
 
 
 from pyasn1.type import univ, char, namedtype, namedval, tag, constraint, useful
@@ -34,14 +35,14 @@ class AES_GCM_ICVlen(univ.Integer):
     pass
 
 
-class CCMParameters(univ.Sequence):
-    pass
-
-
-AES_CCM_ICVlen.subtypeSpec = constraint.ValueRangeConstraint(4, 16)
+AES_CCM_ICVlen.subtypeSpec = constraint.SingleValueConstraint(4, 6, 8, 10, 12, 14, 16)
 
 
 AES_GCM_ICVlen.subtypeSpec = constraint.ValueRangeConstraint(12, 16)
+
+
+class CCMParameters(univ.Sequence):
+    pass
 
 
 CCMParameters.componentType = namedtype.NamedTypes(
@@ -49,8 +50,6 @@ CCMParameters.componentType = namedtype.NamedTypes(
     # The aes-nonce parameter contains 15-L octets, where L is the size of the length field. L=8 is RECOMMENDED.
     # Within the scope of any content-authenticated-encryption key, the nonce value MUST be unique.
     namedtype.DefaultedNamedType('aes-ICVlen', AES_CCM_ICVlen().subtype(value=12))
-    # The programmer must make sure that the AES_CCM_ICVlen is 4, 6, 8, 10, 12, 14, or 16.
-    # The contraint above will only limit it to 4..16, but will not prohibit the odd numbers.
 )
 
 
@@ -60,7 +59,7 @@ class GCMParameters(univ.Sequence):
 
 GCMParameters.componentType = namedtype.NamedTypes(
     namedtype.NamedType('aes-nonce', univ.OctetString()),
-    # The aes-nonce may have any number of bits between 8 and 2^64, but it must be a multiple of 8 bits.
+    # The aes-nonce may have any number of bits between 8 and 2^64, but it MUST be a multiple of 8 bits.
     # Within the scope of any content-authenticated-encryption key, the nonce value MUST be unique.
     # A nonce value of 12 octets can be processed more efficiently, so that length is RECOMMENDED.
     namedtype.DefaultedNamedType('aes-ICVlen', AES_GCM_ICVlen().subtype(value=12))

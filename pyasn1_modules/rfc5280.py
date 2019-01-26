@@ -283,7 +283,7 @@ class CertificateSerialNumber(univ.Integer):
 class AlgorithmIdentifier(univ.Sequence):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('algorithm', univ.ObjectIdentifier()),
-        namedtype.OptionalNamedType('parameters', univ.Any())
+        namedtype.OptionalNamedType('parameters', univ.Any(), openType=opentype.OpenType)
     )
 
 
