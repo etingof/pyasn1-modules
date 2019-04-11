@@ -1,4 +1,11 @@
 
+Revision 0.2.5, released XX-04-2019
+-----------------------------------
+
+- Added module RFC4055 providing additional Algorithms and
+  Identifiers for RSA Cryptography for use in Certificates
+  and CRLs
+
 Revision 0.2.4, released 26-01-2018
 -----------------------------------
 
