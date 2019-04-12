@@ -2,6 +2,8 @@
 Revision 0.2.5, released XX-04-2019
 -----------------------------------
 
+- Added module RFC3779 providing X.509 Extensions for IP
+  Addresses and AS Identifiers
 - Added module RFC4055 providing additional Algorithms and
   Identifiers for RSA Cryptography for use in Certificates
   and CRLs
