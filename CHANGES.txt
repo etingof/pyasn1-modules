@@ -2,6 +2,13 @@
 Revision 0.2.5, released XX-04-2019
 -----------------------------------
 
+- Added module RFC5958 providing Asymmetric Key Packages,
+  which is essentially version 2 of the PrivateKeyInfo
+  structure in PKCS#8 in RFC 5208
+- Added module RFC8410 providing algorithm Identifiers for
+  Ed25519, Ed448, X25519, and X448
+- Added module RFC8418 providing Elliptic Curve Diffie-Hellman
+  (ECDH) Key Agreement Algorithm with X25519 and X448
 - Added module RFC3565 providing Elliptic Curve Diffie-Hellman
   Key Agreement Algorithm use with X25519 and X448 in the
   Cryptographic Message Syntax (CMS)
