@@ -2,6 +2,9 @@
 Revision 0.2.5, released XX-04-2019
 -----------------------------------
 
+- Added module RFC3565 providing Elliptic Curve Diffie-Hellman
+  Key Agreement Algorithm use with X25519 and X448 in the
+  Cryptographic Message Syntax (CMS)
 - Added module RFC4108 providing CMS Firmware Wrapper
 - Added module RFC3779 providing X.509 Extensions for IP
   Addresses and AS Identifiers
