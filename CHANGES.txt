@@ -1,5 +1,5 @@
 
-Revision 0.2.5, released XX-04-2019
+Revision 0.2.5, released 24-04-2019
 -----------------------------------
 
 - Added module RFC5958 providing Asymmetric Key Packages,
