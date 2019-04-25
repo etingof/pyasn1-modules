@@ -2,7 +2,11 @@
 Revision 0.2.6, released XX-04-2019
 -----------------------------------
 
-No changes yet
+- Added RFC3560 providing RSAES-OAEP Key Transport Algorithm
+  in CMS
+- Added RFC6019 providing BinaryTime - an alternate format
+  for representing Date and Time
+- RFC3565 superseded by RFC5649
 
 Revision 0.2.5, released 24-04-2019
 -----------------------------------

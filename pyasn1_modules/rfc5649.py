@@ -10,8 +10,7 @@
 # ASN.1 source from:
 # https://www.rfc-editor.org/rfc/rfc5649.txt
 
-
-from pyasn1.type import univ, constraint
+from pyasn1.type import univ
 
 from pyasn1_modules import rfc5280
 
