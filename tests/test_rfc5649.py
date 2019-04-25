@@ -12,7 +12,7 @@ from pyasn1.codec.der import decoder as der_decoder
 from pyasn1.codec.der import encoder as der_encoder
 
 from pyasn1_modules import pem
-from pyasn1_modules import rfc3565
+from pyasn1_modules import rfc5649
 
 try:
     import unittest2 as unittest
@@ -24,30 +24,29 @@ class AESKeyWrapTestCase(unittest.TestCase):
     kw_alg_id_pem_text = "MAsGCWCGSAFlAwQBLQ=="
 
     def setUp(self):
-        self.asn1Spec = rfc3565.AlgorithmIdentifier()
+        self.asn1Spec = rfc5649.AlgorithmIdentifier()
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.kw_alg_id_pem_text)
         asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
         assert not rest
         assert asn1Object.prettyPrint()
-        assert asn1Object[0] == rfc3565.id_aes256_wrap
+        assert asn1Object[0] == rfc5649.id_aes256_wrap
         assert der_encoder.encode(asn1Object) == substrate
 
 
-class AESCBCTestCase(unittest.TestCase):
-    aes_alg_id_pem_text = "MB0GCWCGSAFlAwQBKgQQEImWuoUOPwM5mTu1h4oONw=="
+class AESKeyWrapWithPadTestCase(unittest.TestCase):
+    kw_pad_alg_id_pem_text = "MAsGCWCGSAFlAwQBMA=="
 
     def setUp(self):
-        self.asn1Spec = rfc3565.AlgorithmIdentifier()
+        self.asn1Spec = rfc5649.AlgorithmIdentifier()
 
     def testDerCodec(self):
-        substrate = pem.readBase64fromText(self.aes_alg_id_pem_text)
+        substrate = pem.readBase64fromText(self.kw_pad_alg_id_pem_text)
         asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
         assert not rest
         assert asn1Object.prettyPrint()
-        assert asn1Object[0] == rfc3565.id_aes256_CBC
-        assert asn1Object[1].isValue
+        assert asn1Object[0] == rfc5649.id_aes256_wrap_pad
         assert der_encoder.encode(asn1Object) == substrate
 
 
