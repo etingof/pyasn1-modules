@@ -10,7 +10,8 @@
 # ASN.1 source from:
 # https://www.rfc-editor.org/rfc/rfc6019.txt
 
-from pyasn1.type import univ, constraint
+from pyasn1.type import constraint
+from pyasn1.type import univ
 
 MAX = float('inf')
 
@@ -20,12 +21,13 @@ MAX = float('inf')
 class BinaryTime(univ.Integer):
     pass
 
-BinaryTime.subtypeSpec = constraint.ValueRangeConstraint(0, MAX)
 
+BinaryTime.subtypeSpec = constraint.ValueRangeConstraint(0, MAX)
 
 # CMS Attribute for representing signing time in BinaryTime
 
 id_aa_binarySigningTime = univ.ObjectIdentifier('1.2.840.113549.1.9.16.2.46')
+
 
 class BinarySigningTime(BinaryTime):
     pass

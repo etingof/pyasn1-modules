@@ -12,8 +12,9 @@
 # ASN.1 source from:
 # https://www.rfc-editor.org/rfc/rfc5084.txt
 
-
-from pyasn1.type import univ, char, namedtype, namedval, tag, constraint, useful
+from pyasn1.type import constraint
+from pyasn1.type import namedtype
+from pyasn1.type import univ
 
 
 def _OID(*components):
@@ -36,7 +37,6 @@ class AES_GCM_ICVlen(univ.Integer):
 
 
 AES_CCM_ICVlen.subtypeSpec = constraint.SingleValueConstraint(4, 6, 8, 10, 12, 14, 16)
-
 
 AES_GCM_ICVlen.subtypeSpec = constraint.ValueRangeConstraint(12, 16)
 
@@ -65,23 +65,16 @@ GCMParameters.componentType = namedtype.NamedTypes(
     namedtype.DefaultedNamedType('aes-ICVlen', AES_GCM_ICVlen().subtype(value=12))
 )
 
-
 aes = _OID(2, 16, 840, 1, 101, 3, 4, 1)
-
 
 id_aes128_CCM = _OID(aes, 7)
 
-
 id_aes128_GCM = _OID(aes, 6)
-
 
 id_aes192_CCM = _OID(aes, 27)
 
-
 id_aes192_GCM = _OID(aes, 26)
 
-
 id_aes256_CCM = _OID(aes, 47)
-
 
 id_aes256_GCM = _OID(aes, 46)

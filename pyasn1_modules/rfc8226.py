@@ -11,8 +11,11 @@
 # ASN.1 source from:
 # https://www.rfc-editor.org/rfc/rfc8226.txt (with errata corrected)
 
-from pyasn1.type import univ, char, namedtype, namedval, tag, constraint, useful
-
+from pyasn1.type import char
+from pyasn1.type import constraint
+from pyasn1.type import namedtype
+from pyasn1.type import tag
+from pyasn1.type import univ
 
 MAX = float('inf')
 
@@ -37,7 +40,7 @@ class JWTClaimNames(univ.SequenceOf):
 
 
 JWTClaimNames.componentType = JWTClaimName()
-JWTClaimNames.subtypeSpec=constraint.ValueSizeConstraint(1, MAX)
+JWTClaimNames.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class JWTClaimPermittedValues(univ.Sequence):
@@ -46,7 +49,8 @@ class JWTClaimPermittedValues(univ.Sequence):
 
 JWTClaimPermittedValues.componentType = namedtype.NamedTypes(
     namedtype.NamedType('claim', JWTClaimName()),
-    namedtype.NamedType('permitted', univ.SequenceOf(componentType=char.UTF8String()).subtype(subtypeSpec=constraint.ValueSizeConstraint(1, MAX)))
+    namedtype.NamedType('permitted', univ.SequenceOf(componentType=char.UTF8String()).subtype(
+        subtypeSpec=constraint.ValueSizeConstraint(1, MAX)))
 )
 
 
@@ -55,7 +59,7 @@ class JWTClaimPermittedValuesList(univ.SequenceOf):
 
 
 JWTClaimPermittedValuesList.componentType = JWTClaimPermittedValues()
-JWTClaimPermittedValuesList.subtypeSpec=constraint.ValueSizeConstraint(1, MAX)
+JWTClaimPermittedValuesList.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class JWTClaimConstraints(univ.Sequence):
@@ -63,13 +67,13 @@ class JWTClaimConstraints(univ.Sequence):
 
 
 JWTClaimConstraints.componentType = namedtype.NamedTypes(
-    namedtype.OptionalNamedType('mustInclude', JWTClaimNames().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
-    namedtype.OptionalNamedType('permittedValues', JWTClaimPermittedValuesList().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
+    namedtype.OptionalNamedType('mustInclude', JWTClaimNames().subtype(
+        explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
+    namedtype.OptionalNamedType('permittedValues', JWTClaimPermittedValuesList().subtype(
+        explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
 )
 
-
 JWTClaimConstraints.sizeSpec = univ.Sequence.sizeSpec + constraint.ValueSizeConstraint(1, 2)
-
 
 id_pe_JWTClaimConstraints = _OID(1, 3, 6, 1, 5, 5, 7, 1, 27)
 
@@ -103,9 +107,12 @@ class TNEntry(univ.Choice):
 
 
 TNEntry.componentType = namedtype.NamedTypes(
-    namedtype.NamedType('spc', ServiceProviderCode().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
-    namedtype.NamedType('range', TelephoneNumberRange().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1))),
-    namedtype.NamedType('one', TelephoneNumber().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 2)))
+    namedtype.NamedType('spc', ServiceProviderCode().subtype(
+        explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
+    namedtype.NamedType('range', TelephoneNumberRange().subtype(
+        explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1))),
+    namedtype.NamedType('one',
+                        TelephoneNumber().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 2)))
 )
 
 
@@ -114,10 +121,8 @@ class TNAuthorizationList(univ.SequenceOf):
 
 
 TNAuthorizationList.componentType = TNEntry()
-TNAuthorizationList.subtypeSpec=constraint.ValueSizeConstraint(1, MAX)
-
+TNAuthorizationList.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 id_pe_TNAuthList = _OID(1, 3, 6, 1, 5, 5, 7, 1, 26)
-
 
 id_ad_stirTNList = _OID(1, 3, 6, 1, 5, 5, 7, 48, 14)

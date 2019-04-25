@@ -9,9 +9,11 @@
 # ASN.1 source from:
 # https://www.rfc-editor.org/rfc/rfc5083.txt
 
-from pyasn1.type import namedtype, tag, univ
-from pyasn1_modules import rfc5652
+from pyasn1.type import namedtype
+from pyasn1.type import tag
+from pyasn1.type import univ
 
+from pyasn1_modules import rfc5652
 
 MAX = float('inf')
 

@@ -15,7 +15,6 @@ from pyasn1_modules import pem
 from pyasn1_modules import rfc5280
 from pyasn1_modules import rfc8103
 
-
 try:
     import unittest2 as unittest
 except ImportError:

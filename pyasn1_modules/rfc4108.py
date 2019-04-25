@@ -13,7 +13,11 @@
 #
 
 
-from pyasn1.type import univ, char, namedtype, namedval, tag, constraint, useful
+from pyasn1.type import constraint
+from pyasn1.type import namedtype
+from pyasn1.type import namedval
+from pyasn1.type import tag
+from pyasn1.type import univ
 
 from pyasn1_modules import rfc5652
 
@@ -23,6 +27,7 @@ MAX = float('inf')
 class HardwareSerialEntry(univ.Choice):
     pass
 
+
 HardwareSerialEntry.componentType = namedtype.NamedTypes(
     namedtype.NamedType('all', univ.Null()),
     namedtype.NamedType('single', univ.OctetString()),
@@ -30,12 +35,13 @@ HardwareSerialEntry.componentType = namedtype.NamedTypes(
         namedtype.NamedType('low', univ.OctetString()),
         namedtype.NamedType('high', univ.OctetString())
     ))
-    )
+                        )
 )
 
 
 class HardwareModules(univ.Sequence):
     pass
+
 
 HardwareModules.componentType = namedtype.NamedTypes(
     namedtype.NamedType('hwType', univ.ObjectIdentifier()),
@@ -46,15 +52,16 @@ HardwareModules.componentType = namedtype.NamedTypes(
 class CommunityIdentifier(univ.Choice):
     pass
 
+
 CommunityIdentifier.componentType = namedtype.NamedTypes(
     namedtype.NamedType('communityOID', univ.ObjectIdentifier()),
     namedtype.NamedType('hwModuleList', HardwareModules())
 )
 
 
-
 class PreferredPackageIdentifier(univ.Sequence):
     pass
+
 
 PreferredPackageIdentifier.componentType = namedtype.NamedTypes(
     namedtype.NamedType('fwPkgID', univ.ObjectIdentifier()),
@@ -65,6 +72,7 @@ PreferredPackageIdentifier.componentType = namedtype.NamedTypes(
 class PreferredOrLegacyPackageIdentifier(univ.Choice):
     pass
 
+
 PreferredOrLegacyPackageIdentifier.componentType = namedtype.NamedTypes(
     namedtype.NamedType('preferred', PreferredPackageIdentifier()),
     namedtype.NamedType('legacy', univ.OctetString())
@@ -73,6 +81,7 @@ PreferredOrLegacyPackageIdentifier.componentType = namedtype.NamedTypes(
 
 class CurrentFWConfig(univ.Sequence):
     pass
+
 
 CurrentFWConfig.componentType = namedtype.NamedTypes(
     namedtype.OptionalNamedType('fwPkgType', univ.Integer()),
@@ -83,14 +92,17 @@ CurrentFWConfig.componentType = namedtype.NamedTypes(
 class PreferredOrLegacyStalePackageIdentifier(univ.Choice):
     pass
 
+
 PreferredOrLegacyStalePackageIdentifier.componentType = namedtype.NamedTypes(
-    namedtype.NamedType('preferredStaleVerNum', univ.Integer().subtype(subtypeSpec=constraint.ValueRangeConstraint(0, MAX))),
+    namedtype.NamedType('preferredStaleVerNum',
+                        univ.Integer().subtype(subtypeSpec=constraint.ValueRangeConstraint(0, MAX))),
     namedtype.NamedType('legacyStaleVersion', univ.OctetString())
 )
 
 
 class FirmwarePackageLoadErrorCode(univ.Enumerated):
     pass
+
 
 FirmwarePackageLoadErrorCode.namedValues = namedval.NamedValues(
     ('decodeFailure', 1),
@@ -137,10 +149,10 @@ class VendorLoadErrorCode(univ.Integer):
     pass
 
 
-
 # Wrapped Firmware Key Unsigned Attribute and Object Identifiers
 
 id_aa_wrappedFirmwareKey = univ.ObjectIdentifier('1.2.840.113549.1.9.16.2.39')
+
 
 class WrappedFirmwareKey(rfc5652.EnvelopedData):
     pass
@@ -150,8 +162,10 @@ class WrappedFirmwareKey(rfc5652.EnvelopedData):
 
 id_aa_firmwarePackageInfo = univ.ObjectIdentifier('1.2.840.113549.1.9.16.2.42')
 
+
 class FirmwarePackageInfo(univ.Sequence):
     pass
+
 
 FirmwarePackageInfo.componentType = namedtype.NamedTypes(
     namedtype.OptionalNamedType('fwPkgType', univ.Integer()),
@@ -160,40 +174,43 @@ FirmwarePackageInfo.componentType = namedtype.NamedTypes(
 
 FirmwarePackageInfo.sizeSpec = univ.Sequence.sizeSpec + constraint.ValueSizeConstraint(1, 2)
 
-
 # Community Identifiers Signed Attribute and Object Identifier
 
 id_aa_communityIdentifiers = univ.ObjectIdentifier('1.2.840.113549.1.9.16.2.40')
 
+
 class CommunityIdentifiers(univ.SequenceOf):
     pass
 
-CommunityIdentifiers.componentType = CommunityIdentifier()
 
+CommunityIdentifiers.componentType = CommunityIdentifier()
 
 # Implemented Compression Algorithms Signed Attribute and Object Identifier
 
 id_aa_implCompressAlgs = univ.ObjectIdentifier('1.2.840.113549.1.9.16.2.43')
 
+
 class ImplementedCompressAlgorithms(univ.SequenceOf):
     pass
 
-ImplementedCompressAlgorithms.componentType = univ.ObjectIdentifier()
 
+ImplementedCompressAlgorithms.componentType = univ.ObjectIdentifier()
 
 # Implemented Cryptographic Algorithms Signed Attribute and Object Identifier
 
 id_aa_implCryptoAlgs = univ.ObjectIdentifier('1.2.840.113549.1.9.16.2.38')
 
+
 class ImplementedCryptoAlgorithms(univ.SequenceOf):
     pass
 
-ImplementedCryptoAlgorithms.componentType = univ.ObjectIdentifier()
 
+ImplementedCryptoAlgorithms.componentType = univ.ObjectIdentifier()
 
 # Decrypt Key Identifier Signed Attribute and Object Identifier
 
 id_aa_decryptKeyID = univ.ObjectIdentifier('1.2.840.113549.1.9.16.2.37')
+
 
 class DecryptKeyIdentifier(univ.OctetString):
     pass
@@ -203,18 +220,21 @@ class DecryptKeyIdentifier(univ.OctetString):
 
 id_aa_targetHardwareIDs = univ.ObjectIdentifier('1.2.840.113549.1.9.16.2.36')
 
+
 class TargetHardwareIdentifiers(univ.SequenceOf):
     pass
 
-TargetHardwareIdentifiers.componentType = univ.ObjectIdentifier()
 
+TargetHardwareIdentifiers.componentType = univ.ObjectIdentifier()
 
 # Firmware Package Identifier Signed Attribute and Object Identifier
 
 id_aa_firmwarePackageID = univ.ObjectIdentifier('1.2.840.113549.1.9.16.2.35')
 
+
 class FirmwarePackageIdentifier(univ.Sequence):
     pass
+
 
 FirmwarePackageIdentifier.componentType = namedtype.NamedTypes(
     namedtype.NamedType('name', PreferredOrLegacyPackageIdentifier()),
@@ -227,15 +247,17 @@ FirmwarePackageIdentifier.componentType = namedtype.NamedTypes(
 class FWErrorVersion(univ.Integer):
     pass
 
+
 FWErrorVersion.namedValues = namedval.NamedValues(
     ('v1', 1)
 )
 
-
 id_ct_firmwareLoadError = univ.ObjectIdentifier('1.2.840.113549.1.9.16.1.18')
+
 
 class FirmwarePackageLoadError(univ.Sequence):
     pass
+
 
 FirmwarePackageLoadError.componentType = namedtype.NamedTypes(
     namedtype.DefaultedNamedType('version', FWErrorVersion().subtype(value='v1')),
@@ -244,7 +266,8 @@ FirmwarePackageLoadError.componentType = namedtype.NamedTypes(
     namedtype.NamedType('errorCode', FirmwarePackageLoadErrorCode()),
     namedtype.OptionalNamedType('vendorErrorCode', VendorLoadErrorCode()),
     namedtype.OptionalNamedType('fwPkgName', PreferredOrLegacyPackageIdentifier()),
-    namedtype.OptionalNamedType('config', univ.SequenceOf(componentType=CurrentFWConfig()).subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
+    namedtype.OptionalNamedType('config', univ.SequenceOf(componentType=CurrentFWConfig()).subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
 )
 
 
@@ -253,15 +276,17 @@ FirmwarePackageLoadError.componentType = namedtype.NamedTypes(
 class FWReceiptVersion(univ.Integer):
     pass
 
+
 FWReceiptVersion.namedValues = namedval.NamedValues(
     ('v1', 1)
 )
 
-
 id_ct_firmwareLoadReceipt = univ.ObjectIdentifier('1.2.840.113549.1.9.16.1.17')
+
 
 class FirmwarePackageLoadReceipt(univ.Sequence):
     pass
+
 
 FirmwarePackageLoadReceipt.componentType = namedtype.NamedTypes(
     namedtype.DefaultedNamedType('version', FWReceiptVersion().subtype(value='v1')),
@@ -269,13 +294,14 @@ FirmwarePackageLoadReceipt.componentType = namedtype.NamedTypes(
     namedtype.NamedType('hwSerialNum', univ.OctetString()),
     namedtype.NamedType('fwPkgName', PreferredOrLegacyPackageIdentifier()),
     namedtype.OptionalNamedType('trustAnchorKeyID', univ.OctetString()),
-    namedtype.OptionalNamedType('decryptKeyID', univ.OctetString().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
+    namedtype.OptionalNamedType('decryptKeyID', univ.OctetString().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
 )
-
 
 # Firmware Package Content Type and Object Identifier
 
 id_ct_firmwarePackage = univ.ObjectIdentifier('1.2.840.113549.1.9.16.1.16')
+
 
 class FirmwarePkgData(univ.OctetString):
     pass
@@ -285,8 +311,10 @@ class FirmwarePkgData(univ.OctetString):
 
 id_on_hardwareModuleName = univ.ObjectIdentifier('1.3.6.1.5.5.7.8.4')
 
+
 class HardwareModuleName(univ.Sequence):
     pass
+
 
 HardwareModuleName.componentType = namedtype.NamedTypes(
     namedtype.NamedType('hwType', univ.ObjectIdentifier()),

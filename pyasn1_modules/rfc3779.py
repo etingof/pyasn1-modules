@@ -13,8 +13,10 @@
 #
 
 
-from pyasn1.type import univ, char, namedtype, namedval, tag, constraint, useful
-
+from pyasn1.type import constraint
+from pyasn1.type import namedtype
+from pyasn1.type import tag
+from pyasn1.type import univ
 
 # IP Address Delegation Extension
 
@@ -28,6 +30,7 @@ class IPAddress(univ.BitString):
 class IPAddressRange(univ.Sequence):
     pass
 
+
 IPAddressRange.componentType = namedtype.NamedTypes(
     namedtype.NamedType('min', IPAddress()),
     namedtype.NamedType('max', IPAddress())
@@ -36,6 +39,7 @@ IPAddressRange.componentType = namedtype.NamedTypes(
 
 class IPAddressOrRange(univ.Choice):
     pass
+
 
 IPAddressOrRange.componentType = namedtype.NamedTypes(
     namedtype.NamedType('addressPrefix', IPAddress()),
@@ -46,6 +50,7 @@ IPAddressOrRange.componentType = namedtype.NamedTypes(
 class IPAddressChoice(univ.Choice):
     pass
 
+
 IPAddressChoice.componentType = namedtype.NamedTypes(
     namedtype.NamedType('inherit', univ.Null()),
     namedtype.NamedType('addressesOrRanges', univ.SequenceOf(componentType=IPAddressOrRange()))
@@ -54,6 +59,7 @@ IPAddressChoice.componentType = namedtype.NamedTypes(
 
 class IPAddressFamily(univ.Sequence):
     pass
+
 
 IPAddressFamily.componentType = namedtype.NamedTypes(
     namedtype.NamedType('addressFamily', univ.OctetString().subtype(subtypeSpec=constraint.ValueSizeConstraint(2, 3))),
@@ -64,8 +70,8 @@ IPAddressFamily.componentType = namedtype.NamedTypes(
 class IPAddrBlocks(univ.SequenceOf):
     pass
 
-IPAddrBlocks.componentType = IPAddressFamily()
 
+IPAddrBlocks.componentType = IPAddressFamily()
 
 # Autonomous System Identifier Delegation Extension
 
@@ -79,6 +85,7 @@ class ASId(univ.Integer):
 class ASRange(univ.Sequence):
     pass
 
+
 ASRange.componentType = namedtype.NamedTypes(
     namedtype.NamedType('min', ASId()),
     namedtype.NamedType('max', ASId())
@@ -87,6 +94,7 @@ ASRange.componentType = namedtype.NamedTypes(
 
 class ASIdOrRange(univ.Choice):
     pass
+
 
 ASIdOrRange.componentType = namedtype.NamedTypes(
     namedtype.NamedType('id', ASId()),
@@ -97,6 +105,7 @@ ASIdOrRange.componentType = namedtype.NamedTypes(
 class ASIdentifierChoice(univ.Choice):
     pass
 
+
 ASIdentifierChoice.componentType = namedtype.NamedTypes(
     namedtype.NamedType('inherit', univ.Null()),
     namedtype.NamedType('asIdsOrRanges', univ.SequenceOf(componentType=ASIdOrRange()))
@@ -106,7 +115,10 @@ ASIdentifierChoice.componentType = namedtype.NamedTypes(
 class ASIdentifiers(univ.Sequence):
     pass
 
+
 ASIdentifiers.componentType = namedtype.NamedTypes(
-    namedtype.OptionalNamedType('asnum', ASIdentifierChoice().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
-    namedtype.OptionalNamedType('rdi', ASIdentifierChoice().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1)))
+    namedtype.OptionalNamedType('asnum', ASIdentifierChoice().subtype(
+        explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
+    namedtype.OptionalNamedType('rdi', ASIdentifierChoice().subtype(
+        explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1)))
 )

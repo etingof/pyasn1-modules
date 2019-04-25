@@ -12,7 +12,8 @@
 # ASN.1 source from:
 # https://www.rfc-editor.org/rfc/rfc8103.txt
 
-from pyasn1.type import univ, char, namedtype, namedval, tag, constraint, useful
+from pyasn1.type import constraint
+from pyasn1.type import univ
 
 
 def _OID(*components):
@@ -32,7 +33,4 @@ class AEADChaCha20Poly1305Nonce(univ.OctetString):
 
 AEADChaCha20Poly1305Nonce.subtypeSpec = constraint.ValueSizeConstraint(12, 12)
 
-
 id_alg_AEADChaCha20Poly1305 = _OID(1, 2, 840, 113549, 1, 9, 16, 3, 18)
-
-
