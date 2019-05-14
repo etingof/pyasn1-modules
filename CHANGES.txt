@@ -7,6 +7,11 @@ Revision 0.2.6, released XX-04-2019
 - Added RFC6019 providing BinaryTime - an alternate format
   for representing Date and Time
 - RFC3565 superseded by RFC5649
+- Added RFC5480 providng Elliptic Curve Cryptography Subject
+  Public Key Information
+- Added RFC8520 providing X.509 Extensions for MUD URL and
+  MUD Signer
+- Added RFC3161 providing Time-Stamp Protocol support
 
 Revision 0.2.5, released 24-04-2019
 -----------------------------------

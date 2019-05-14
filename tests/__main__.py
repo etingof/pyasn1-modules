@@ -18,6 +18,7 @@ suite = unittest.TestLoader().loadTestsFromNames(
      'tests.test_rfc2511.suite',
      'tests.test_rfc2560.suite',
      'tests.test_rfc2986.suite',
+     'tests.test_rfc3161.suite',
      'tests.test_rfc3560.suite',
      'tests.test_rfc3565.suite',
      'tests.test_rfc3779.suite',
@@ -28,6 +29,7 @@ suite = unittest.TestLoader().loadTestsFromNames(
      'tests.test_rfc5084.suite',
      'tests.test_rfc5208.suite',
      'tests.test_rfc5280.suite',
+     'tests.test_rfc5480.suite',
      'tests.test_rfc5649.suite',
      'tests.test_rfc5652.suite',
      'tests.test_rfc5958.suite',
@@ -35,7 +37,8 @@ suite = unittest.TestLoader().loadTestsFromNames(
      'tests.test_rfc8103.suite',
      'tests.test_rfc8226.suite',
      'tests.test_rfc8410.suite',
-     'tests.test_rfc8418.suite']
+     'tests.test_rfc8418.suite',
+     'tests.test_rfc8520.suite']
 )
 
 
