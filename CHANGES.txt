@@ -12,8 +12,7 @@ Revision 0.2.6, released XX-04-2019
 - Added RFC8520 providing X.509 Extensions for MUD URL and
   MUD Signer
 - Added RFC3161 providing Time-Stamp Protocol support
-- Added RFC3709 providing X.509 extensions for IP Addresses
-  and AS Identifiers
+- Added RFC3709 providing Logotypes in X.509 Certificates
 
 Revision 0.2.5, released 24-04-2019
 -----------------------------------

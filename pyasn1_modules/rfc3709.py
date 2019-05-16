@@ -6,7 +6,7 @@
 # Copyright (c) 2019, Vigil Security, LLC
 # License: http://snmplabs.com/pyasn1/license.html
 #
-# X.509 Extensions for IP Addresses and AS Identifiers
+# Logotypes in X.509 Certificates
 #
 # ASN.1 source from:
 # https://www.rfc-editor.org/rfc/rfc3779.txt
