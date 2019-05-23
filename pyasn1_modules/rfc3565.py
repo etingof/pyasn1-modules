@@ -1,8 +1,8 @@
 # Copyright (c) 2019, Vigil Security, LLC
 # License: http://snmplabs.com/pyasn1/license.html
 #
-# Use of the Elliptic Curve Diffie-Hellman Key Agreement Algorithm
-# with X25519 and X448 in the Cryptographic Message Syntax (CMS)
+# Use of the Advanced Encryption Standard (AES) Encryption
+#   Algorithm in the Cryptographic Message Syntax (CMS)
 #
 # ASN.1 source from:
 # https://www.rfc-editor.org/rfc/rfc3565.txt
