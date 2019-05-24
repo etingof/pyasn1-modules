@@ -14,6 +14,8 @@ Revision 0.2.6, released XX-05-2019
 - Added RFC3161 providing Time-Stamp Protocol support
 - Added RFC3709 providing Logotypes in X.509 Certificates
 - Added RFC3274 providing CMS Compressed Data Content Type
+- Added RFC4073 providing Multiple Contents protection
+  with CMS
 
 Revision 0.2.5, released 24-04-2019
 -----------------------------------

@@ -25,6 +25,7 @@ suite = unittest.TestLoader().loadTestsFromNames(
      'tests.test_rfc3709.suite',
      'tests.test_rfc3779.suite',
      'tests.test_rfc4055.suite',
+     'tests.test_rfc4073.suite',
      'tests.test_rfc4108.suite',
      'tests.test_rfc4210.suite',
      'tests.test_rfc5083.suite',
