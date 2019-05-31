@@ -16,6 +16,7 @@ Revision 0.2.6, released XX-05-2019
 - Added RFC3274 providing CMS Compressed Data Content Type
 - Added RFC4073 providing Multiple Contents protection with CMS
 - Added RFC2634 providing Enhanced Security Services for S/MIME
+- Added RFC5915 providing Elliptic Curve Private Key
 
 Revision 0.2.5, released 24-04-2019
 -----------------------------------
