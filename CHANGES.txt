@@ -18,6 +18,7 @@ Revision 0.2.6, released XX-05-2019
 - Added RFC2634 providing Enhanced Security Services for S/MIME
 - Added RFC5915 providing Elliptic Curve Private Key
 - Added RFC5940 providing CMS Revocation Information Choices
+- Added RFC7296 providing IKEv2 Certificate Bundle
 
 Revision 0.2.5, released 24-04-2019
 -----------------------------------
