@@ -73,7 +73,6 @@ xicQmJP+VoMHo/ZpjFY9fYCjNZUArgKsEwK/s+p9yrVVeB1Nf8Mn
             rfc6402.id_cct_PKIData: lambda x: None
         }
 
-
         next_layer = rfc5652.id_ct_contentInfo
 
         while next_layer:

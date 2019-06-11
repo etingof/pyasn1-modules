@@ -282,7 +282,7 @@ class Controls(univ.SequenceOf):
 
 
 Controls.componentType = AttributeTypeAndValue()
-Controls.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+Controls.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class CertRequest(univ.Sequence):
@@ -312,7 +312,7 @@ class CertReqMessages(univ.SequenceOf):
 
 
 CertReqMessages.componentType = CertReqMsg()
-CertReqMessages.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+CertReqMessages.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class CertReq(CertRequest):

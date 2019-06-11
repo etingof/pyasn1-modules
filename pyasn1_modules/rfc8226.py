@@ -41,7 +41,7 @@ class JWTClaimNames(univ.SequenceOf):
     pass
 
 JWTClaimNames.componentType = JWTClaimName()
-JWTClaimNames.subtypeSpec=constraint.ValueSizeConstraint(1, MAX)
+JWTClaimNames.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class JWTClaimPermittedValues(univ.Sequence):
@@ -51,7 +51,7 @@ JWTClaimPermittedValues.componentType = namedtype.NamedTypes(
     namedtype.NamedType('claim', JWTClaimName()),
     namedtype.NamedType('permitted', univ.SequenceOf(
         componentType=char.UTF8String()).subtype(
-            subtypeSpec=constraint.ValueSizeConstraint(1, MAX)))
+            sizeSpec=constraint.ValueSizeConstraint(1, MAX)))
 )
 
 
@@ -59,7 +59,7 @@ class JWTClaimPermittedValuesList(univ.SequenceOf):
     pass
 
 JWTClaimPermittedValuesList.componentType = JWTClaimPermittedValues()
-JWTClaimPermittedValuesList.subtypeSpec=constraint.ValueSizeConstraint(1, MAX)
+JWTClaimPermittedValuesList.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class JWTClaimConstraints(univ.Sequence):
@@ -125,8 +125,7 @@ class TNAuthorizationList(univ.SequenceOf):
     pass
 
 TNAuthorizationList.componentType = TNEntry()
-TNAuthorizationList.subtypeSpec=constraint.ValueSizeConstraint(1, MAX)
-
+TNAuthorizationList.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 id_pe_TNAuthList = _OID(1, 3, 6, 1, 5, 5, 7, 1, 26)
 

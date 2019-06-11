@@ -41,10 +41,10 @@ LogotypeDetails.componentType = namedtype.NamedTypes(
     namedtype.NamedType('mediaType', char.IA5String()),
     namedtype.NamedType('logotypeHash', univ.SequenceOf(
         componentType=HashAlgAndValue()).subtype(
-            subtypeSpec=constraint.ValueSizeConstraint(1, MAX))),
+            sizeSpec=constraint.ValueSizeConstraint(1, MAX))),
     namedtype.NamedType('logotypeURI', univ.SequenceOf(
         componentType=char.IA5String()).subtype(
-            subtypeSpec=constraint.ValueSizeConstraint(1, MAX)))
+            sizeSpec=constraint.ValueSizeConstraint(1, MAX)))
 )
 
 
@@ -137,10 +137,10 @@ class LogotypeReference(univ.Sequence):
 LogotypeReference.componentType = namedtype.NamedTypes(
     namedtype.NamedType('refStructHash', univ.SequenceOf(
         componentType=HashAlgAndValue()).subtype(
-            subtypeSpec=constraint.ValueSizeConstraint(1, MAX))),
+            sizeSpec=constraint.ValueSizeConstraint(1, MAX))),
     namedtype.NamedType('refStructURI', univ.SequenceOf(
         componentType=char.IA5String()).subtype(
-             subtypeSpec=constraint.ValueSizeConstraint(1, MAX)))
+            sizeSpec=constraint.ValueSizeConstraint(1, MAX)))
 )
 
 

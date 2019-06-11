@@ -116,7 +116,7 @@ class SignedAttributes(univ.SetOf):
 
 
 SignedAttributes.componentType = Attribute()
-SignedAttributes.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+SignedAttributes.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class AttributeCertificateV2(rfc3281.AttributeCertificate):
@@ -140,7 +140,7 @@ class UnauthAttributes(univ.SetOf):
 
 
 UnauthAttributes.componentType = Attribute()
-UnauthAttributes.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+UnauthAttributes.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 id_encryptedData = _buildOid(1, 2, 840, 113549, 1, 7, 6)
 
@@ -361,7 +361,7 @@ class UnprotectedAttributes(univ.SetOf):
 
 
 UnprotectedAttributes.componentType = Attribute()
-UnprotectedAttributes.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+UnprotectedAttributes.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class KeyEncryptionAlgorithmIdentifier(rfc5280.AlgorithmIdentifier):
@@ -507,7 +507,7 @@ class RecipientInfos(univ.SetOf):
 
 
 RecipientInfos.componentType = RecipientInfo()
-RecipientInfos.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+RecipientInfos.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class EnvelopedData(univ.Sequence):
@@ -559,7 +559,7 @@ class UnsignedAttributes(univ.SetOf):
 
 
 UnsignedAttributes.componentType = Attribute()
-UnsignedAttributes.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+UnsignedAttributes.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class SignerIdentifier(univ.Choice):
@@ -637,7 +637,7 @@ class AuthAttributes(univ.SetOf):
 
 
 AuthAttributes.componentType = Attribute()
-AuthAttributes.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+AuthAttributes.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class Time(univ.Choice):
