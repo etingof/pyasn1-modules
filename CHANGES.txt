@@ -22,6 +22,8 @@ Revision 0.2.6, released XX-05-2019
 - Added RFC8619 providing HKDF Algorithm Identifiers
 - Added RFC7191 providing CMS Key Package Receipt and Error Content
   Types
+- Added openType support for ORAddress Extension Attributes in
+  the RFC5280 module
 
 Revision 0.2.5, released 24-04-2019
 -----------------------------------

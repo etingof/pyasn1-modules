@@ -3,6 +3,8 @@
 # This file is part of pyasn1-modules software.
 #
 # Created by Stanisław Pitucha with asn1ate tool.
+# Updated by Russ Housley to add openType support for ORAddress Extension Attributes.
+#
 # Copyright (c) 2005-2019, Ilya Etingof <etingof@gmail.com>
 # License: http://snmplabs.com/pyasn1/license.html
 #
@@ -10,7 +12,7 @@
 # Revocation List (CRL) Profile
 #
 # ASN.1 source from:
-# http://www.ietf.org/rfc/rfc5280.txt
+# https://www.rfc-editor.org/rfc/rfc5280.txt
 #
 from pyasn1.type import char
 from pyasn1.type import constraint
@@ -382,7 +384,9 @@ class PhysicalDeliveryOfficeName(PDSParameter):
 ub_extension_attributes = univ.Integer(256)
 
 certificateExtensionsMap = {
+}
 
+oraddressExtensionAttributeMap = {
 }
 
 
@@ -394,7 +398,7 @@ class ExtensionAttribute(univ.Sequence):
         namedtype.NamedType(
             'extension-attribute-value',
             univ.Any().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)),
-            openType=opentype.OpenType('type', certificateExtensionsMap))
+            openType=opentype.OpenType('extension-attribute-type', oraddressExtensionAttributeMap))
     )
 
 id_qt = _buildOid(id_pkix, 2)
@@ -1561,6 +1565,37 @@ id_kp_clientAuth = _buildOid(id_kp, 2)
 id_ce_subjectKeyIdentifier = _buildOid(id_ce, 14)
 
 id_ce_inhibitAnyPolicy = _buildOid(id_ce, 54)
+
+# map of ORAddress ExtensionAttribute type to ExtensionAttribute value
+
+_oraddressExtensionAttributeMapUpdate = {
+    common_name: CommonName(),
+    teletex_common_name: TeletexCommonName(),
+    teletex_organization_name: TeletexOrganizationName(),
+    teletex_personal_name: TeletexPersonalName(),
+    teletex_organizational_unit_names: TeletexOrganizationalUnitNames(),
+    pds_name: PDSName(),
+    physical_delivery_country_name: PhysicalDeliveryCountryName(),
+    postal_code: PostalCode(),
+    physical_delivery_office_name: PhysicalDeliveryOfficeName(),
+    physical_delivery_office_number: PhysicalDeliveryOfficeNumber(),
+    extension_OR_address_components: ExtensionORAddressComponents(),
+    physical_delivery_personal_name: PhysicalDeliveryPersonalName(),
+    physical_delivery_organization_name: PhysicalDeliveryOrganizationName(),
+    extension_physical_delivery_address_components: ExtensionPhysicalDeliveryAddressComponents(),
+    unformatted_postal_address: UnformattedPostalAddress(),
+    street_address: StreetAddress(),
+    post_office_box_address: PostOfficeBoxAddress(),
+    poste_restante_address: PosteRestanteAddress(),
+    unique_postal_name: UniquePostalName(),
+    local_postal_attributes: LocalPostalAttributes(),
+    extended_network_address: ExtendedNetworkAddress(),
+    terminal_type: TerminalType(),
+    teletex_domain_defined_attributes: TeletexDomainDefinedAttributes(),
+}
+
+oraddressExtensionAttributeMap.update(_oraddressExtensionAttributeMapUpdate)
+
 
 # map of AttributeType -> AttributeValue
 
