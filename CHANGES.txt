@@ -24,6 +24,8 @@ Revision 0.2.6, released XX-05-2019
   Types
 - Added openType support for ORAddress Extension Attributes in
   the RFC5280 module
+- Added RFC5035 providing Update to Enhanced Security Services for
+  S/MIME
 
 Revision 0.2.5, released 24-04-2019
 -----------------------------------
