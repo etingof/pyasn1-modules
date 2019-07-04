@@ -9,8 +9,12 @@ import sys
 from pyasn1.codec.der import decoder as der_decoder
 from pyasn1.codec.der import encoder as der_encoder
 
+from pyasn1.type import char
+
 from pyasn1_modules import pem
 from pyasn1_modules import rfc2986
+from pyasn1_modules import rfc5280
+
 
 try:
     import unittest2 as unittest
@@ -50,6 +54,27 @@ fi6h7i9VVAZpslaKFfkNg12gLbbsCB1q36l5VXjHY/qe0FIUa9ogRrOi
         assert not rest
         assert asn1Object.prettyPrint()
         assert der_encoder.encode(asn1Object) == substrate
+
+    def testOpenTypes(self):
+
+        substrate = pem.readBase64fromText(self.pem_text)
+
+        rfc2986.certificateAttributesMap.update(
+            rfc5280.certificateAttributesMap)
+
+        asn1Object, rest = der_decoder.decode(substrate,
+            asn1Spec=rfc2986.CertificationRequest(),
+            decodeOpenTypes=True)
+
+        assert not rest
+        assert asn1Object.prettyPrint()
+        assert der_encoder.encode(asn1Object) == substrate
+
+        for rdn in asn1Object['certificationRequestInfo']['subject']['rdnSequence']:
+            if rdn[0]['type'] == rfc5280.id_at_countryName:
+                assert rdn[0]['value'] == char.PrintableString('US')
+            else:
+                assert len(rdn[0]['value']['utf8String']) > 2
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
