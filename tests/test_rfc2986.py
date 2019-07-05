@@ -13,7 +13,6 @@ from pyasn1.type import char
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc2986
-from pyasn1_modules import rfc5280
 
 
 try:
@@ -71,7 +70,7 @@ fi6h7i9VVAZpslaKFfkNg12gLbbsCB1q36l5VXjHY/qe0FIUa9ogRrOi
         assert der_encoder.encode(asn1Object) == substrate
 
         for rdn in asn1Object['certificationRequestInfo']['subject']['rdnSequence']:
-            if rdn[0]['type'] == rfc5280.id_at_countryName:
+            if rdn[0]['type'] == rfc2986.id_at_countryName:
                 assert rdn[0]['value'] == char.PrintableString('US')
             else:
                 assert len(rdn[0]['value']['utf8String']) > 2
