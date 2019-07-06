@@ -10,6 +10,7 @@ from pyasn1.codec.der import decoder as der_decoder
 from pyasn1.codec.der import encoder as der_encoder
 
 from pyasn1.type import char
+from pyasn1.type import univ
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc2986
@@ -56,10 +57,16 @@ fi6h7i9VVAZpslaKFfkNg12gLbbsCB1q36l5VXjHY/qe0FIUa9ogRrOi
 
     def testOpenTypes(self):
 
+        id_at_commonName = (2, 5, 4, 3)
+        id_at_countryName = (2, 5, 4, 6)
+
         substrate = pem.readBase64fromText(self.pem_text)
 
         rfc2986.certificateAttributesMap.update(
-            rfc5280.certificateAttributesMap)
+            {
+                id_at_countryName: char.PrintableString()
+            }
+        )
 
         asn1Object, rest = der_decoder.decode(substrate,
             asn1Spec=rfc2986.CertificationRequest(),
@@ -70,10 +77,11 @@ fi6h7i9VVAZpslaKFfkNg12gLbbsCB1q36l5VXjHY/qe0FIUa9ogRrOi
         assert der_encoder.encode(asn1Object) == substrate
 
         for rdn in asn1Object['certificationRequestInfo']['subject']['rdnSequence']:
-            if rdn[0]['type'] == rfc2986.id_at_countryName:
+            if rdn[0]['type'] == id_at_countryName:
                 assert rdn[0]['value'] == char.PrintableString('US')
-            else:
-                assert len(rdn[0]['value']['utf8String']) > 2
+            elif rdn[0]['type'] == id_at_commonName:
+                assert rdn[0]['value'] == univ.OctetString(
+                    hexValue='0c146663752e66616b652e616464726573732e6f7267')
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
