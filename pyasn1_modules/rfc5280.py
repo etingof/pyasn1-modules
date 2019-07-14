@@ -3,7 +3,8 @@
 # This file is part of pyasn1-modules software.
 #
 # Created by Stanisław Pitucha with asn1ate tool.
-# Updated by Russ Housley to add openType support for ORAddress Extension Attributes.
+# Updated by Russ Housley for ORAddress Extension Attribute opentype support.
+# Updated by Russ Housley for AlgorithmIdentifier opentype support.
 #
 # Copyright (c) 2005-2019, Ilya Etingof <etingof@gmail.com>
 # License: http://snmplabs.com/pyasn1/license.html
@@ -282,10 +283,14 @@ class CertificateSerialNumber(univ.Integer):
     pass
 
 
+algorithmIdentifierMap = {}
+
 class AlgorithmIdentifier(univ.Sequence):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('algorithm', univ.ObjectIdentifier()),
-        namedtype.OptionalNamedType('parameters', univ.Any(), openType=opentype.OpenType)
+        namedtype.OptionalNamedType('parameters', univ.Any(),
+            openType=opentype.OpenType('algorithm', algorithmIdentifierMap)
+        )
     )
 
 

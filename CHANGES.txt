@@ -22,8 +22,8 @@ Revision 0.2.6, released XX-07-2019
 - Added RFC8619 providing HKDF Algorithm Identifiers
 - Added RFC7191 providing CMS Key Package Receipt and Error Content
   Types
-- Added openType support for ORAddress Extension Attributes in
-  the RFC5280 module
+- Added openType support for ORAddress Extension Attributes and
+  Algorithm Identifiers in the RFC5280 module
 - Added RFC5035 providing Update to Enhanced Security Services for
   S/MIME
 
