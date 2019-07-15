@@ -26,6 +26,8 @@ Revision 0.2.6, released XX-07-2019
   Algorithm Identifiers in the RFC5280 module
 - Added RFC5035 providing Update to Enhanced Security Services for
   S/MIME
+- Added openType support for CMS Content Types and CMS Attributes
+  in the RFC5652 module
 
 Revision 0.2.5, released 24-04-2019
 -----------------------------------
