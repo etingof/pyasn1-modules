@@ -28,6 +28,8 @@ Revision 0.2.6, released XX-07-2019
   S/MIME
 - Added openType support for CMS Content Types and CMS Attributes
   in the RFC5652 module
+- Added openType support to RFC 2986 by importing definitions from
+  the RFC 5280 module so that the same maps are used.
 
 Revision 0.2.5, released 24-04-2019
 -----------------------------------
