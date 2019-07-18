@@ -3,18 +3,22 @@
 # This file is part of pyasn1-modules software.
 #
 # Created by Stanisław Pitucha with asn1ate tool.
+# Modified by Russ Housley to add a maps for CMC Control Attributes
+#   and CMC Content Types for use with opentypes.
+#
 # Copyright (c) 2005-2019, Ilya Etingof <etingof@gmail.com>
 # License: http://snmplabs.com/pyasn1/license.html
 #
 # Certificate Management over CMS (CMC) Updates
 #
 # ASN.1 source from:
-# http://www.ietf.org/rfc/rfc6402.txt
+# https://www.rfc-editor.org/rfc/rfc6402.txt
 #
 from pyasn1.type import char
 from pyasn1.type import constraint
 from pyasn1.type import namedtype
 from pyasn1.type import namedval
+from pyasn1.type import opentype
 from pyasn1.type import tag
 from pyasn1.type import univ
 from pyasn1.type import useful
@@ -35,6 +39,9 @@ def _buildOid(*components):
             output.append(int(x))
 
     return univ.ObjectIdentifier(output)
+
+
+cmcControlAttributesMap = { }
 
 
 class ChangeSubjectName(univ.Sequence):
@@ -384,7 +391,9 @@ class TaggedAttribute(univ.Sequence):
 TaggedAttribute.componentType = namedtype.NamedTypes(
     namedtype.NamedType('bodyPartID', BodyPartID()),
     namedtype.NamedType('attrType', univ.ObjectIdentifier()),
-    namedtype.NamedType('attrValues', univ.SetOf(componentType=AttributeValue()))
+    namedtype.NamedType('attrValues', univ.SetOf(componentType=AttributeValue()),
+        openType=opentype.OpenType('attrType', cmcControlAttributesMap)
+    )
 )
 
 
@@ -565,3 +574,51 @@ class NoSignatureValue(univ.OctetString):
 id_ad_cmc = _buildOid(rfc5280.id_ad, 12)
 
 id_alg_noSignature = _buildOid(id_pkix, 6, 2)
+
+
+# Map of CMC Control OIDs to CMC Control Attributes
+
+_cmcControlAttributesMapUpdate = {
+    id_cmc_statusInfo: CMCStatusInfo(),
+    id_cmc_statusInfoV2: CMCStatusInfoV2(),
+    id_cmc_identification: char.UTF8String(),
+    id_cmc_identityProof: univ.OctetString(),
+    id_cmc_identityProofV2: IdentifyProofV2(),
+    id_cmc_dataReturn: univ.OctetString(),
+    id_cmc_transactionId: univ.Integer(),
+    id_cmc_senderNonce: univ.OctetString(),
+    id_cmc_recipientNonce: univ.OctetString(),
+    id_cmc_addExtensions: AddExtensions(),
+    id_cmc_encryptedPOP: EncryptedPOP(),
+    id_cmc_decryptedPOP: DecryptedPOP(),
+    id_cmc_lraPOPWitness: LraPopWitness(),
+    id_cmc_getCert: GetCert(),
+    id_cmc_getCRL: GetCRL(),
+    id_cmc_revokeRequest: RevokeRequest(),
+    id_cmc_regInfo: univ.OctetString(),
+    id_cmc_responseInfo: univ.OctetString(),
+    id_cmc_queryPending: univ.OctetString(),
+    id_cmc_popLinkRandom: univ.OctetString(),
+    id_cmc_popLinkWitness: univ.OctetString(),
+    id_cmc_popLinkWitnessV2: PopLinkWitnessV2(),
+    id_cmc_confirmCertAcceptance: CMCCertId(),
+    id_cmc_trustedAnchors: PublishTrustAnchors(),
+    id_cmc_authData: AuthPublish(),
+    id_cmc_batchRequests: BodyPartList(),
+    id_cmc_batchResponses: BodyPartList(),
+    id_cmc_publishCert: CMCPublicationInfo(),
+    id_cmc_modCertTemplate: ModCertTemplate(),
+    id_cmc_controlProcessed: ControlsProcessed(),
+    id_ExtensionReq: ExtensionReq(),
+}
+
+cmcControlAttributesMap.update(_cmcControlAttributesMapUpdate)
+
+
+# Map of CMC Content Type OIDs to CMC Content Types
+# To be added to the ones that are in rfc5652.py
+
+cmsContentTypesMapUpdate = {
+    id_cct_PKIData: PKIData(),
+    id_cct_PKIResponse: PKIResponse(),
+}

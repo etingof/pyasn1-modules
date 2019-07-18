@@ -82,6 +82,20 @@ izaUuU1EEwgOMELjeFL62Ssvq8X+x6hZFCLygI7GNeitlblNhCXhFFurqMs=
 
                 assert mudurl[-5:] == ".json"
 
+    def testExtensionsMap(self):
+        substrate = pem.readBase64fromText(self.mud_cert_pem_text)
+        rfc5280.certificateExtensionsMap.update(rfc8520.certificateExtensionsMapUpdate)
+        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
+        assert not rest
+        assert asn1Object.prettyPrint()
+        assert der_encode(asn1Object) == substrate
+
+        for extn in asn1Object['tbsCertificate']['extensions']:
+            if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
+                extnValue, rest = der_decode(extn['extnValue'],
+                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
+                assert der_encode(extnValue) == extn['extnValue']
+
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 

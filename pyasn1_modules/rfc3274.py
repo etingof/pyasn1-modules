@@ -2,6 +2,7 @@
 # This file is part of pyasn1-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to add a map for use with opentypes.
 #
 # Copyright (c) 2019, Vigil Security, LLC
 # License: http://snmplabs.com/pyasn1/license.html
@@ -46,3 +47,11 @@ id_alg_zlibCompress = univ.ObjectIdentifier('1.2.840.113549.1.9.16.3.8')
 cpa_zlibCompress = rfc5280.AlgorithmIdentifier()
 cpa_zlibCompress['algorithm'] = id_alg_zlibCompress
 # cpa_zlibCompress['parameters'] are absent
+
+
+# Map of Content Type OIDs to Content Types
+# To be added to the ones that are in rfc5652.py
+
+cmsContentTypesMapUpdate = {
+    id_ct_compressedData: CompressedData(),
+}

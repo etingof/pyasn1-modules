@@ -1,7 +1,9 @@
 # This file is being contributed to of pyasn1-modules software.
 #
 # Created by Russ Housley without assistance from the asn1ate tool.
-# Copyright (c) 2018, Vigil Security, LLC
+# Modified by Russ Housley to add support for opentypes.
+#
+# Copyright (c) 2019, Vigil Security, LLC
 # License: http://snmplabs.com/pyasn1/license.html
 #
 # CMS Key Package Receipt and Error Content Types
@@ -12,10 +14,12 @@
 from pyasn1.type import constraint
 from pyasn1.type import namedtype
 from pyasn1.type import namedval
+from pyasn1.type import opentype
 from pyasn1.type import tag
 from pyasn1.type import univ
 
 from pyasn1_modules import rfc5280
+from pyasn1_modules import rfc5652
 
 MAX = float('inf')
 
@@ -41,7 +45,9 @@ class SingleAttribute(univ.Sequence):
 
 SingleAttribute.componentType = namedtype.NamedTypes(
     namedtype.NamedType('attrType', univ.ObjectIdentifier()),
-    namedtype.NamedType('attrValues', AttributeValues())
+    namedtype.NamedType('attrValues', AttributeValues(),
+        openType=opentype.OpenType('attrType', rfc5652.cmsAttributesMap)
+    )
 )
 
 
@@ -232,3 +238,20 @@ KeyPkgIdentifierAndReceiptReq.componentType = namedtype.NamedTypes(
     namedtype.NamedType('pkgID', KeyPkgID()),
     namedtype.OptionalNamedType('receiptReq', KeyPkgReceiptReq())
 )
+
+
+# Map of Attribute Type OIDs to Attributes
+# To be added to the ones that are in rfc5652.py
+
+cmsAttributesMapUpdate = {
+    id_aa_KP_keyPkgIdAndReceiptReq: KeyPkgIdentifierAndReceiptReq(),
+}
+
+
+# Map of Content Type OIDs to Content Types
+# To be added to the ones that are in rfc5652.py
+
+cmsContentTypesMapUpdate = {
+    id_ct_KP_keyPackageError: KeyPackageError(),
+    id_ct_KP_keyPackageReceipt: KeyPackageReceipt(),
+}

@@ -2,6 +2,7 @@
 # This file is being contributed to pyasn1-modules software.
 #
 # Created by Russ Housley.
+# Modified by Russ Housley to add a map for use with opentypes.
 #
 # Copyright (c) 2019, Vigil Security, LLC
 # License: http://snmplabs.com/pyasn1/license.html
@@ -10,15 +11,12 @@
 #   the PrivateKeyInfo structure in PKCS#8 in RFC 5208
 #
 # ASN.1 source from:
-# https://www.rfc-editor.org/rfc/rfc8418.txt
+# https://www.rfc-editor.org/rfc/rfc5958.txt
 
-from pyasn1.type import constraint
-from pyasn1.type import namedtype
-from pyasn1.type import namedval
-from pyasn1.type import tag
-from pyasn1.type import univ
+from pyasn1.type import univ, constraint, namedtype, namedval, tag
 
 from pyasn1_modules import rfc5280
+
 
 MAX = float('inf')
 
@@ -55,7 +53,7 @@ class Attributes(univ.SetOf):
 
 
 class PublicKey(univ.BitString):
-    pass
+   pass
 
 
 # OneAsymmetricKey is essentially version 2 of PrivateKeyInfo.
@@ -82,10 +80,16 @@ class PrivateKeyInfo(OneAsymmetricKey):
 
 id_ct_KP_aKeyPackage = univ.ObjectIdentifier('2.16.840.1.101.2.1.2.78.5')
 
-
 class AsymmetricKeyPackage(univ.SequenceOf):
     pass
 
-
 AsymmetricKeyPackage.componentType = OneAsymmetricKey()
-AsymmetricKeyPackage.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+KeyPackage.subtypeSpec=constraint.ValueSizeConstraint(1, MAX)
+    
+
+# Map of Content Type OIDs to Content Types
+# To be added to the ones that are in rfc5652.py
+
+cmsContentTypesMapUpdate = {
+    id_ct_KP_aKeyPackage: AsymmetricKeyPackage(),
+}

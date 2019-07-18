@@ -37,8 +37,23 @@ class BinarySigningTimeTestCase(unittest.TestCase):
         assert der_encode(asn1Object) == substrate
 
         assert asn1Object['attrType'] == rfc6019.id_aa_binarySigningTime
-        bintime, rest = der_decode(asn1Object['attrValues'][0], asn1Spec=rfc6019.BinaryTime())
+        bintime, rest = der_decode(asn1Object['attrValues'][0],
+                                   asn1Spec=rfc6019.BinaryTime())
         assert bintime == 0x5cbf8654
+
+    def testOpenTypes(self):
+        substrate = pem.readBase64fromText(self.pem_text)
+        
+        rfc5652.cmsAttributesMap.update(rfc6019.cmsAttributesMapUpdate)
+        asn1Object, rest = der_decode(substrate,
+                                      asn1Spec=self.asn1Spec,
+                                      decodeOpenTypes=True)
+        assert not rest
+        assert asn1Object.prettyPrint()
+        assert der_encode(asn1Object) == substrate
+
+        assert asn1Object['attrType'] in rfc5652.cmsAttributesMap.keys()
+        assert asn1Object['attrValues'][0] == 0x5cbf8654
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
