@@ -16,7 +16,6 @@ from pyasn1.type import univ
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5652
 from pyasn1_modules import rfc5958
-from pyasn1_modules import rfc6031
 from pyasn1_modules import rfc8410
 
 try:
