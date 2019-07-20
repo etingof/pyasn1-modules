@@ -61,8 +61,12 @@ Ea8/B6hPatJ0ES8q/HO3X8IVQwVs1n3aAr0im0/T+Xc=
         param, rest = der_decoder.decode(algid['parameters'], asn1Spec=rfc5480.ECParameters())
         assert param.prettyPrint()
         assert param['namedCurve'] == rfc5480.secp384r1
-        
+
+
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
 if __name__ == '__main__':
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    import sys
+
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    sys.exit(not result.wasSuccessful())

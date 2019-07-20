@@ -71,7 +71,11 @@ XQ7u2qbaKFtZ7V96NH8ApkUFkg==
         assert cd['compressionAlgorithm']['algorithm'] == rfc3274.id_alg_zlibCompress
         assert cd['encapContentInfo']['eContentType'] == rfc5652.id_data
 
+
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
 if __name__ == '__main__':
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    import sys
+
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    sys.exit(not result.wasSuccessful())
