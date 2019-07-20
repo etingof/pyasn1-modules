@@ -1,7 +1,10 @@
 # This file is being contributed to of pyasn1-modules software.
 #
 # Created by Russ Housley without assistance from the asn1ate tool.
-# Copyright (c) 2018, Vigil Security, LLC
+# Modified by Russ Housley to add a map for use with opentypes and
+#   simplify the code for the object identifier assignment.
+#
+# Copyright (c) 2018, 2019 Vigil Security, LLC
 # License: http://snmplabs.com/pyasn1/license.html
 #
 #  Authenticated-Enveloped-Data for the Cryptographic Message Syntax (CMS)
@@ -18,18 +21,9 @@ from pyasn1_modules import rfc5652
 MAX = float('inf')
 
 
-def _buildOid(*components):
-    output = []
-    for x in tuple(components):
-        if isinstance(x, univ.ObjectIdentifier):
-            output.extend(list(x))
-        else:
-            output.append(int(x))
-    return univ.ObjectIdentifier(output)
+# CMS Authenticated-Enveloped-Data Content Type
 
-
-id_ct_authEnvelopedData = _buildOid(1, 2, 840, 113549, 1, 9, 16, 1, 23)
-
+id_ct_authEnvelopedData = univ.ObjectIdentifier('1.2.840.113549.1.9.16.1.23')
 
 class AuthEnvelopedData(univ.Sequence):
     pass
@@ -46,3 +40,11 @@ AuthEnvelopedData.componentType = namedtype.NamedTypes(
     namedtype.OptionalNamedType('unauthAttrs', rfc5652.UnauthAttributes().subtype(
         implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 2)))
 )
+
+
+# Map of Content Type OIDs to Content Types
+# To be added to the ones that are in rfc5652.py
+
+cmsContentTypesMapUpdate = {
+    id_ct_authEnvelopedData: AuthEnvelopedData(),
+}

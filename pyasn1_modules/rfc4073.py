@@ -2,6 +2,7 @@
 # This file is part of pyasn1-modules software.
 #
 # Created by Russ Housley with some assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to add a map for use with opentypes.
 #
 # Copyright (c) 2019, Vigil Security, LLC
 # License: http://snmplabs.com/pyasn1/license.html
@@ -45,3 +46,12 @@ ContentWithAttributes.componentType = namedtype.NamedTypes(
         componentType=rfc5652.Attribute()).subtype(
             subtypeSpec=constraint.ValueSizeConstraint(1, MAX)))
 )
+
+
+# Map of Content Type OIDs to Content Types
+# To be added to the ones that are in rfc5652.py
+
+cmsContentTypesMapUpdate = {
+    id_ct_contentCollection: ContentCollection(),
+    id_ct_contentWithAttrs: ContentWithAttributes(),
+}

@@ -144,6 +144,35 @@ vFIgX7eIkd8=
                 assert sav.prettyPrint()
                 assert der_encode(sav) == sav0
 
+    def testOpenTypes(self):
+        substrate = pem.readBase64fromText(self.signed_receipt_pem_text)
+        rfc5652.cmsContentTypesMap.update(rfc5035.cmsContentTypesMapUpdate)
+        rfc5652.cmsAttributesMap.update(rfc5035.ESSAttributeMap)
+        asn1Object, rest = der_decode(substrate,
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+        assert not rest
+        assert asn1Object.prettyPrint()
+        assert der_encode(asn1Object) == substrate
+
+        assert asn1Object['contentType'] in rfc5652.cmsContentTypesMap.keys()
+        assert asn1Object['contentType'] == rfc5652.id_signedData
+
+        sd = asn1Object['content']
+        assert sd['version'] == rfc5652.CMSVersion().subtype(value='v3')
+        assert sd['encapContentInfo']['eContentType'] in rfc5652.cmsContentTypesMap.keys()
+        assert sd['encapContentInfo']['eContentType'] == rfc5035.id_ct_receipt
+
+        for sa in sd['signerInfos'][0]['signedAttrs']:
+            assert sa['attrType'] in rfc5652.cmsAttributesMap.keys()
+            if sa['attrType'] == rfc5035.id_aa_msgSigDigest:
+                sa['attrValues'][0].prettyPrint()[:10] == '0x167378'
+
+        # Since receipt is inside an OCTET STRING, decodeOpenTypes=True cannot
+        # automatically decode it 
+        receipt, rest = der_decode(sd['encapContentInfo']['eContent'],
+            asn1Spec=rfc5652.cmsContentTypesMap[sd['encapContentInfo']['eContentType']])
+        assert receipt['version'] == rfc5035.ESSVersion().subtype(value='v1')
+
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 

@@ -2,6 +2,7 @@
 # This file is part of pyasn1-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to add a map for use with opentypes.
 #
 # Copyright (c) 2019, Vigil Security, LLC
 # License: http://snmplabs.com/pyasn1/license.html
@@ -319,4 +320,12 @@ ESSAttributeMap = {
     id_aa_msgSigDigest: MsgSigDigest(),
     id_aa_contentHint: ContentHints(),
     id_aa_receiptRequest: ReceiptRequest(),
+}
+
+
+# Map of Content Type OIDs to Content Types
+# To be added to the ones that are in rfc5652.py
+
+cmsContentTypesMapUpdate = {
+    id_ct_receipt: Receipt(),
 }

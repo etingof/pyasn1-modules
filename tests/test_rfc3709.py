@@ -60,9 +60,23 @@ Pj22pmfmQi5w21UljqoTj/+lQLkU3wfy5BdVKBwI0GfEA+YL3ctSzPNqAA==
                 assert not rest
                 assert logotype.prettyPrint()
                 assert der_encoder.encode(logotype) == s
-                assert logotype['subjectLogo']['direct']['image'][0]['imageDetails']['mediaType'] == "image/png"
-                assert logotype['subjectLogo']['direct']['image'][0]['imageDetails']['logotypeURI'][
-                           0] == "http://www.vigilsec.com/vigilsec_logo.png"
+                ids = logotype['subjectLogo']['direct']['image'][0]['imageDetails']
+                assert ids['mediaType'] == "image/png"
+                assert ids['logotypeURI'][0] == "http://www.vigilsec.com/vigilsec_logo.png"
+
+    def testExtensionsMap(self):
+        substrate = pem.readBase64fromText(self.pem_text)
+        rfc5280.certificateExtensionsMap.update(rfc3709.certificateExtensionsMapUpdate)
+        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
+        assert not rest
+        assert asn1Object.prettyPrint()
+        assert der_encoder.encode(asn1Object) == substrate
+
+        for extn in asn1Object['tbsCertificate']['extensions']:
+            if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
+                extnValue, rest = der_decoder.decode(extn['extnValue'],
+                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
+                assert der_encoder.encode(extnValue) == extn['extnValue']
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

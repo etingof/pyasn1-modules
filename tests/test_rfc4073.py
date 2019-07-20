@@ -14,6 +14,7 @@ from pyasn1.codec.der.encoder import encode as der_encode
 from pyasn1.type import univ
 
 from pyasn1_modules import pem
+from pyasn1_modules import rfc2634
 from pyasn1_modules import rfc4073
 from pyasn1_modules import rfc5652
 
@@ -78,20 +79,13 @@ buWO3egPDL8Kf7tBhzjIKLw=
 
             if content_type == rfc4073.id_ct_contentWithAttrs:
                 for attr in asn1Object['attrs']:
-                    assert attr['attrType'] in attribute_list
+                    assert attr['attrType'] in rfc5652.cmsAttributesMap.keys()
     
             return asn1Object
 
-        attribute_list = (
-            univ.ObjectIdentifier('1.2.840.113549.1.9.16.2.4'),
-            univ.ObjectIdentifier('1.2.840.113549.1.9.16.2.7'),
-        )
-
-        layers = {
-            rfc5652.id_ct_contentInfo: rfc5652.ContentInfo(),
-            rfc4073.id_ct_contentCollection: rfc4073.ContentCollection(),
-            rfc4073.id_ct_contentWithAttrs: rfc4073.ContentWithAttributes(),
-        }
+        rfc5652.cmsAttributesMap.update(rfc2634.ESSAttributeMap)
+        rfc5652.cmsContentTypesMap.update(rfc4073.cmsContentTypesMapUpdate)
+        layers = rfc5652.cmsContentTypesMap
 
         getNextLayer = {
             rfc5652.id_ct_contentInfo: lambda x: x['contentType'],
@@ -124,6 +118,33 @@ buWO3egPDL8Kf7tBhzjIKLw=
                 asn1Object = test_layer(substrate, this_layer)
                 substrate = getNextSubstrate[this_layer](asn1Object)
                 this_layer = getNextLayer[this_layer](asn1Object)
+
+    def testOpenTypes(self):
+
+        substrate = pem.readBase64fromText(self.pem_text)
+
+        rfc5652.cmsAttributesMap.update(rfc2634.ESSAttributeMap)
+        rfc5652.cmsContentTypesMap.update(rfc4073.cmsContentTypesMapUpdate)
+        asn1Object, rest = der_decode(substrate,
+                                      asn1Spec=rfc5652.ContentInfo(),
+                                      decodeOpenTypes=True)
+        assert not rest
+        assert asn1Object.prettyPrint()
+        assert der_encode(asn1Object) == substrate
+
+        assert asn1Object['contentType'] == rfc4073.id_ct_contentCollection
+        for ci in asn1Object['content']:
+            assert ci['contentType'] in rfc5652.cmsContentTypesMap.keys()
+            assert ci['contentType'] == rfc4073.id_ct_contentWithAttrs
+            next_ci = ci['content']['content']
+            assert next_ci['contentType'] in rfc5652.cmsContentTypesMap.keys()
+            assert next_ci['contentType'] == rfc5652.id_data
+            assert 'Content-Type: text' in next_ci['content']
+
+            for attr in ci['content']['attrs']:
+                assert attr['attrType'] in rfc5652.cmsAttributesMap.keys()
+                if attr['attrType'] == rfc2634.id_aa_contentHint:
+                    assert 'RFC 4073' in attr['attrValues'][0]['contentDescription']
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

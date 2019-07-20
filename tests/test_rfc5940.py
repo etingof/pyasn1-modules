@@ -80,17 +80,51 @@ ttTMEpl2prH8bbwo1g==
         assert der_encode(asn1Object) == substrate
 
         assert asn1Object['contentType'] == rfc5652.id_signedData
-        inner, rest = der_decode(asn1Object['content'], asn1Spec=rfc5652.SignedData())
-        assert inner.prettyPrint()
+        sd, rest = der_decode(asn1Object['content'],
+                              asn1Spec=rfc5652.SignedData())
+        assert sd.prettyPrint()
 
-        assert inner['encapContentInfo']['eContentType'] == rfc5652.id_data
-        assert inner['encapContentInfo']['eContent']
-        assert inner['crls'][0]['crl']['tbsCertList']['version'] == rfc5280.Version(value='v2')
-        assert inner['crls'][1]['other']['otherRevInfoFormat'] == rfc5940.id_ri_ocsp_response
+        assert sd['encapContentInfo']['eContentType'] == rfc5652.id_data
+        assert sd['encapContentInfo']['eContent']
+        v2 = rfc5280.Version(value='v2')
+        assert sd['crls'][0]['crl']['tbsCertList']['version'] == v2
+        ocspr_oid = rfc5940.id_ri_ocsp_response
+        assert sd['crls'][1]['other']['otherRevInfoFormat'] == ocspr_oid
 
-        ocspr, rest = der_decode(inner['crls'][1]['other']['otherRevInfo'], asn1Spec=rfc5940.OCSPResponse())
+        ocspr, rest = der_decode(sd['crls'][1]['other']['otherRevInfo'],
+                                 asn1Spec=rfc5940.OCSPResponse())
         assert ocspr.prettyPrint()
-        assert ocspr['responseStatus'] == rfc2560.OCSPResponseStatus(value='successful')
+        success = rfc2560.OCSPResponseStatus(value='successful')
+        assert ocspr['responseStatus'] == success
+
+    def testOpenTypes(self):
+        substrate = pem.readBase64fromText(self.pem_text)
+
+        rfc5652.otherRevInfoFormatMap.update(rfc5940.otherRevInfoFormatMapUpdate)
+        asn1Object, rest = der_decode(substrate,
+                                      asn1Spec=self.asn1Spec,
+                                      decodeOpenTypes=True)
+        assert not rest
+        assert asn1Object.prettyPrint()
+        assert der_encode(asn1Object) == substrate
+
+        assert asn1Object['contentType'] == rfc5652.id_signedData
+        sd_eci = asn1Object['content']['encapContentInfo']
+        assert sd_eci['eContentType'] == rfc5652.id_data
+        assert sd_eci['eContent'].hasValue()
+
+        for ri in asn1Object['content']['crls']:
+            if ri.getName() == 'crl':
+                v2 = rfc5280.Version(value='v2')
+                assert ri['crl']['tbsCertList']['version'] == v2
+            if ri.getName() == 'other':
+                ori = ri['other']
+                ocspr_oid = rfc5940.id_ri_ocsp_response
+                assert ori['otherRevInfoFormat'] == ocspr_oid
+                ocspr_status = ori['otherRevInfo']['responseStatus']
+                success = rfc2560.OCSPResponseStatus(value='successful')
+                assert ocspr_status == success
+
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 

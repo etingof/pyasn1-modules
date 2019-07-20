@@ -82,33 +82,33 @@ mNTr0mjYeUWRe/15IsWNx+kuFcLDr71DFHvMFY5M3sdfMA==
 
 class SignedReceiptTestCase(unittest.TestCase):
     signed_receipt_pem_text = """\
-MIIE3gYJKoZIhvcNAQcCoIIEzzCCBMsCAQMxDTALBglghkgBZQMEAgEwga4GCyqG
-SIb3DQEJ EAEBoIGeBIGbMIGYAgEBBgkqhkiG9w0BBwEEIMdPIQ9kJ1cI9Q6HkRC
-zbXWdD331uAUCL3MM FXP4KFOjBGYwZAIwOLV5WCbYjy5HLHE69IqXQQHVDJQzmo
-18WwkFrEYH3EMsvpXEIGqsFTFN 6NV4VBe9AjA5fGOCP5IhI32YqmGfs+zDlqZyb
-2xSX6Gr/IfCIm0angfOI39g7lAZDyivjh5H /oSgggJ3MIICczCCAfqgAwIBAgIJ
-AKWzVCgbsG48MAoGCCqGSM49BAMDMD8xCzAJBgNVBAYT AlVTMQswCQYDVQQIDAJ
-WQTEQMA4GA1UEBwwHSGVybmRvbjERMA8GA1UECgwIQm9ndXMgQ0Ew HhcNMTkwNT
-I5MTkyMDEzWhcNMjAwNTI4MTkyMDEzWjBsMQswCQYDVQQGEwJVUzELMAkGA1UE C
-BMCVkExEDAOBgNVBAcTB0hlcm5kb24xEDAOBgNVBAoTB0V4YW1wbGUxDDAKBgNVB
-AMTA0Jv YjEeMBwGCSqGSIb3DQEJARYPYm9iQGV4YW1wbGUuY29tMHYwEAYHKoZI
-zj0CAQYFK4EEACID YgAEMaRiVS8WvN8Ycmpfq75jBbOMUukNfXAg6AL0JJBXtIF
-AuIJcZVlkLn/xbywkcMLHK/O+ w9RWUQa2Cjw+h8b/1Cl+gIpqLtE558bD5PfM2a
-YpJ/YE6yZ9nBfTQs7z1TH5o4GUMIGRMAsG A1UdDwQEAwIHgDBCBglghkgBhvhCA
-Q0ENRYzVGhpcyBjZXJ0aWZpY2F0ZSBjYW5ub3QgYmUg dHJ1c3RlZCBmb3IgYW55
-IHB1cnBvc2UuMB0GA1UdDgQWBBTKa2Zy3iybV3+YjuLDKtNmjsIa pTAfBgNVHSM
-EGDAWgBTyNds0BNqlVfK9aQOZsGLs4hUIwTAKBggqhkjOPQQDAwNnADBkAjAV bo
-S6OfEYQomLDi2RUkd71hzwwiQZztbxNbosahIzjR8ZQaHhjdjJlrP/T6aXBwsCMD
-fRweYz 3Ce4E4wPfoqQnvqpM7ZlfhstjQQGOsWAtIIfqW/l+TgCO8ux3XLV6fj36
-zGCAYkwggGFAgEB MEwwPzELMAkGA1UEBhMCVVMxCzAJBgNVBAgMAlZBMRAwDgYD
-VQQHDAdIZXJuZG9uMREwDwYD VQQKDAhCb2d1cyBDQQIJAKWzVCgbsG48MAsGCWC
-GSAFlAwQCAaCBrjAaBgkqhkiG9w0BCQMx DQYLKoZIhvcNAQkQAQEwHAYJKoZIhv
-cNAQkFMQ8XDTE5MDUyOTE5MzU1NVowLwYJKoZIhvcN AQkEMSIEIGb9Hm2kCnM0C
-YNpZU4Uj7dN0AzOieIn9sDqZMcIcZrEMEEGCyqGSIb3DQEJEAIF MTIEMBZzeHVj
-a7fQ62ywyh8rtKzBP1WJooMdZ+8c6pRqfIESYIU5bQnH99OPA51QCwdOdjAK Bgg
-qhkjOPQQDAgRoMGYCMQDZiT22xgab6RFMAPvN4fhWwzx017EzttD4VaYrpbolrop
-BdPJ6 jIXiZQgCwxbGTCwCMQClaQ9K+L5LTeuW50ZKSIbmBZQ5dxjtnK3OlS7hYR
-i6U0JKZmWbbuS8 vFIgX7eIkd8=
+MIIE3gYJKoZIhvcNAQcCoIIEzzCCBMsCAQMxDTALBglghkgBZQMEAgEwga4GCyq
+GSIb3DQEJEAEBoIGeBIGbMIGYAgEBBgkqhkiG9w0BBwEEIMdPIQ9kJ1cI9Q6HkR
+CzbXWdD331uAUCL3MMFXP4KFOjBGYwZAIwOLV5WCbYjy5HLHE69IqXQQHVDJQzm
+o18WwkFrEYH3EMsvpXEIGqsFTFN6NV4VBe9AjA5fGOCP5IhI32YqmGfs+zDlqZy
+b2xSX6Gr/IfCIm0angfOI39g7lAZDyivjh5H/oSgggJ3MIICczCCAfqgAwIBAgI
+JAKWzVCgbsG48MAoGCCqGSM49BAMDMD8xCzAJBgNVBAYTAlVTMQswCQYDVQQIDA
+JWQTEQMA4GA1UEBwwHSGVybmRvbjERMA8GA1UECgwIQm9ndXMgQ0EwHhcNMTkwN
+TI5MTkyMDEzWhcNMjAwNTI4MTkyMDEzWjBsMQswCQYDVQQGEwJVUzELMAkGA1UE
+CBMCVkExEDAOBgNVBAcTB0hlcm5kb24xEDAOBgNVBAoTB0V4YW1wbGUxDDAKBgN
+VBAMTA0JvYjEeMBwGCSqGSIb3DQEJARYPYm9iQGV4YW1wbGUuY29tMHYwEAYHKo
+ZIzj0CAQYFK4EEACIDYgAEMaRiVS8WvN8Ycmpfq75jBbOMUukNfXAg6AL0JJBXt
+IFAuIJcZVlkLn/xbywkcMLHK/O+w9RWUQa2Cjw+h8b/1Cl+gIpqLtE558bD5PfM
+2aYpJ/YE6yZ9nBfTQs7z1TH5o4GUMIGRMAsGA1UdDwQEAwIHgDBCBglghkgBhvh
+CAQ0ENRYzVGhpcyBjZXJ0aWZpY2F0ZSBjYW5ub3QgYmUgdHJ1c3RlZCBmb3IgYW
+55IHB1cnBvc2UuMB0GA1UdDgQWBBTKa2Zy3iybV3+YjuLDKtNmjsIapTAfBgNVH
+SMEGDAWgBTyNds0BNqlVfK9aQOZsGLs4hUIwTAKBggqhkjOPQQDAwNnADBkAjAV
+boS6OfEYQomLDi2RUkd71hzwwiQZztbxNbosahIzjR8ZQaHhjdjJlrP/T6aXBws
+CMDfRweYz3Ce4E4wPfoqQnvqpM7ZlfhstjQQGOsWAtIIfqW/l+TgCO8ux3XLV6f
+j36zGCAYkwggGFAgEBMEwwPzELMAkGA1UEBhMCVVMxCzAJBgNVBAgMAlZBMRAwD
+gYDVQQHDAdIZXJuZG9uMREwDwYDVQQKDAhCb2d1cyBDQQIJAKWzVCgbsG48MAsG
+CWCGSAFlAwQCAaCBrjAaBgkqhkiG9w0BCQMxDQYLKoZIhvcNAQkQAQEwHAYJKoZ
+IhvcNAQkFMQ8XDTE5MDUyOTE5MzU1NVowLwYJKoZIhvcNAQkEMSIEIGb9Hm2kCn
+M0CYNpZU4Uj7dN0AzOieIn9sDqZMcIcZrEMEEGCyqGSIb3DQEJEAIFMTIEMBZze
+HVja7fQ62ywyh8rtKzBP1WJooMdZ+8c6pRqfIESYIU5bQnH99OPA51QCwdOdjAK
+BggqhkjOPQQDAgRoMGYCMQDZiT22xgab6RFMAPvN4fhWwzx017EzttD4VaYrpbo
+lropBdPJ6jIXiZQgCwxbGTCwCMQClaQ9K+L5LTeuW50ZKSIbmBZQ5dxjtnK3OlS
+7hYRi6U0JKZmWbbuS8vFIgX7eIkd8=
 """
 
     def setUp(self):
@@ -133,6 +133,7 @@ i6U0JKZmWbbuS8 vFIgX7eIkd8=
         assert not rest
         assert receipt.prettyPrint()
         assert der_encode(receipt) == sd['encapContentInfo']['eContent']
+        assert receipt['version'] == rfc2634.ESSVersion().subtype(value='v1')
 
         for sa in sd['signerInfos'][0]['signedAttrs']:
             sat = sa['attrType']
@@ -143,6 +144,35 @@ i6U0JKZmWbbuS8 vFIgX7eIkd8=
                 assert not rest
                 assert sav.prettyPrint()
                 assert der_encode(sav) == sav0
+
+    def testOpenTypes(self):
+        substrate = pem.readBase64fromText(self.signed_receipt_pem_text)
+        rfc5652.cmsContentTypesMap.update(rfc2634.cmsContentTypesMapUpdate)
+        rfc5652.cmsAttributesMap.update(rfc2634.ESSAttributeMap)
+        asn1Object, rest = der_decode(substrate,
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+        assert not rest
+        assert asn1Object.prettyPrint()
+        assert der_encode(asn1Object) == substrate
+
+        assert asn1Object['contentType'] in rfc5652.cmsContentTypesMap.keys()
+        assert asn1Object['contentType'] == rfc5652.id_signedData
+
+        sd = asn1Object['content']
+        assert sd['version'] == rfc5652.CMSVersion().subtype(value='v3')
+        assert sd['encapContentInfo']['eContentType'] in rfc5652.cmsContentTypesMap.keys()
+        assert sd['encapContentInfo']['eContentType'] == rfc2634.id_ct_receipt
+
+        for sa in sd['signerInfos'][0]['signedAttrs']:
+            assert sa['attrType'] in rfc5652.cmsAttributesMap.keys()
+            if sa['attrType'] == rfc2634.id_aa_msgSigDigest:
+                sa['attrValues'][0].prettyPrint()[:10] == '0x167378'
+
+        # Since receipt is inside an OCTET STRING, decodeOpenTypes=True cannot
+        # automatically decode it 
+        receipt, rest = der_decode(sd['encapContentInfo']['eContent'],
+            asn1Spec=rfc5652.cmsContentTypesMap[sd['encapContentInfo']['eContentType']])
+        assert receipt['version'] == rfc2634.ESSVersion().subtype(value='v1')
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

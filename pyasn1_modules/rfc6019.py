@@ -1,6 +1,7 @@
 # This file is being contributed to pyasn1-modules software.
 #
 # Created by Russ Housley.
+# Modified by Russ Housley to add a map for use with opentypes.
 #
 # Copyright (c) 2019, Vigil Security, LLC
 # License: http://snmplabs.com/pyasn1/license.html
@@ -21,13 +22,20 @@ MAX = float('inf')
 class BinaryTime(univ.Integer):
     pass
 
-
 BinaryTime.subtypeSpec = constraint.ValueRangeConstraint(0, MAX)
+
 
 # CMS Attribute for representing signing time in BinaryTime
 
 id_aa_binarySigningTime = univ.ObjectIdentifier('1.2.840.113549.1.9.16.2.46')
 
-
 class BinarySigningTime(BinaryTime):
     pass
+
+
+# Map of Attribute Type OIDs to Attributes
+# To be added to the ones that are in rfc5652.py
+
+cmsAttributesMapUpdate = {
+    id_aa_binarySigningTime: BinarySigningTime(),
+}
