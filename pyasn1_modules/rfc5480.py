@@ -1,6 +1,7 @@
 # This file is being contributed to pyasn1-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to add maps for opentypes.
 #
 # Copyright (c) 2019, Vigil Security, LLC
 # License: http://snmplabs.com/pyasn1/license.html
@@ -164,3 +165,20 @@ secp521r1 = univ.ObjectIdentifier('1.3.132.0.35')
 sect571k1 = univ.ObjectIdentifier('1.3.132.0.38')
 
 sect571r1 = univ.ObjectIdentifier('1.3.132.0.39')
+
+
+# Map of Algorithm Identifier OIDs to Parameters
+# The algorithm is not included if the parameters MUST be absent
+
+algorithmIdentifierMapUpdate = {
+    rsaEncryption: univ.Null(),
+    md2WithRSAEncryption: univ.Null(),
+    md5WithRSAEncryption: univ.Null(),
+    sha1WithRSAEncryption: univ.Null(),
+    id_dsa: DSS_Parms(),
+    dhpublicnumber: DomainParameters(),
+    id_keyExchangeAlgorithm: KEA_Parms_Id(),
+    id_ecPublicKey: ECParameters(),
+    id_ecDH: ECParameters(),
+    id_ecMQV: ECParameters(),
+}
