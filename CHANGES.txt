@@ -31,9 +31,9 @@ Revision 0.2.6, released XX-07-2019
 - Added openType support to RFC 2986 by importing definitions from
   the RFC 5280 module so that the same maps are used.
 - Added maps for use with openType to RFC 2634, RFC 3274, RFC 3709,
-  RFC 3779, RFC 4073, RFC 4108, RFC 4108, RFC 5035, RFC 5083, RFC 5940,
-  RFC 5958, RFC 6010, RFC 6019, RFC 6402, RFC 7191, RFC 8226, and
-  RFC 8520
+  RFC 3779, RFC 4055, RFC 4073, RFC 4108, RFC 5035, RFC 5083, RFC 5480,
+  RFC 5940, RFC 5958, RFC 6010, RFC 6019, RFC 6402, RFC 7191, RFC 8226,
+  and RFC 8520
 
 Revision 0.2.5, released 24-04-2019
 -----------------------------------

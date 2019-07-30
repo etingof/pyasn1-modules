@@ -14,6 +14,7 @@ from pyasn1.codec.der import encoder as der_encoder
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5280
 from pyasn1_modules import rfc5480
+from pyasn1_modules import rfc4055
 
 try:
     import unittest2 as unittest
@@ -62,11 +63,25 @@ Ea8/B6hPatJ0ES8q/HO3X8IVQwVs1n3aAr0im0/T+Xc=
         assert param.prettyPrint()
         assert param['namedCurve'] == rfc5480.secp384r1
 
+    def testOpenTypes(self):
+        substrate = pem.readBase64fromText(self.digicert_ec_cert_pem_text)
+        rfc5280.algorithmIdentifierMap.update(rfc5480.algorithmIdentifierMapUpdate)
+        asn1Object, rest = der_decoder.decode(substrate,
+                                              asn1Spec=self.asn1Spec,
+                                              decodeOpenTypes=True)
+        assert not rest
+        assert asn1Object.prettyPrint()
+        assert der_encoder.encode(asn1Object) == substrate
+    
+        spki_alg = asn1Object['tbsCertificate']['subjectPublicKeyInfo']['algorithm']
+        assert spki_alg['algorithm'] == rfc5480.id_ecPublicKey
+        assert spki_alg['parameters']['namedCurve'] == rfc5480.secp384r1
+
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
 if __name__ == '__main__':
     import sys
-
+	
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

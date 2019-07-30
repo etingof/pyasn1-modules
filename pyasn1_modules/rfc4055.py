@@ -3,6 +3,7 @@
 #
 # Created by Russ Housley with a very small amount of assistance from
 # asn1ate v.0.6.0.
+# Modified by Russ Housley to add maps for opentypes.
 #
 # Copyright (c) 2019, Vigil Security, LLC
 # License: http://snmplabs.com/pyasn1/license.html
@@ -13,7 +14,6 @@
 # ASN.1 source from:
 # https://www.rfc-editor.org/rfc/rfc4055.txt
 #
-
 from pyasn1.type import namedtype
 from pyasn1.type import tag
 from pyasn1.type import univ
@@ -107,7 +107,6 @@ pSpecifiedEmptyIdentifier['parameters'] = univ.OctetString(value='')
 class RSAPublicKey(univ.Sequence):
     pass
 
-
 RSAPublicKey.componentType = namedtype.NamedTypes(
     namedtype.NamedType('modulus', univ.Integer()),
     namedtype.NamedType('publicExponent', univ.Integer())
@@ -124,7 +123,6 @@ class MaskGenAlgorithm(rfc5280.AlgorithmIdentifier):
 
 class RSAES_OAEP_params(univ.Sequence):
     pass
-
 
 RSAES_OAEP_params.componentType = namedtype.NamedTypes(
     namedtype.OptionalNamedType('hashFunc', rfc5280.AlgorithmIdentifier().subtype(
@@ -185,7 +183,6 @@ rSAES_OAEP_SHA512_Identifier['parameters'] = rSAES_OAEP_SHA512_Params
 class RSASSA_PSS_params(univ.Sequence):
     pass
 
-
 RSASSA_PSS_params.componentType = namedtype.NamedTypes(
     namedtype.OptionalNamedType('hashAlgorithm', rfc5280.AlgorithmIdentifier().subtype(
         explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
@@ -242,3 +239,20 @@ rSASSA_PSS_SHA512_Params['maskGenAlgorithm'] = mgf1SHA512Identifier.subtype(
 rSASSA_PSS_SHA512_Identifier = rfc5280.AlgorithmIdentifier()
 rSASSA_PSS_SHA512_Identifier['algorithm'] = id_RSASSA_PSS
 rSASSA_PSS_SHA512_Identifier['parameters'] = rSASSA_PSS_SHA512_Params
+
+
+# Update the Algorithm Identifier map
+
+_algorithmIdentifierMapUpdate = {
+    id_sha1: univ.Null(),
+    id_sha224: univ.Null(),
+    id_sha256: univ.Null(),
+    id_sha384: univ.Null(),
+    id_sha512: univ.Null(),
+    id_mgf1: rfc5280.AlgorithmIdentifier(),
+    id_pSpecified: univ.OctetString(),
+    id_RSAES_OAEP: RSAES_OAEP_params(),
+    id_RSASSA_PSS: RSASSA_PSS_params(),
+}
+
+rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
