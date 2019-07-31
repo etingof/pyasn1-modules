@@ -84,7 +84,7 @@ class AsymmetricKeyPackage(univ.SequenceOf):
     pass
 
 AsymmetricKeyPackage.componentType = OneAsymmetricKey()
-AsymmetricKeyPackage.subtypeSpec=constraint.ValueSizeConstraint(1, MAX)
+AsymmetricKeyPackage.sizeSpec=constraint.ValueSizeConstraint(1, MAX)
     
 
 # Map of Content Type OIDs to Content Types

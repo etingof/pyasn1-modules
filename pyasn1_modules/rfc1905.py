@@ -42,7 +42,7 @@ class VarBind(univ.Sequence):
 
 class VarBindList(univ.SequenceOf):
     componentType = VarBind()
-    subtypeSpec = univ.SequenceOf.subtypeSpec + constraint.ValueSizeConstraint(
+    sizeSpec = univ.SequenceOf.sizeSpec + constraint.ValueSizeConstraint(
         0, max_bindings
     )
 

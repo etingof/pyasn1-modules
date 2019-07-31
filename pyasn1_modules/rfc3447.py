@@ -27,7 +27,7 @@ class OtherPrimeInfo(univ.Sequence):
 
 class OtherPrimeInfos(univ.SequenceOf):
     componentType = OtherPrimeInfo()
-    subtypeSpec = univ.SequenceOf.subtypeSpec + constraint.ValueSizeConstraint(1, MAX)
+    sizeSpec = univ.SequenceOf.sizeSpec + constraint.ValueSizeConstraint(1, MAX)
 
 
 class RSAPrivateKey(univ.Sequence):

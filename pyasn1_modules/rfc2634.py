@@ -101,11 +101,11 @@ MLReceiptPolicy.componentType = namedtype.NamedTypes(
         tag.tagClassContext, tag.tagFormatSimple, 0))),
     namedtype.NamedType('insteadOf', univ.SequenceOf(
         componentType=GeneralNames()).subtype(
-        subtypeSpec=constraint.ValueSizeConstraint(1, MAX)).subtype(
+        sizeSpec=constraint.ValueSizeConstraint(1, MAX)).subtype(
         implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))),
     namedtype.NamedType('inAdditionTo', univ.SequenceOf(
         componentType=GeneralNames()).subtype(
-        subtypeSpec=constraint.ValueSizeConstraint(1, MAX)).subtype(
+        sizeSpec=constraint.ValueSizeConstraint(1, MAX)).subtype(
         implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 2)))
 )
 
@@ -123,7 +123,7 @@ class MLExpansionHistory(univ.SequenceOf):
     pass
 
 MLExpansionHistory.componentType = MLData()
-MLExpansionHistory.subtypeSpec=constraint.ValueSizeConstraint(1, ub_ml_expansion_history)
+MLExpansionHistory.sizeSpec = constraint.ValueSizeConstraint(1, ub_ml_expansion_history)
 
 
 # ESS Security Label Attribute
@@ -182,7 +182,7 @@ class SecurityCategories(univ.SetOf):
     pass
 
 SecurityCategories.componentType = SecurityCategory()
-SecurityCategories.subtypeSpec=constraint.ValueSizeConstraint(1, ub_security_categories)
+SecurityCategories.sizeSpec = constraint.ValueSizeConstraint(1, ub_security_categories)
 
 
 class ESSSecurityLabel(univ.Set):
@@ -282,7 +282,7 @@ class ReceiptRequest(univ.Sequence):
 ReceiptRequest.componentType = namedtype.NamedTypes(
     namedtype.NamedType('signedContentIdentifier', ContentIdentifier()),
     namedtype.NamedType('receiptsFrom', ReceiptsFrom()),
-    namedtype.NamedType('receiptsTo', univ.SequenceOf(componentType=GeneralNames()).subtype(subtypeSpec=constraint.ValueSizeConstraint(1, ub_receiptsTo)))
+    namedtype.NamedType('receiptsTo', univ.SequenceOf(componentType=GeneralNames()).subtype(sizeSpec=constraint.ValueSizeConstraint(1, ub_receiptsTo)))
 )
 
 # Receipt Content Type

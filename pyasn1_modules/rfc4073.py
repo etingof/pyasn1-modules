@@ -30,7 +30,7 @@ class ContentCollection(univ.SequenceOf):
     pass
 
 ContentCollection.componentType = rfc5652.ContentInfo()
-ContentCollection.subtypeSpec=constraint.ValueSizeConstraint(1, MAX)
+ContentCollection.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 # Content With Attributes Content Type and Object Identifier
@@ -44,7 +44,7 @@ ContentWithAttributes.componentType = namedtype.NamedTypes(
     namedtype.NamedType('content', rfc5652.ContentInfo()),
     namedtype.NamedType('attrs', univ.SequenceOf(
         componentType=rfc5652.Attribute()).subtype(
-            subtypeSpec=constraint.ValueSizeConstraint(1, MAX)))
+            sizeSpec=constraint.ValueSizeConstraint(1, MAX)))
 )
 
 

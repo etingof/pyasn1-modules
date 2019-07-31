@@ -75,7 +75,7 @@ class SIREntityNames(univ.SequenceOf):
     pass
 
 SIREntityNames.componentType = SIREntityName()
-SIREntityNames.subtypeSpec=constraint.ValueSizeConstraint(1, MAX)
+SIREntityNames.sizeSpec=constraint.ValueSizeConstraint(1, MAX)
 
 
 id_dn = univ.ObjectIdentifier('2.16.840.1.101.2.1.16.0')

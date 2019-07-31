@@ -45,11 +45,13 @@ SubjectPublicKeyInfo = rfc5280.SubjectPublicKeyInfo
 class Attributes(univ.SetOf):
     pass
 
+
 Attributes.componentType = Attribute()
 
 
 class CertificationRequestInfo(univ.Sequence):
     pass
+
 
 CertificationRequestInfo.componentType = namedtype.NamedTypes(
     namedtype.NamedType('version', univ.Integer()),
@@ -64,6 +66,7 @@ CertificationRequestInfo.componentType = namedtype.NamedTypes(
 
 class CertificationRequest(univ.Sequence):
     pass
+
 
 CertificationRequest.componentType = namedtype.NamedTypes(
     namedtype.NamedType('certificationRequestInfo', CertificationRequestInfo()),

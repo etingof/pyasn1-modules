@@ -60,7 +60,7 @@ fi6h7i9VVAZpslaKFfkNg12gLbbsCB1q36l5VXjHY/qe0FIUa9ogRrOi
         algorithmIdentifierMapUpdate = {
             univ.ObjectIdentifier('1.2.840.113549.1.1.1'): univ.Null(""),
             univ.ObjectIdentifier('1.2.840.113549.1.1.5'): univ.Null(""),
-           univ.ObjectIdentifier('1.2.840.113549.1.1.11'): univ.Null(""),
+            univ.ObjectIdentifier('1.2.840.113549.1.1.11'): univ.Null(""),
         }
 
         rfc5280.algorithmIdentifierMap.update(algorithmIdentifierMapUpdate)
@@ -70,6 +70,7 @@ fi6h7i9VVAZpslaKFfkNg12gLbbsCB1q36l5VXjHY/qe0FIUa9ogRrOi
             decodeOpenTypes=True)
         assert not rest
         assert asn1Object.prettyPrint()
+
         assert der_encoder.encode(asn1Object) == substrate
 
         for rdn in asn1Object['certificationRequestInfo']['subject']['rdnSequence']:

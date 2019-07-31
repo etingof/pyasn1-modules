@@ -155,12 +155,12 @@ Kv0xuR3b3Le+ZqolT8wQELd5Mmw5JPofZ+O2cGNvet8tYwOKFjEA
     def testDerCodecDecodeOpenTypes(self):
 
         substrate = pem.readBase64fromText(self.pem_text_reordered)
-
         asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
 
         assert not rest
         assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
+        assert der_encoder.encode(
+            asn1Object, omitEmptyOptionals=False) == substrate
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

@@ -97,7 +97,7 @@ class BodyPartPath(univ.SequenceOf):
 
 
 BodyPartPath.componentType = BodyPartID()
-BodyPartPath.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+BodyPartPath.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class BodyPartReference(univ.Choice):
@@ -425,7 +425,7 @@ class BodyPartList(univ.SequenceOf):
 
 
 BodyPartList.componentType = BodyPartID()
-BodyPartList.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+BodyPartList.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 id_cmc_responseBody = _buildOid(id_cmc, 37)
 
@@ -490,7 +490,7 @@ class ExtensionReq(univ.SequenceOf):
 
 
 ExtensionReq.componentType = rfc5280.Extension()
-ExtensionReq.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+ExtensionReq.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 id_kp_cmcArchive = _buildOid(rfc5280.id_kp, 28)
 
