@@ -69,7 +69,7 @@ try:
 
     params = {
         'zip_safe': True,
-        'install_requires': ['pyasn1>=0.4.1,<0.5.0']
+        'install_requires': ['pyasn1>=0.4.6,<0.5.0']
     }
 
 except ImportError:
@@ -82,7 +82,7 @@ except ImportError:
 
     if sys.version_info[:2] > (2, 4):
         params = {
-            'requires': ['pyasn1(>=0.4.1,<0.5.0)']
+            'requires': ['pyasn1(>=0.4.6,<0.5.0)']
         }
     else:
         params = {
@@ -100,7 +100,7 @@ params.update(
      'url': 'https://github.com/etingof/pyasn1-modules',
      'platforms': ['any'],
      'classifiers': [x for x in classifiers.split('\n') if x],
-     'license': 'BSD',
+     'license': 'BSD-2-Clause',
      'packages': ['pyasn1_modules']}
 )
 
