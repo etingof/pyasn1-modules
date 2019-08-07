@@ -1,7 +1,7 @@
 #
 # This file is part of pyasn1-modules software.
 #
-# Copyright (c) 2005-2018, Ilya Etingof <etingof@gmail.com>
+# Copyright (c) 2005-2019, Ilya Etingof <etingof@gmail.com>
 # License: http://snmplabs.com/pyasn1/license.html
 #
 # X.509 certificate Request Message Format (CRMF) syntax
@@ -109,7 +109,7 @@ class PKIPublicationInfo(univ.Sequence):
         namedtype.NamedType('action',
                             univ.Integer(namedValues=namedval.NamedValues(('dontPublish', 0), ('pleasePublish', 1)))),
         namedtype.OptionalNamedType('pubInfos', univ.SequenceOf(componentType=SinglePubInfo()).subtype(
-            subtypeSpec=constraint.ValueSizeConstraint(1, MAX)))
+            sizeSpec=constraint.ValueSizeConstraint(1, MAX)))
     )
 
 
@@ -195,7 +195,7 @@ class ProofOfPossession(univ.Choice):
 
 class Controls(univ.SequenceOf):
     componentType = AttributeTypeAndValue()
-    subtypeSpec = univ.SequenceOf.subtypeSpec + constraint.ValueSizeConstraint(1, MAX)
+    sizeSpec = univ.SequenceOf.sizeSpec + constraint.ValueSizeConstraint(1, MAX)
 
 
 class OptionalValidity(univ.Sequence):
@@ -249,10 +249,10 @@ class CertReqMsg(univ.Sequence):
         namedtype.NamedType('certReq', CertRequest()),
         namedtype.OptionalNamedType('pop', ProofOfPossession()),
         namedtype.OptionalNamedType('regInfo', univ.SequenceOf(componentType=AttributeTypeAndValue()).subtype(
-            subtypeSpec=constraint.ValueSizeConstraint(1, MAX)))
+            sizeSpec=constraint.ValueSizeConstraint(1, MAX)))
     )
 
 
 class CertReqMessages(univ.SequenceOf):
     componentType = CertReqMsg()
-    subtypeSpec = univ.SequenceOf.subtypeSpec + constraint.ValueSizeConstraint(1, MAX)
+    sizeSpec = univ.SequenceOf.sizeSpec + constraint.ValueSizeConstraint(1, MAX)

@@ -3,7 +3,9 @@
 # This file is part of pyasn1-modules software.
 #
 # Created by Stanisław Pitucha with asn1ate tool.
-# Copyright (c) 2005-2018, Ilya Etingof <etingof@gmail.com>
+# Modified by Russ Housley to add support for opentypes.
+#
+# Copyright (c) 2005-2019, Ilya Etingof <etingof@gmail.com>
 # License: http://snmplabs.com/pyasn1/license.html
 #
 # Cryptographic Message Syntax (CMS)
@@ -14,6 +16,7 @@
 from pyasn1.type import constraint
 from pyasn1.type import namedtype
 from pyasn1.type import namedval
+from pyasn1.type import opentype
 from pyasn1.type import tag
 from pyasn1.type import univ
 from pyasn1.type import useful
@@ -33,6 +36,19 @@ def _buildOid(*components):
             output.append(int(x))
 
     return univ.ObjectIdentifier(output)
+
+
+cmsContentTypesMap = { }
+
+cmsAttributesMap = { }
+
+otherKeyAttributesMap = { }
+
+otherCertFormatMap = { }
+
+otherRevInfoFormatMap = { }
+
+otherRecipientInfoMap = { }
 
 
 class AttCertVersionV1(univ.Integer):
@@ -89,7 +105,9 @@ class Attribute(univ.Sequence):
 
 Attribute.componentType = namedtype.NamedTypes(
     namedtype.NamedType('attrType', univ.ObjectIdentifier()),
-    namedtype.NamedType('attrValues', univ.SetOf(componentType=AttributeValue()))
+    namedtype.NamedType('attrValues', univ.SetOf(componentType=AttributeValue()),
+        openType=opentype.OpenType('attrType', cmsAttributesMap)
+    )
 )
 
 
@@ -98,7 +116,7 @@ class SignedAttributes(univ.SetOf):
 
 
 SignedAttributes.componentType = Attribute()
-SignedAttributes.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+SignedAttributes.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class AttributeCertificateV2(rfc3281.AttributeCertificate):
@@ -111,7 +129,9 @@ class OtherKeyAttribute(univ.Sequence):
 
 OtherKeyAttribute.componentType = namedtype.NamedTypes(
     namedtype.NamedType('keyAttrId', univ.ObjectIdentifier()),
-    namedtype.OptionalNamedType('keyAttr', univ.Any())
+    namedtype.OptionalNamedType('keyAttr', univ.Any(),
+        openType=opentype.OpenType('keyAttrId', otherKeyAttributesMap)
+    )
 )
 
 
@@ -120,7 +140,7 @@ class UnauthAttributes(univ.SetOf):
 
 
 UnauthAttributes.componentType = Attribute()
-UnauthAttributes.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+UnauthAttributes.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 id_encryptedData = _buildOid(1, 2, 840, 113549, 1, 7, 6)
 
@@ -210,7 +230,9 @@ class OtherCertificateFormat(univ.Sequence):
 
 OtherCertificateFormat.componentType = namedtype.NamedTypes(
     namedtype.NamedType('otherCertFormat', univ.ObjectIdentifier()),
-    namedtype.NamedType('otherCert', univ.Any())
+    namedtype.NamedType('otherCert', univ.Any(),
+        openType=opentype.OpenType('otherCertFormat', otherCertFormatMap)
+    )
 )
 
 
@@ -274,7 +296,9 @@ class OtherRevocationInfoFormat(univ.Sequence):
 
 OtherRevocationInfoFormat.componentType = namedtype.NamedTypes(
     namedtype.NamedType('otherRevInfoFormat', univ.ObjectIdentifier()),
-    namedtype.NamedType('otherRevInfo', univ.Any())
+    namedtype.NamedType('otherRevInfo', univ.Any(),
+        openType=opentype.OpenType('otherRevInfoFormat', otherRevInfoFormatMap)
+    )
 )
 
 
@@ -337,7 +361,7 @@ class UnprotectedAttributes(univ.SetOf):
 
 
 UnprotectedAttributes.componentType = Attribute()
-UnprotectedAttributes.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+UnprotectedAttributes.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class KeyEncryptionAlgorithmIdentifier(rfc5280.AlgorithmIdentifier):
@@ -455,7 +479,9 @@ class OtherRecipientInfo(univ.Sequence):
 
 OtherRecipientInfo.componentType = namedtype.NamedTypes(
     namedtype.NamedType('oriType', univ.ObjectIdentifier()),
-    namedtype.NamedType('oriValue', univ.Any())
+    namedtype.NamedType('oriValue', univ.Any(),
+        openType=opentype.OpenType('oriType', otherRecipientInfoMap)
+    )
 )
 
 
@@ -481,7 +507,7 @@ class RecipientInfos(univ.SetOf):
 
 
 RecipientInfos.componentType = RecipientInfo()
-RecipientInfos.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+RecipientInfos.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class EnvelopedData(univ.Sequence):
@@ -533,7 +559,7 @@ class UnsignedAttributes(univ.SetOf):
 
 
 UnsignedAttributes.componentType = Attribute()
-UnsignedAttributes.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+UnsignedAttributes.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class SignerIdentifier(univ.Choice):
@@ -581,7 +607,9 @@ class ContentInfo(univ.Sequence):
 
 ContentInfo.componentType = namedtype.NamedTypes(
     namedtype.NamedType('contentType', ContentType()),
-    namedtype.NamedType('content', univ.Any().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)))
+    namedtype.NamedType('content', univ.Any().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)),
+        openType=opentype.OpenType('contentType', cmsContentTypesMap)
+    )
 )
 
 
@@ -609,7 +637,7 @@ class AuthAttributes(univ.SetOf):
 
 
 AuthAttributes.componentType = Attribute()
-AuthAttributes.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+AuthAttributes.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class Time(univ.Choice):
@@ -704,3 +732,30 @@ class SigningTime(Time):
 
 
 id_ct_authData = _buildOid(1, 2, 840, 113549, 1, 9, 16, 1, 2)
+
+
+# CMS Content Type Map
+
+_cmsContentTypesMapUpdate = {
+    id_ct_contentInfo: ContentInfo(),
+    id_data: univ.OctetString(),
+    id_signedData: SignedData(),
+    id_envelopedData: EnvelopedData(),
+    id_digestedData: DigestedData(),
+    id_encryptedData: EncryptedData(),
+    id_ct_authData: AuthenticatedData(),
+}
+
+cmsContentTypesMap.update(_cmsContentTypesMapUpdate)
+
+
+# CMS Attribute Map
+
+_cmsAttributesMapUpdate = {
+    id_contentType: ContentType(),
+    id_messageDigest: MessageDigest(),
+    id_signingTime: SigningTime(),
+    id_countersignature: Countersignature(),
+}
+
+cmsAttributesMap.update(_cmsAttributesMapUpdate)

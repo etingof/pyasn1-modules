@@ -1,7 +1,7 @@
 #
 # This file is part of pyasn1-modules software.
 #
-# Copyright (c) 2005-2018, Ilya Etingof <etingof@gmail.com>
+# Copyright (c) 2005-2019, Ilya Etingof <etingof@gmail.com>
 # License: http://snmplabs.com/pyasn1/license.html
 #
 # SNMPv2c PDU syntax
@@ -42,7 +42,7 @@ class VarBind(univ.Sequence):
 
 class VarBindList(univ.SequenceOf):
     componentType = VarBind()
-    subtypeSpec = univ.SequenceOf.subtypeSpec + constraint.ValueSizeConstraint(
+    sizeSpec = univ.SequenceOf.sizeSpec + constraint.ValueSizeConstraint(
         0, max_bindings
     )
 

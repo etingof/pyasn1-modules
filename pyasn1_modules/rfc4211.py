@@ -3,7 +3,7 @@
 # This file is part of pyasn1-modules software.
 #
 # Created by Stanisław Pitucha with asn1ate tool.
-# Copyright (c) 2005-2018, Ilya Etingof <etingof@gmail.com>
+# Copyright (c) 2005-2019, Ilya Etingof <etingof@gmail.com>
 # License: http://snmplabs.com/pyasn1/license.html
 #
 # Internet X.509 Public Key Infrastructure Certificate Request
@@ -282,7 +282,7 @@ class Controls(univ.SequenceOf):
 
 
 Controls.componentType = AttributeTypeAndValue()
-Controls.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+Controls.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class CertRequest(univ.Sequence):
@@ -312,7 +312,7 @@ class CertReqMessages(univ.SequenceOf):
 
 
 CertReqMessages.componentType = CertReqMsg()
-CertReqMessages.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+CertReqMessages.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class CertReq(CertRequest):

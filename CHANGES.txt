@@ -1,8 +1,84 @@
 
-Revision 0.2.3, released XX-07-2018
+Revision 0.2.7, released XX-08-2019
 -----------------------------------
 
 No changes yet
+
+Revision 0.2.6, released 31-07-2019
+-----------------------------------
+
+- Added RFC3560 providing RSAES-OAEP Key Transport Algorithm
+  in CMS
+- Added RFC6019 providing BinaryTime - an alternate format
+  for representing Date and Time
+- RFC3565 superseded by RFC5649
+- Added RFC5480 providng Elliptic Curve Cryptography Subject
+  Public Key Information
+- Added RFC8520 providing X.509 Extensions for MUD URL and
+  MUD Signer
+- Added RFC3161 providing Time-Stamp Protocol support
+- Added RFC3709 providing Logotypes in X.509 Certificates
+- Added RFC3274 providing CMS Compressed Data Content Type
+- Added RFC4073 providing Multiple Contents protection with CMS
+- Added RFC2634 providing Enhanced Security Services for S/MIME
+- Added RFC5915 providing Elliptic Curve Private Key
+- Added RFC5940 providing CMS Revocation Information Choices
+- Added RFC7296 providing IKEv2 Certificate Bundle
+- Added RFC8619 providing HKDF Algorithm Identifiers
+- Added RFC7191 providing CMS Key Package Receipt and Error Content
+  Types
+- Added openType support for ORAddress Extension Attributes and
+  Algorithm Identifiers in the RFC5280 module
+- Added RFC5035 providing Update to Enhanced Security Services for
+  S/MIME
+- Added openType support for CMS Content Types and CMS Attributes
+  in the RFC5652 module
+- Added openType support to RFC 2986 by importing definitions from
+  the RFC 5280 module so that the same maps are used.
+- Added maps for use with openType to RFC 2634, RFC 3274, RFC 3709,
+  RFC 3779, RFC 4055, RFC 4073, RFC 4108, RFC 5035, RFC 5083, RFC 5480,
+  RFC 5940, RFC 5958, RFC 6010, RFC 6019, RFC 6402, RFC 7191, RFC 8226,
+  and RFC 8520
+- Changed `ValueSizeConstraint` erroneously applied to `SequenceOf`
+  and `SetOf` objects via `subtypeConstraint` attribute to be applied
+  via `sizeSpec` attribute. Although `sizeSpec` takes the same constraint
+  objects as `subtypeConstraint`, the former is only verified on
+  de/serialization i.e. when the [constructed] object at hand is fully
+  populated, while the latter is applied to [scalar] types at the moment
+  of instantiation.
+
+Revision 0.2.5, released 24-04-2019
+-----------------------------------
+
+- Added module RFC5958 providing Asymmetric Key Packages,
+  which is essentially version 2 of the PrivateKeyInfo
+  structure in PKCS#8 in RFC 5208
+- Added module RFC8410 providing algorithm Identifiers for
+  Ed25519, Ed448, X25519, and X448
+- Added module RFC8418 providing Elliptic Curve Diffie-Hellman
+  (ECDH) Key Agreement Algorithm with X25519 and X448
+- Added module RFC3565 providing Elliptic Curve Diffie-Hellman
+  Key Agreement Algorithm use with X25519 and X448 in the
+  Cryptographic Message Syntax (CMS)
+- Added module RFC4108 providing CMS Firmware Wrapper
+- Added module RFC3779 providing X.509 Extensions for IP
+  Addresses and AS Identifiers
+- Added module RFC4055 providing additional Algorithms and
+  Identifiers for RSA Cryptography for use in Certificates
+  and CRLs
+
+Revision 0.2.4, released 26-01-2018
+-----------------------------------
+
+- Added modules for RFC8226 implementing JWT Claim Constraints
+  and TN Authorization List for X.509 certificate extensions
+- Fixed bug in `rfc5280.AlgorithmIdentifier` ANY type definition
+
+Revision 0.2.3, released 30-12-2018
+-----------------------------------
+
+- Added modules for RFC5083 and RFC5084 (CMS)
+- Copyright notice extended to the year 2019
 
 Revision 0.2.2, released 28-06-2018
 -----------------------------------

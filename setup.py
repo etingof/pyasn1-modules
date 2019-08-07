@@ -2,7 +2,7 @@
 #
 # This file is part of pyasn1-modules software.
 #
-# Copyright (c) 2005-2018, Ilya Etingof <etingof@gmail.com>
+# Copyright (c) 2005-2019, Ilya Etingof <etingof@gmail.com>
 # License: http://snmplabs.com/pyasn1/license.html
 #
 import sys
@@ -64,7 +64,7 @@ try:
 
     params = {
         'zip_safe': True,
-        'install_requires': ['pyasn1>=0.4.1,<0.5.0']
+        'install_requires': ['pyasn1>=0.4.6,<0.5.0']
     }
 
 except ImportError:
@@ -76,7 +76,7 @@ except ImportError:
     from distutils.core import setup, Command
 
     params = {
-        'requires': ['pyasn1(>=0.4.1,<0.5.0)']
+        'requires': ['pyasn1(>=0.4.6,<0.5.0)']
     }
 
 params.update(
@@ -91,7 +91,7 @@ params.update(
      'platforms': ['any'],
      'python_requires': '>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
      'classifiers': [x for x in classifiers.split('\n') if x],
-     'license': 'BSD',
+     'license': 'BSD-2-Clause',
      'packages': ['pyasn1_modules']}
 )
 

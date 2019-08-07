@@ -3,14 +3,17 @@
 # This file is part of pyasn1-modules software.
 #
 # Created by Stanisław Pitucha with asn1ate tool.
-# Copyright (c) 2005-2018, Ilya Etingof <etingof@gmail.com>
+# Updated by Russ Housley for ORAddress Extension Attribute opentype support.
+# Updated by Russ Housley for AlgorithmIdentifier opentype support.
+#
+# Copyright (c) 2005-2019, Ilya Etingof <etingof@gmail.com>
 # License: http://snmplabs.com/pyasn1/license.html
 #
 # Internet X.509 Public Key Infrastructure Certificate and Certificate
 # Revocation List (CRL) Profile
 #
 # ASN.1 source from:
-# http://www.ietf.org/rfc/rfc5280.txt
+# https://www.rfc-editor.org/rfc/rfc5280.txt
 #
 from pyasn1.type import char
 from pyasn1.type import constraint
@@ -72,7 +75,7 @@ class Extensions(univ.SequenceOf):
 
 
 Extensions.componentType = Extension()
-Extensions.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+Extensions.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 physical_delivery_personal_name = univ.Integer(13)
 
@@ -203,7 +206,7 @@ class TeletexDomainDefinedAttributes(univ.SequenceOf):
 
 
 TeletexDomainDefinedAttributes.componentType = TeletexDomainDefinedAttribute()
-TeletexDomainDefinedAttributes.subtypeSpec = constraint.ValueSizeConstraint(1, ub_domain_defined_attributes)
+TeletexDomainDefinedAttributes.sizeSpec = constraint.ValueSizeConstraint(1, ub_domain_defined_attributes)
 
 extended_network_address = univ.Integer(22)
 
@@ -280,10 +283,15 @@ class CertificateSerialNumber(univ.Integer):
     pass
 
 
+algorithmIdentifierMap = {}
+
+
 class AlgorithmIdentifier(univ.Sequence):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('algorithm', univ.ObjectIdentifier()),
-        namedtype.OptionalNamedType('parameters', univ.Any())
+        namedtype.OptionalNamedType('parameters', univ.Any(),
+            openType=opentype.OpenType('algorithm', algorithmIdentifierMap)
+        )
     )
 
 
@@ -319,7 +327,7 @@ class RelativeDistinguishedName(univ.SetOf):
 
 
 RelativeDistinguishedName.componentType = AttributeTypeAndValue()
-RelativeDistinguishedName.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+RelativeDistinguishedName.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class RDNSequence(univ.SequenceOf):
@@ -382,7 +390,9 @@ class PhysicalDeliveryOfficeName(PDSParameter):
 ub_extension_attributes = univ.Integer(256)
 
 certificateExtensionsMap = {
+}
 
+oraddressExtensionAttributeMap = {
 }
 
 
@@ -394,7 +404,7 @@ class ExtensionAttribute(univ.Sequence):
         namedtype.NamedType(
             'extension-attribute-value',
             univ.Any().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)),
-            openType=opentype.OpenType('type', certificateExtensionsMap))
+            openType=opentype.OpenType('extension-attribute-type', oraddressExtensionAttributeMap))
     )
 
 id_qt = _buildOid(id_pkix, 2)
@@ -639,7 +649,7 @@ class ExtensionAttributes(univ.SetOf):
 
 
 ExtensionAttributes.componentType = ExtensionAttribute()
-ExtensionAttributes.subtypeSpec = constraint.ValueSizeConstraint(1, ub_extension_attributes)
+ExtensionAttributes.sizeSpec = constraint.ValueSizeConstraint(1, ub_extension_attributes)
 
 ub_emailaddress_length = univ.Integer(255)
 
@@ -786,7 +796,7 @@ class BuiltInDomainDefinedAttributes(univ.SequenceOf):
 
 
 BuiltInDomainDefinedAttributes.componentType = BuiltInDomainDefinedAttribute()
-BuiltInDomainDefinedAttributes.subtypeSpec = constraint.ValueSizeConstraint(1, ub_domain_defined_attributes)
+BuiltInDomainDefinedAttributes.sizeSpec = constraint.ValueSizeConstraint(1, ub_domain_defined_attributes)
 
 id_at_pseudonym = _buildOid(id_at, 65)
 
@@ -867,7 +877,7 @@ class OrganizationalUnitNames(univ.SequenceOf):
 
 
 OrganizationalUnitNames.componentType = OrganizationalUnitName()
-OrganizationalUnitNames.subtypeSpec = constraint.ValueSizeConstraint(1, ub_organizational_units)
+OrganizationalUnitNames.sizeSpec = constraint.ValueSizeConstraint(1, ub_organizational_units)
 
 
 class PrivateDomainName(univ.Choice):
@@ -1026,7 +1036,7 @@ class TeletexOrganizationalUnitNames(univ.SequenceOf):
 
 
 TeletexOrganizationalUnitNames.componentType = TeletexOrganizationalUnitName()
-TeletexOrganizationalUnitNames.subtypeSpec = constraint.ValueSizeConstraint(1, ub_organizational_units)
+TeletexOrganizationalUnitNames.sizeSpec = constraint.ValueSizeConstraint(1, ub_organizational_units)
 
 id_ce = _buildOid(2, 5, 29)
 
@@ -1149,7 +1159,7 @@ class GeneralNames(univ.SequenceOf):
 
 
 GeneralNames.componentType = GeneralName()
-GeneralNames.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+GeneralNames.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class DistributionPointName(univ.Choice):
@@ -1249,7 +1259,7 @@ class CRLDistributionPoints(univ.SequenceOf):
 
 
 CRLDistributionPoints.componentType = DistributionPoint()
-CRLDistributionPoints.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+CRLDistributionPoints.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class GeneralSubtrees(univ.SequenceOf):
@@ -1257,7 +1267,7 @@ class GeneralSubtrees(univ.SequenceOf):
 
 
 GeneralSubtrees.componentType = GeneralSubtree()
-GeneralSubtrees.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+GeneralSubtrees.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class NameConstraints(univ.Sequence):
@@ -1277,7 +1287,7 @@ class SubjectDirectoryAttributes(univ.SequenceOf):
 
 
 SubjectDirectoryAttributes.componentType = Attribute()
-SubjectDirectoryAttributes.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+SubjectDirectoryAttributes.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 id_kp_OCSPSigning = _buildOid(id_kp, 9)
 
@@ -1355,7 +1365,7 @@ class CertificatePolicies(univ.SequenceOf):
 
 
 CertificatePolicies.componentType = PolicyInformation()
-CertificatePolicies.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+CertificatePolicies.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class SubjectAltName(GeneralNames):
@@ -1393,7 +1403,7 @@ PolicyMappings.componentType = univ.Sequence(
     )
 )
 
-PolicyMappings.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+PolicyMappings.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class InhibitAnyPolicy(SkipCerts):
@@ -1457,7 +1467,7 @@ class AuthorityInfoAccessSyntax(univ.SequenceOf):
 
 
 AuthorityInfoAccessSyntax.componentType = AccessDescription()
-AuthorityInfoAccessSyntax.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+AuthorityInfoAccessSyntax.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 id_holdinstruction_none = _buildOid(holdInstruction, 1)
 
@@ -1485,7 +1495,7 @@ class ExtKeyUsageSyntax(univ.SequenceOf):
 
 
 ExtKeyUsageSyntax.componentType = KeyPurposeId()
-ExtKeyUsageSyntax.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+ExtKeyUsageSyntax.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class HoldInstructionCode(univ.ObjectIdentifier):
@@ -1504,7 +1514,7 @@ class SubjectInfoAccessSyntax(univ.SequenceOf):
 
 
 SubjectInfoAccessSyntax.componentType = AccessDescription()
-SubjectInfoAccessSyntax.subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
+SubjectInfoAccessSyntax.sizeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
 class InvalidityDate(useful.GeneralizedTime):
@@ -1561,6 +1571,37 @@ id_kp_clientAuth = _buildOid(id_kp, 2)
 id_ce_subjectKeyIdentifier = _buildOid(id_ce, 14)
 
 id_ce_inhibitAnyPolicy = _buildOid(id_ce, 54)
+
+# map of ORAddress ExtensionAttribute type to ExtensionAttribute value
+
+_oraddressExtensionAttributeMapUpdate = {
+    common_name: CommonName(),
+    teletex_common_name: TeletexCommonName(),
+    teletex_organization_name: TeletexOrganizationName(),
+    teletex_personal_name: TeletexPersonalName(),
+    teletex_organizational_unit_names: TeletexOrganizationalUnitNames(),
+    pds_name: PDSName(),
+    physical_delivery_country_name: PhysicalDeliveryCountryName(),
+    postal_code: PostalCode(),
+    physical_delivery_office_name: PhysicalDeliveryOfficeName(),
+    physical_delivery_office_number: PhysicalDeliveryOfficeNumber(),
+    extension_OR_address_components: ExtensionORAddressComponents(),
+    physical_delivery_personal_name: PhysicalDeliveryPersonalName(),
+    physical_delivery_organization_name: PhysicalDeliveryOrganizationName(),
+    extension_physical_delivery_address_components: ExtensionPhysicalDeliveryAddressComponents(),
+    unformatted_postal_address: UnformattedPostalAddress(),
+    street_address: StreetAddress(),
+    post_office_box_address: PostOfficeBoxAddress(),
+    poste_restante_address: PosteRestanteAddress(),
+    unique_postal_name: UniquePostalName(),
+    local_postal_attributes: LocalPostalAttributes(),
+    extended_network_address: ExtendedNetworkAddress(),
+    terminal_type: TerminalType(),
+    teletex_domain_defined_attributes: TeletexDomainDefinedAttributes(),
+}
+
+oraddressExtensionAttributeMap.update(_oraddressExtensionAttributeMapUpdate)
+
 
 # map of AttributeType -> AttributeValue
 

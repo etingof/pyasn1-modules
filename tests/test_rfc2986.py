@@ -1,7 +1,7 @@
 #
 # This file is part of pyasn1-modules software.
 #
-# Copyright (c) 2005-2018, Ilya Etingof <etingof@gmail.com>
+# Copyright (c) 2005-2019, Ilya Etingof <etingof@gmail.com>
 # License: http://snmplabs.com/pyasn1/license.html
 #
 import sys
@@ -10,8 +10,13 @@ import unittest
 from pyasn1.codec.der import decoder as der_decoder
 from pyasn1.codec.der import encoder as der_encoder
 
+from pyasn1.type import char
+from pyasn1.type import univ
+
 from pyasn1_modules import pem
 from pyasn1_modules import rfc2986
+from pyasn1_modules import rfc5280
+
 
 
 class CertificationRequestTestCase(unittest.TestCase):
@@ -46,8 +51,41 @@ fi6h7i9VVAZpslaKFfkNg12gLbbsCB1q36l5VXjHY/qe0FIUa9ogRrOi
         assert asn1Object.prettyPrint()
         assert der_encoder.encode(asn1Object) == substrate
 
+    def testOpenTypes(self):
+        algorithmIdentifierMapUpdate = {
+            univ.ObjectIdentifier('1.2.840.113549.1.1.1'): univ.Null(""),
+            univ.ObjectIdentifier('1.2.840.113549.1.1.5'): univ.Null(""),
+            univ.ObjectIdentifier('1.2.840.113549.1.1.11'): univ.Null(""),
+        }
+
+        rfc5280.algorithmIdentifierMap.update(algorithmIdentifierMapUpdate)
+        substrate = pem.readBase64fromText(self.pem_text)
+        asn1Object, rest = der_decoder.decode(substrate,
+            asn1Spec=rfc2986.CertificationRequest(),
+            decodeOpenTypes=True)
+        assert not rest
+        assert asn1Object.prettyPrint()
+
+        assert der_encoder.encode(asn1Object) == substrate
+
+        for rdn in asn1Object['certificationRequestInfo']['subject']['rdnSequence']:
+            for atv in rdn:
+                if atv['type'] == rfc5280.id_at_countryName:
+                    assert atv['value'] == char.PrintableString('US')
+                else:
+                    assert len(atv['value']['utf8String']) > 2
+
+        spki_alg = asn1Object['certificationRequestInfo']['subjectPKInfo']['algorithm']
+        assert spki_alg['parameters'] == univ.Null("")
+
+        sig_alg = asn1Object['signatureAlgorithm']
+        assert sig_alg['parameters'] == univ.Null("")
+
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
 if __name__ == '__main__':
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    import sys
+
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    sys.exit(not result.wasSuccessful())

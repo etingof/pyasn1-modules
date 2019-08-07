@@ -1,7 +1,7 @@
 #
 # This file is part of pyasn1-modules software.
 #
-# Copyright (c) 2005-2018, Ilya Etingof <etingof@gmail.com>
+# Copyright (c) 2005-2019, Ilya Etingof <etingof@gmail.com>
 # License: http://snmplabs.com/pyasn1/license.html
 #
 # PKCS#1 syntax
@@ -27,7 +27,7 @@ class OtherPrimeInfo(univ.Sequence):
 
 class OtherPrimeInfos(univ.SequenceOf):
     componentType = OtherPrimeInfo()
-    subtypeSpec = univ.SequenceOf.subtypeSpec + constraint.ValueSizeConstraint(1, MAX)
+    sizeSpec = univ.SequenceOf.sizeSpec + constraint.ValueSizeConstraint(1, MAX)
 
 
 class RSAPrivateKey(univ.Sequence):
