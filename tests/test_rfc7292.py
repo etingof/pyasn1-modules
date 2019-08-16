@@ -119,7 +119,7 @@ rqr03dPnboinBBSU7mxdpB5LTCvorCI8Tk5OMiUzjgICB9A=
                     assert der_encode(bv) == sb['bagValue']
 
                     for attr in sb['bagAttributes']:
-                        if attr in rfc5652.cmsAttributesMap:
+                        if attr['attrType'] in rfc5652.cmsAttributesMap:
                             av, rest = der_decode(attr['attrValues'][0],
                                 asn1Spec=rfc5652.cmsAttributesMap[attr['attrType']])
                             assert not rest

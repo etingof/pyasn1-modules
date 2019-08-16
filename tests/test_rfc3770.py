@@ -11,6 +11,8 @@ import sys
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
 
+from pyasn1.compat.octets import str2octs
+
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5480
 from pyasn1_modules import rfc5280
@@ -75,7 +77,7 @@ DAlVlhox680Jxy5J8Pkx
                 assert der_encode(extnValue) == extn['extnValue']
 
                 if extn['extnID'] == rfc3770.id_pe_wlanSSID:
-                    assert b'Example' in extnValue
+                    assert str2octs('Example') in extnValue
             
                 if extn['extnID'] == rfc5280.id_ce_extKeyUsage:
                      assert rfc3770.id_kp_eapOverLAN in extnValue

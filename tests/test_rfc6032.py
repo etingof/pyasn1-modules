@@ -11,6 +11,8 @@ import sys
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
 
+from pyasn1.compat.octets import str2octs
+
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5652
 from pyasn1_modules import rfc6032
@@ -76,9 +78,8 @@ YIZIAWUCAQVCMRAEDnB0Zi1rZGMtODEyMzc0
         for attr in asn1Object['content']['encrypted']['unprotectedAttrs']:
             assert attr['attrType'] in rfc5652.cmsAttributesMap.keys()
             assert attr['attrValues'][0].prettyPrint()[:2] != '0x'
-            # decodeOpenTypes=True did not decode if the value is shown in hex ...
             if attr['attrType'] == rfc6032.id_aa_KP_contentDecryptKeyID:
-                assert attr['attrValues'][0] == b'ptf-kdc-812374'
+                assert attr['attrValues'][0] == str2octs('ptf-kdc-812374')
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
