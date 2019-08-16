@@ -58,7 +58,7 @@ YIZIAWUCAQVCMRAEDnB0Zi1rZGMtODEyMzc0
         assert not rest
         assert keyid.prettyPrint()
         assert der_encode(keyid) == attrVal0
-        assert keyid == "ptf-kdc-812374"
+        assert keyid == b'ptf-kdc-812374'
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.encrypted_key_pkg_pem_text)
@@ -78,7 +78,7 @@ YIZIAWUCAQVCMRAEDnB0Zi1rZGMtODEyMzc0
             assert attr['attrValues'][0].prettyPrint()[:2] != '0x'
             # decodeOpenTypes=True did not decode if the value is shown in hex ...
             if attr['attrType'] == rfc6032.id_aa_KP_contentDecryptKeyID:
-                assert attr['attrValues'][0] == "ptf-kdc-812374"
+                assert attr['attrValues'][0] == b'ptf-kdc-812374'
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

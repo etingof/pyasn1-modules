@@ -11,7 +11,7 @@ import sys
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
 
-from pyasn1.compat.octets import str2octs
+from pyasn1.type import univ
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc2634
@@ -139,7 +139,7 @@ buWO3egPDL8Kf7tBhzjIKLw=
             next_ci = ci['content']['content']
             assert next_ci['contentType'] in rfc5652.cmsContentTypesMap.keys()
             assert next_ci['contentType'] == rfc5652.id_data
-            assert str2octs('Content-Type: text') in next_ci['content']
+            assert b'Content-Type: text' in next_ci['content']
 
             for attr in ci['content']['attrs']:
                 assert attr['attrType'] in rfc5652.cmsAttributesMap.keys()
@@ -150,7 +150,4 @@ buWO3egPDL8Kf7tBhzjIKLw=
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
 if __name__ == '__main__':
-    import sys
-
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
-    sys.exit(not result.wasSuccessful())
+    unittest.TextTestRunner(verbosity=2).run(suite)

@@ -75,7 +75,7 @@ DAlVlhox680Jxy5J8Pkx
                 assert der_encode(extnValue) == extn['extnValue']
 
                 if extn['extnID'] == rfc3770.id_pe_wlanSSID:
-                    assert 'Example' in extnValue
+                    assert b'Example' in extnValue
             
                 if extn['extnID'] == rfc5280.id_ce_extKeyUsage:
                      assert rfc3770.id_kp_eapOverLAN in extnValue
