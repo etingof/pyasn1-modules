@@ -125,8 +125,6 @@ xicQmJP+VoMHo/ZpjFY9fYCjNZUArgKsEwK/s+p9yrVVeB1Nf8Mn
 
         rfc5280.algorithmIdentifierMap.update(algorithmIdentifierMapUpdate)
 
-        rfc5652.cmsContentTypesMap.update(rfc6402.cmsContentTypesMapUpdate)
-
         substrate = pem.readBase64fromText(self.pem_text)
 
         asn1Object, rest = der_decoder.decode(substrate,

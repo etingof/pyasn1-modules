@@ -66,7 +66,6 @@ Pj22pmfmQi5w21UljqoTj/+lQLkU3wfy5BdVKBwI0GfEA+YL3ctSzPNqAA==
 
     def testExtensionsMap(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        rfc5280.certificateExtensionsMap.update(rfc3709.certificateExtensionsMapUpdate)
         asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
         assert not rest
         assert asn1Object.prettyPrint()

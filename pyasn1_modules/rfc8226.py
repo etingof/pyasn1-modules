@@ -18,6 +18,7 @@ from pyasn1.type import namedtype
 from pyasn1.type import tag
 from pyasn1.type import univ
 
+from pyasn1_modules import rfc5280
 
 MAX = float('inf')
 
@@ -133,11 +134,12 @@ id_pe_TNAuthList = _OID(1, 3, 6, 1, 5, 5, 7, 1, 26)
 id_ad_stirTNList = _OID(1, 3, 6, 1, 5, 5, 7, 48, 14)
 
 
-# Map of Certificate Extension OIDs to Extensions
-# To be added to the ones that are in rfc5280.py
+# Map of Certificate Extension OIDs to Extensions added to the
+# ones that are in rfc5280.py
 
-certificateExtensionsMapUpdate = {
+_certificateExtensionsMapUpdate = {
     id_pe_TNAuthList: TNAuthorizationList(),
     id_pe_JWTClaimConstraints: JWTClaimConstraints(),
 }
 
+rfc5280.certificateExtensionsMap.update(_certificateExtensionsMapUpdate)
