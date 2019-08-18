@@ -194,9 +194,11 @@ LogotypeExtn.componentType = namedtype.NamedTypes(
 )
 
 
-# Map of Certificate Extension OIDs to Extensions
-# To be added to the ones that are in rfc5280.py
+# Map of Certificate Extension OIDs to Extensions added to the
+# ones that are in rfc5280.py
 
-certificateExtensionsMapUpdate = {
+_certificateExtensionsMapUpdate = {
     id_pe_logotype: LogotypeExtn(),
 }
+
+rfc5280.certificateExtensionsMap.update(_certificateExtensionsMapUpdate)
