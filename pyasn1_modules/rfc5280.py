@@ -1635,7 +1635,7 @@ _certificateExtensionsMap = {
     id_ce_subjectKeyIdentifier: SubjectKeyIdentifier(),
     id_ce_keyUsage: KeyUsage(),
     id_ce_privateKeyUsagePeriod: PrivateKeyUsagePeriod(),
-    id_ce_certificatePolicies: PolicyInformation(),  # could be a sequence of concat'ed objects?
+    id_ce_certificatePolicies: CertificatePolicies(),
     id_ce_policyMappings: PolicyMappings(),
     id_ce_subjectAltName: SubjectAltName(),
     id_ce_issuerAltName: IssuerAltName(),

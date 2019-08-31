@@ -47,16 +47,14 @@ CMSAlgorithmProtection.componentType = namedtype.NamedTypes(
             implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 2)))
 )
 
-# TODO: Add constraints to implement the WITH COMPONENTS part of the ASN.1:
-#
-# CMSAlgorithmProtection.subtypeSpec = constraint.ConstraintsIntersection(
-#     constraint.WithComponentsConstraint(
-#         ('signatureAlgorithm', constraint.ComponentPresentConstraint()),
-#         ('macAlgorithm', constraint.ComponentAbsentConstraint())),
-#     constraint.WithComponentsConstraint(
-#         ('signatureAlgorithm', constraint.ComponentAbsentConstraint()),
-#         ('macAlgorithm', constraint.ComponentPresentConstraint()))
-# )
+CMSAlgorithmProtection.subtypeSpec = constraint.ConstraintsUnion(
+    constraint.WithComponentsConstraint(
+        ('signatureAlgorithm', constraint.ComponentPresentConstraint()),
+        ('macAlgorithm', constraint.ComponentAbsentConstraint())),
+    constraint.WithComponentsConstraint(
+        ('signatureAlgorithm', constraint.ComponentAbsentConstraint()),
+        ('macAlgorithm', constraint.ComponentPresentConstraint()))
+)
 
 
 aa_cmsAlgorithmProtection = rfc5652.Attribute()
