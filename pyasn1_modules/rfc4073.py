@@ -48,10 +48,12 @@ ContentWithAttributes.componentType = namedtype.NamedTypes(
 )
 
 
-# Map of Content Type OIDs to Content Types
-# To be added to the ones that are in rfc5652.py
+# Map of Content Type OIDs to Content Types is added to the
+# ones that are in rfc5652.py
 
-cmsContentTypesMapUpdate = {
+_cmsContentTypesMapUpdate = {
     id_ct_contentCollection: ContentCollection(),
     id_ct_contentWithAttrs: ContentWithAttributes(),
 }
+
+rfc5652.cmsContentTypesMap.update(_cmsContentTypesMapUpdate)

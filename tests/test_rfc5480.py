@@ -8,13 +8,12 @@
 
 import sys
 
-from pyasn1.codec.der import decoder as der_decoder
-from pyasn1.codec.der import encoder as der_encoder
+from pyasn1.codec.der.decoder import decode as der_decode
+from pyasn1.codec.der.encoder import encode as der_encode
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5280
 from pyasn1_modules import rfc5480
-from pyasn1_modules import rfc4055
 
 try:
     import unittest2 as unittest
@@ -51,27 +50,24 @@ Ea8/B6hPatJ0ES8q/HO3X8IVQwVs1n3aAr0im0/T+Xc=
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.digicert_ec_cert_pem_text)
-        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
         assert not rest
         assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
-        assert substrate == der_encoder.encode(asn1Object)
+        assert der_encode(asn1Object) == substrate
 
         algid = asn1Object['tbsCertificate']['subjectPublicKeyInfo']['algorithm']
         assert algid['algorithm'] == rfc5480.id_ecPublicKey
-        param, rest = der_decoder.decode(algid['parameters'], asn1Spec=rfc5480.ECParameters())
+        param, rest = der_decode(algid['parameters'], asn1Spec=rfc5480.ECParameters())
         assert param.prettyPrint()
         assert param['namedCurve'] == rfc5480.secp384r1
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.digicert_ec_cert_pem_text)
-        rfc5280.algorithmIdentifierMap.update(rfc5480.algorithmIdentifierMapUpdate)
-        asn1Object, rest = der_decoder.decode(substrate,
-                                              asn1Spec=self.asn1Spec,
-                                              decodeOpenTypes=True)
+        asn1Object, rest = der_decode(substrate,
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
         assert not rest
         assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
+        assert der_encode(asn1Object) == substrate
     
         spki_alg = asn1Object['tbsCertificate']['subjectPublicKeyInfo']['algorithm']
         assert spki_alg['algorithm'] == rfc5480.id_ecPublicKey

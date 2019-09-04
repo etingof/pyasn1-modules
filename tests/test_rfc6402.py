@@ -50,7 +50,8 @@ xicQmJP+VoMHo/ZpjFY9fYCjNZUArgKsEwK/s+p9yrVVeB1Nf8Mn
 """
 
     def testDerCodec(self):
-        layers = rfc5652.cmsContentTypesMap
+        layers = { }
+        layers.update(rfc5652.cmsContentTypesMap)
 
         getNextLayer = {
             rfc5652.id_ct_contentInfo: lambda x: x['contentType'],
@@ -97,27 +98,24 @@ xicQmJP+VoMHo/ZpjFY9fYCjNZUArgKsEwK/s+p9yrVVeB1Nf8Mn
             namedtype.NamedType('Signature', univ.BitString())
         )
 
-        attributesMapUpdate = {
+        openTypeMap = {
+            # attributes
             univ.ObjectIdentifier('1.3.6.1.4.1.311.13.2.3'): char.IA5String(),
             univ.ObjectIdentifier('1.3.6.1.4.1.311.13.2.2'): EnrollmentCSP(),
             univ.ObjectIdentifier('1.3.6.1.4.1.311.21.20'): ClientInformation(),
-        }
-
-        rfc5652.cmsAttributesMap.update(rfc6402.cmcControlAttributesMap)
-        rfc5652.cmsAttributesMap.update(attributesMapUpdate)
-
-        algorithmIdentifierMapUpdate = {
+            # algorithm identifier parameters
             univ.ObjectIdentifier('1.2.840.113549.1.1.1'): univ.Null(""),
             univ.ObjectIdentifier('1.2.840.113549.1.1.5'): univ.Null(""),
             univ.ObjectIdentifier('1.2.840.113549.1.1.11'): univ.Null(""),
         }
 
-        rfc5280.algorithmIdentifierMap.update(algorithmIdentifierMapUpdate)
+        openTypeMap.update(rfc5652.cmsAttributesMap)
+        openTypeMap.update(rfc6402.cmcControlAttributesMap)
 
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decode(substrate,
-                                      asn1Spec=rfc5652.ContentInfo(),
-                                      decodeOpenTypes=True)
+            asn1Spec=rfc5652.ContentInfo(),
+            decodeOpenTypes=True)
         assert not rest
         assert asn1Object.prettyPrint()
         assert der_encode(asn1Object) == substrate
@@ -126,8 +124,9 @@ xicQmJP+VoMHo/ZpjFY9fYCjNZUArgKsEwK/s+p9yrVVeB1Nf8Mn
         assert eci['eContentType'] == rfc6402.id_cct_PKIData
         substrate = eci['eContent']
         asn1Object, rest = der_decode(substrate,
-                                      asn1Spec=rfc6402.PKIData(),
-                                      decodeOpenTypes=True)
+            asn1Spec=rfc6402.PKIData(),
+            openTypes=openTypeMap,
+            decodeOpenTypes=True)
         assert not rest
         assert asn1Object.prettyPrint()
         assert der_encode(asn1Object) == substrate
@@ -136,17 +135,17 @@ xicQmJP+VoMHo/ZpjFY9fYCjNZUArgKsEwK/s+p9yrVVeB1Nf8Mn
             cr = req['tcr']['certificationRequest']
 
             sig_alg = cr['signatureAlgorithm']
-            assert sig_alg['algorithm'] in rfc5280.algorithmIdentifierMap.keys()
+            assert sig_alg['algorithm'] in openTypeMap.keys()
             assert sig_alg['parameters'] == univ.Null("")
 
             cri = cr['certificationRequestInfo']
             spki_alg = cri['subjectPublicKeyInfo']['algorithm']
-            assert spki_alg['algorithm'] in rfc5280.algorithmIdentifierMap.keys()
+            assert spki_alg['algorithm'] in openTypeMap.keys()
             assert spki_alg['parameters'] == univ.Null("")
 
             attrs = cr['certificationRequestInfo']['attributes']
             for attr in attrs:
-                assert attr['attrType'] in rfc5652.cmsAttributesMap.keys()
+                assert attr['attrType'] in openTypeMap.keys()
                 if attr['attrType'] == univ.ObjectIdentifier('1.3.6.1.4.1.311.13.2.3'):
                     assert attr['attrValues'][0] == "6.2.9200.2"
                 else:

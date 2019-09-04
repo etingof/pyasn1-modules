@@ -81,7 +81,7 @@ ttTMEpl2prH8bbwo1g==
 
         assert asn1Object['contentType'] == rfc5652.id_signedData
         sd, rest = der_decode(asn1Object['content'],
-                              asn1Spec=rfc5652.SignedData())
+            asn1Spec=rfc5652.SignedData())
         assert sd.prettyPrint()
 
         assert sd['encapContentInfo']['eContentType'] == rfc5652.id_data
@@ -92,18 +92,16 @@ ttTMEpl2prH8bbwo1g==
         assert sd['crls'][1]['other']['otherRevInfoFormat'] == ocspr_oid
 
         ocspr, rest = der_decode(sd['crls'][1]['other']['otherRevInfo'],
-                                 asn1Spec=rfc5940.OCSPResponse())
+            asn1Spec=rfc5940.OCSPResponse())
         assert ocspr.prettyPrint()
         success = rfc2560.OCSPResponseStatus(value='successful')
         assert ocspr['responseStatus'] == success
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
-
-        rfc5652.otherRevInfoFormatMap.update(rfc5940.otherRevInfoFormatMapUpdate)
         asn1Object, rest = der_decode(substrate,
-                                      asn1Spec=self.asn1Spec,
-                                      decodeOpenTypes=True)
+            asn1Spec=self.asn1Spec,
+            decodeOpenTypes=True)
         assert not rest
         assert asn1Object.prettyPrint()
         assert der_encode(asn1Object) == substrate

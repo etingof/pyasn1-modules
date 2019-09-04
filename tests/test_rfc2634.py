@@ -73,8 +73,8 @@ mNTr0mjYeUWRe/15IsWNx+kuFcLDr71DFHvMFY5M3sdfMA==
             sat = sa['attrType']
             sav0 = sa['attrValues'][0]
 
-            if sat in rfc2634.ESSAttributeMap.keys():
-                sav, rest = der_decode(sav0, asn1Spec=rfc2634.ESSAttributeMap[sat])
+            if sat in rfc5652.cmsAttributesMap.keys():
+                sav, rest = der_decode(sav0, asn1Spec=rfc5652.cmsAttributesMap[sat])
                 assert not rest
                 assert sav.prettyPrint()
                 assert der_encode(sav) == sav0
@@ -139,18 +139,17 @@ lropBdPJ6jIXiZQgCwxbGTCwCMQClaQ9K+L5LTeuW50ZKSIbmBZQ5dxjtnK3OlS
             sat = sa['attrType']
             sav0 = sa['attrValues'][0]
 
-            if sat in rfc2634.ESSAttributeMap.keys():
-                sav, rest = der_decode(sav0, asn1Spec=rfc2634.ESSAttributeMap[sat])
+            if sat in rfc5652.cmsAttributesMap.keys():
+                sav, rest = der_decode(sav0, asn1Spec=rfc5652.cmsAttributesMap[sat])
                 assert not rest
                 assert sav.prettyPrint()
                 assert der_encode(sav) == sav0
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.signed_receipt_pem_text)
-        rfc5652.cmsContentTypesMap.update(rfc2634.cmsContentTypesMapUpdate)
-        rfc5652.cmsAttributesMap.update(rfc2634.ESSAttributeMap)
         asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            asn1Spec=self.asn1Spec,
+            decodeOpenTypes=True)
         assert not rest
         assert asn1Object.prettyPrint()
         assert der_encode(asn1Object) == substrate

@@ -43,8 +43,6 @@ class BinarySigningTimeTestCase(unittest.TestCase):
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        
-        rfc5652.cmsAttributesMap.update(rfc6019.cmsAttributesMapUpdate)
         asn1Object, rest = der_decode(substrate,
                                       asn1Spec=self.asn1Spec,
                                       decodeOpenTypes=True)

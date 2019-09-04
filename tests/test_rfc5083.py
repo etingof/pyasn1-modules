@@ -8,8 +8,8 @@
 
 import sys
 
-from pyasn1.codec.der import decoder as der_decoder
-from pyasn1.codec.der import encoder as der_encoder
+from pyasn1.codec.der.decoder import decode as der_decode
+from pyasn1.codec.der.encoder import encode as der_encode
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5652
@@ -43,10 +43,10 @@ ur76ztut3sr4iIANmvLRbyFUf87+2bPvLQQMoOWSXMGE4BckY8RM
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
         assert not rest
         assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
+        assert der_encode(asn1Object) == substrate
 
 
 class AuthEnvelopedDataOpenTypesTestCase(unittest.TestCase):
@@ -73,19 +73,17 @@ IDAeDBFXYXRzb24sIGNvbWUgaGVyZQYJKoZIhvcNAQcB
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        rfc5652.cmsAttributesMap.update(rfc5035.ESSAttributeMap)
-        rfc5652.cmsContentTypesMap.update(rfc5083.cmsContentTypesMapUpdate)
-        asn1Object, rest = der_decoder.decode(substrate,
-                                              asn1Spec=self.asn1Spec,
-                                              decodeOpenTypes=True)
+        asn1Object, rest = der_decode(substrate,
+            asn1Spec=self.asn1Spec,
+            decodeOpenTypes=True)
         assert not rest
         assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
+        assert der_encode(asn1Object) == substrate
 
         assert asn1Object['contentType'] in rfc5652.cmsContentTypesMap
         assert asn1Object['contentType'] == rfc5083.id_ct_authEnvelopedData
         authenv = asn1Object['content']
-        assert authenv['version'] == rfc5652.CMSVersion().subtype(value='v0')
+        assert authenv['version'] == 0
 
         for attr in authenv['unauthAttrs']:
             assert attr['attrType'] in rfc5652.cmsAttributesMap

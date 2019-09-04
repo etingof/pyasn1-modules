@@ -6,8 +6,8 @@
 #
 import sys
 
-from pyasn1.codec.der import decoder as der_decoder
-from pyasn1.codec.der import encoder as der_encoder
+from pyasn1.codec.der.decoder import decode as der_decode
+from pyasn1.codec.der.encoder import encode as der_encode
 
 from pyasn1.type import char
 from pyasn1.type import univ
@@ -50,28 +50,28 @@ fi6h7i9VVAZpslaKFfkNg12gLbbsCB1q36l5VXjHY/qe0FIUa9ogRrOi
 
         substrate = pem.readBase64fromText(self.pem_text)
 
-        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
 
         assert not rest
         assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
+        assert der_encode(asn1Object) == substrate
 
     def testOpenTypes(self):
-        algorithmIdentifierMapUpdate = {
+        openTypesMap = {
             univ.ObjectIdentifier('1.2.840.113549.1.1.1'): univ.Null(""),
             univ.ObjectIdentifier('1.2.840.113549.1.1.5'): univ.Null(""),
             univ.ObjectIdentifier('1.2.840.113549.1.1.11'): univ.Null(""),
         }
 
-        rfc5280.algorithmIdentifierMap.update(algorithmIdentifierMapUpdate)
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decoder.decode(substrate,
+        asn1Object, rest = der_decode(substrate,
             asn1Spec=rfc2986.CertificationRequest(),
+            openTypes=openTypesMap,
             decodeOpenTypes=True)
         assert not rest
         assert asn1Object.prettyPrint()
 
-        assert der_encoder.encode(asn1Object) == substrate
+        assert der_encode(asn1Object) == substrate
 
         for rdn in asn1Object['certificationRequestInfo']['subject']['rdnSequence']:
             for atv in rdn:

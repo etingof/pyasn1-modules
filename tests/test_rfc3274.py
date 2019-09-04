@@ -57,11 +57,9 @@ XQ7u2qbaKFtZ7V96NH8ApkUFkg==
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.compressed_data_pem_text)
-
-        rfc5652.cmsContentTypesMap.update(rfc3274.cmsContentTypesMapUpdate)
         asn1Object, rest = der_decode(substrate, 
-                                      asn1Spec=self.asn1Spec,
-                                      decodeOpenTypes=True)
+            asn1Spec=self.asn1Spec,
+            decodeOpenTypes=True)
         assert not rest
         assert asn1Object.prettyPrint()
         assert der_encode(asn1Object) == substrate

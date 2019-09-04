@@ -145,10 +145,15 @@ toMsV8fLBpBjA5YGQvd3TAcSw1lNbWpArL+hje1dzQ7pxslnkklv3CTxAjBuVebz
                 assert av == univ.OctetString(hexValue='7906')
 
     def testOpenTypes(self):
+        openTypesMap = { }
+        openTypesMap.update(rfc5280.certificateAttributesMap)
+        openTypesMap.update(rfc5652.cmsAttributesMap)
+
         substrate = pem.readBase64fromText(self.attr_set_pem_text)
-        rfc5280.certificateAttributesMap.update(rfc5652.cmsAttributesMap)
-        asn1Object, rest = der_decode (substrate,
-            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+        asn1Object, rest = der_decode(substrate,
+            asn1Spec=self.asn1Spec,
+            openTypes=openTypesMap,
+            decodeOpenTypes=True)
         assert not rest
         assert asn1Object.prettyPrint()
         assert der_encode(asn1Object) == substrate

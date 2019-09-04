@@ -54,10 +54,9 @@ DAlVlhox680Jxy5J8Pkx
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.cert_pem_text)
-        rfc5280.algorithmIdentifierMap.update(rfc5480.algorithmIdentifierMapUpdate)
         asn1Object, rest = der_decode(substrate,
-                                      asn1Spec=self.asn1Spec,
-                                      decodeOpenTypes=True)
+            asn1Spec=self.asn1Spec,
+            decodeOpenTypes=True)
         assert not rest
         assert asn1Object.prettyPrint()
         assert der_encode(asn1Object) == substrate
