@@ -18,6 +18,8 @@ from pyasn1.type import namedtype
 from pyasn1.type import tag
 from pyasn1.type import univ
 
+from pyasn1_modules import rfc5280
+
 
 # IP Address Delegation Extension
 
@@ -124,10 +126,12 @@ ASIdentifiers.componentType = namedtype.NamedTypes(
 )
 
 
-# Map of Certificate Extension OIDs to Extensions
-# To be added to the ones that are in rfc5280.py
+# Map of Certificate Extension OIDs to Extensions is added to the
+# ones that are in rfc5280.py
 
-certificateExtensionsMapUpdate = {
+_certificateExtensionsMapUpdate = {
     id_pe_ipAddrBlocks: IPAddrBlocks(),
     id_pe_autonomousSysIds: ASIdentifiers(),
 }
+
+rfc5280.certificateExtensionsMap.update(_certificateExtensionsMapUpdate)

@@ -74,7 +74,7 @@ dsnhVtIdkPtfJIvcYteYJg==
             attribute_list.append(attr['attrType'])
             if attr['attrType'] == rfc4108.id_aa_targetHardwareIDs:
                 av, rest = der_decode(attr['attrValues'][0],
-                                      asn1Spec=rfc4108.TargetHardwareIdentifiers())
+                    asn1Spec=rfc4108.TargetHardwareIdentifiers())
                 assert len(av) == 2
                 for oid in av:
                     assert '1.3.6.1.4.1.221121.1.1.' in oid.prettyPrint()
@@ -86,12 +86,9 @@ dsnhVtIdkPtfJIvcYteYJg==
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
-
-        rfc5652.cmsContentTypesMap.update(rfc4108.cmsContentTypesMapUpdate)
-        rfc5652.cmsAttributesMap.update(rfc4108.cmsAttributesMapUpdate)
         asn1Object, rest = der_decode(substrate,
-                                      asn1Spec=self.asn1Spec,
-                                      decodeOpenTypes=True)
+            asn1Spec=self.asn1Spec,
+            decodeOpenTypes=True)
         assert not rest
         assert asn1Object.prettyPrint()
         assert der_encode(asn1Object) == substrate

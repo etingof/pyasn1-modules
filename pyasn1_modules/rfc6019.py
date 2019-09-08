@@ -14,6 +14,8 @@
 from pyasn1.type import constraint
 from pyasn1.type import univ
 
+from pyasn1_modules import rfc5652
+
 MAX = float('inf')
 
 
@@ -33,9 +35,11 @@ class BinarySigningTime(BinaryTime):
     pass
 
 
-# Map of Attribute Type OIDs to Attributes
-# To be added to the ones that are in rfc5652.py
+# Map of Attribute Type OIDs to Attributes ia added to the
+# ones that are in rfc5652.py
 
-cmsAttributesMapUpdate = {
+_cmsAttributesMapUpdate = {
     id_aa_binarySigningTime: BinarySigningTime(),
 }
+
+rfc5652.cmsAttributesMap.update(_cmsAttributesMapUpdate)

@@ -14,8 +14,11 @@
 # https://www.rfc-editor.org/rfc/rfc8520.txt
 #
 
-from pyasn1.type import univ, char, namedtype, namedval, tag, constraint, useful
+from pyasn1.type import char
+from pyasn1.type import univ
+
 from pyasn1_modules import rfc5280
+from pyasn1_modules import rfc5652
 
 
 # X.509 Extension for MUD URL
@@ -39,18 +42,22 @@ class MUDsignerSyntax(rfc5280.Name):
 id_ct_mudtype = univ.ObjectIdentifier('1.2.840.113549.1.9.16.1.41')
 
 
-# Map of Certificate Extension OIDs to Extensions
-# To be added to the ones that are in rfc5280.py
+# Map of Certificate Extension OIDs to Extensions added to the
+# ones that are in rfc5280.py
 
-certificateExtensionsMapUpdate = {
+_certificateExtensionsMapUpdate = {
     id_pe_mud_url: MUDURLSyntax(),
     id_pe_mudsigner: MUDsignerSyntax(),
 }
 
+rfc5280.certificateExtensionsMap.update(_certificateExtensionsMapUpdate)
 
-# Map of Content Type OIDs to Content Types
-# To be added to the ones that are in rfc5652.py
 
-cmsContentTypesMapUpdate = {
+# Map of Content Type OIDs to Content Types added to the
+# ones that are in rfc5652.py
+
+_cmsContentTypesMapUpdate = {
     id_ct_mudtype: univ.OctetString(),
 }
+
+rfc5652.cmsContentTypesMap.update(_cmsContentTypesMapUpdate)

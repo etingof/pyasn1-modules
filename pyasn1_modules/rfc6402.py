@@ -41,7 +41,8 @@ def _buildOid(*components):
     return univ.ObjectIdentifier(output)
 
 
-cmcControlAttributesMap = { }
+# Since CMS Attributes and CMC Controls both use 'attrType', one map is used 
+cmcControlAttributesMap = rfc5652.cmsAttributesMap
 
 
 class ChangeSubjectName(univ.Sequence):

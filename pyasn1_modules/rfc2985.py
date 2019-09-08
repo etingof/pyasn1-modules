@@ -536,7 +536,7 @@ smimeCapabilities['attrValues'][0] = SMIMECapabilities()
 
 # Certificate Attribute Map
 
-certificateAttributesMapUpdate = {
+_certificateAttributesMapUpdate = {
     # Attribute types for use with the "pkcsEntity" object class
     pkcs_9_at_pkcs7PDU: ContentInfo(),
     pkcs_9_at_userPKCS12: PFX(),
@@ -560,12 +560,12 @@ certificateAttributesMapUpdate = {
     pkcs_9_at_extendedCertificateAttributes: AttributeSet(),
 }
 
-rfc5280.certificateAttributesMap.update(certificateAttributesMapUpdate)
+rfc5280.certificateAttributesMap.update(_certificateAttributesMapUpdate)
 
 
 # CMS Attribute Map
 
-cmsAttributesMapUpdate = {
+_cmsAttributesMapUpdate = {
     # Attribute types for use in PKCS #7 data (a.k.a. CMS)
     pkcs_9_at_contentType: ContentType(),
     pkcs_9_at_messageDigest: MessageDigest(),
@@ -580,4 +580,4 @@ cmsAttributesMapUpdate = {
     pkcs_9_at_smimeCapabilities: SMIMECapabilities(),
 }
 
-rfc5652.cmsAttributesMap.update(cmsAttributesMapUpdate)
+rfc5652.cmsAttributesMap.update(_cmsAttributesMapUpdate)

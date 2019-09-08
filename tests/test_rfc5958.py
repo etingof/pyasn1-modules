@@ -8,8 +8,8 @@
 
 import sys
 
-from pyasn1.codec.der import decoder as der_decoder
-from pyasn1.codec.der import encoder as der_encoder
+from pyasn1.codec.der.decoder import decode as der_decode
+from pyasn1.codec.der.encoder import encode as der_encode
 
 from pyasn1.type import univ
 
@@ -36,7 +36,7 @@ Z9w7lshQhqowtrbLDFw4rXAxZuE=
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.priv_key_pem_text)
-        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
         assert not rest
         assert asn1Object.prettyPrint()
         assert asn1Object['privateKeyAlgorithm']['algorithm'] == rfc8410.id_Ed25519
@@ -44,7 +44,7 @@ Z9w7lshQhqowtrbLDFw4rXAxZuE=
         assert asn1Object['privateKey'].prettyPrint()[0:10] == "0x0420d4ee"
         assert asn1Object['publicKey'].isValue
         assert asn1Object['publicKey'].prettyPrint()[0:10] == "1164575857"
-        assert der_encoder.encode(asn1Object) == substrate
+        assert der_encode(asn1Object) == substrate
 
 
 class PrivateKeyOpenTypesTestCase(unittest.TestCase):
@@ -59,13 +59,11 @@ YWlyc4EhABm/RAlphM3+hUG6wWfcO5bIUIaqMLa2ywxcOK1wMWbh
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.asymmetric_key_pkg_pem_text)
-        rfc5652.cmsContentTypesMap.update(rfc5958.cmsContentTypesMapUpdate)
-        asn1Object, rest = der_decoder.decode(substrate,
-                                              asn1Spec=self.asn1Spec,
-                                              decodeOpenTypes=True)
+        asn1Object, rest = der_decode(substrate,
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
         assert not rest
         assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
+        assert der_encode(asn1Object) == substrate
 
         assert rfc5958.id_ct_KP_aKeyPackage in rfc5652.cmsContentTypesMap.keys()
         oneKey = asn1Object['content'][0]

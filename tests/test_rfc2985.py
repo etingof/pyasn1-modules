@@ -129,13 +129,14 @@ HktMK+isIjxOTk4yJTOOAgIH0A==
         assert asn1Object.prettyPrint()
         assert der_encode(asn1Object) == substrate
 
-        rfc5280.certificateAttributesMap.update(rfc2985.certificateAttributesMapUpdate)
-        rfc5280.certificateAttributesMap.update(rfc2985.cmsAttributesMapUpdate)
+        openTypesMap = { }
+        openTypesMap.update(rfc5280.certificateAttributesMap)
+        openTypesMap.update(rfc5652.cmsAttributesMap)
 
         for attr in asn1Object:
-            assert attr['type'] in rfc5280.certificateAttributesMap
+            assert attr['type'] in openTypesMap.keys()
             av, rest = der_decode(attr['values'][0],
-                asn1Spec=rfc5280.certificateAttributesMap[attr['type']])
+                asn1Spec=openTypesMap[attr['type']])
             assert not rest
             assert av.prettyPrint()
             assert der_encode(av) == attr['values'][0]
@@ -166,9 +167,9 @@ HktMK+isIjxOTk4yJTOOAgIH0A==
                             assert not rest
 
                             for bagattr in sb['bagAttributes']:
-                                if bagattr['attrType'] in rfc5280.certificateAttributesMap:
+                                if bagattr['attrType'] in openTypesMap:
                                     inav, rest = der_decode(bagattr['attrValues'][0],
-                                        asn1Spec=rfc5280.certificateAttributesMap[bagattr['attrType']])
+                                        asn1Spec=openTypesMap[bagattr['attrType']])
                                     assert not rest
 
                                     if bagattr['attrType'] == rfc2985.pkcs_9_at_friendlyName:
@@ -192,9 +193,9 @@ HktMK+isIjxOTk4yJTOOAgIH0A==
                     assert si['version'] == 1
 
                     for siattr in si['signedAttrs']:
-                        if siattr['attrType'] in rfc5280.certificateAttributesMap:
+                        if siattr['attrType'] in openTypesMap:
                             siav, rest = der_decode(siattr['attrValues'][0],
-                                asn1Spec=rfc5280.certificateAttributesMap[siattr['attrType']])
+                                asn1Spec=openTypesMap[siattr['attrType']])
                             assert not rest
 
                             if siattr['attrType'] == rfc2985.pkcs_9_at_contentType:
@@ -208,28 +209,30 @@ HktMK+isIjxOTk4yJTOOAgIH0A==
 
                 for choices in sd['certificates']:
                     for rdn in choices[0]['tbsCertificate']['subject']['rdnSequence']:
-                        if rdn[0]['type'] in rfc5280.certificateAttributesMap:
+                        if rdn[0]['type'] in openTypesMap:
                             nv, rest = der_decode(rdn[0]['value'],
-                                 asn1Spec=rfc5280.certificateAttributesMap[rdn[0]['type']])
+                                 asn1Spec=openTypesMap[rdn[0]['type']])
                             assert not rest
 
                             if rdn[0]['type'] == rfc2985.pkcs_9_at_emailAddress:
                                 assert nv == 'alice@example.com'
 
     def testOpenTypes(self):
-        rfc5280.certificateAttributesMap.update(rfc2985.certificateAttributesMapUpdate)
-        rfc5280.certificateAttributesMap.update(rfc2985.cmsAttributesMapUpdate)
+        openTypesMap = { }
+        openTypesMap.update(rfc5280.certificateAttributesMap)
+        openTypesMap.update(rfc5652.cmsAttributesMap)
 
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decode(substrate,
             asn1Spec=self.asn1Spec,
+            openTypes=openTypesMap,
             decodeOpenTypes=True)
         assert not rest
         assert asn1Object.prettyPrint()
         assert der_encode(asn1Object) == substrate
 
         for attr in asn1Object:
-            assert attr['type'] in rfc5280.certificateAttributesMap
+            assert attr['type'] in openTypesMap.keys()
 
             if attr['type'] == rfc2985.pkcs_9_at_userPKCS12:
                 assert attr['values'][0]['version'] == univ.Integer(3)
@@ -252,7 +255,7 @@ HktMK+isIjxOTk4yJTOOAgIH0A==
                     for sb in sc:
                         if sb['bagId'] in rfc7292.pkcs12BagTypeMap:
                             for bagattr in sb['bagAttributes']:
-                                if bagattr['attrType'] in rfc5280.certificateAttributesMap:
+                                if bagattr['attrType'] in openTypesMap:
 
                                     if bagattr['attrType'] == rfc2985.pkcs_9_at_friendlyName:
                                         assert bagattr['attrValues'][0] == "3f71af65-1687-444a-9f46-c8be194c3e8e"
@@ -268,7 +271,7 @@ HktMK+isIjxOTk4yJTOOAgIH0A==
                     assert si['version'] == 1
 
                     for siattr in si['signedAttrs']:
-                        if siattr['attrType'] in rfc5280.certificateAttributesMap:
+                        if siattr['attrType'] in openTypesMap:
  
                             if siattr['attrType'] == rfc2985.pkcs_9_at_contentType:
                                 assert siattr['attrValues'][0] == rfc5652.id_data
@@ -281,8 +284,7 @@ HktMK+isIjxOTk4yJTOOAgIH0A==
 
                 for choices in attr['values'][0]['content']['certificates']:
                     for rdn in choices[0]['tbsCertificate']['subject']['rdnSequence']:
-                        if rdn[0]['type'] in rfc5280.certificateAttributesMap:
-
+                        if rdn[0]['type'] in openTypesMap:
                             if rdn[0]['type'] == rfc2985.pkcs_9_at_emailAddress:
                                 assert rdn[0]['value'] == 'alice@example.com'
 

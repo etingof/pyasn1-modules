@@ -60,12 +60,15 @@ BgcrBgEBAQEWBggqhkjOPQQDAw==
                 assert attr_or_oid['attribute']['attrType'] in self.the_attrTypes
 
     def testOpenTypes(self):
+        openTypesMap = { }
+        openTypesMap.update(rfc5652.cmsAttributesMap)
         for at in self.the_attrTypes:
-            rfc5652.cmsAttributesMap.update({ at: univ.ObjectIdentifier(), })
-   
+            openTypesMap.update({ at: univ.ObjectIdentifier(), })
+
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decode(substrate,
             asn1Spec=self.asn1Spec,
+            openTypes=openTypesMap,
             decodeOpenTypes=True)
         assert not rest
         assert asn1Object.prettyPrint()
@@ -80,6 +83,7 @@ BgcrBgEBAQEWBggqhkjOPQQDAw==
             
                 if attr_or_oid['attribute']['attrType'] == self.the_attrTypes[1]:
                     assert valString == self.the_attrVals[1]
+
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 

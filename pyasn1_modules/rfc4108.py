@@ -310,10 +310,10 @@ HardwareModuleName.componentType = namedtype.NamedTypes(
 )
 
 
-# Map of Attribute Type OIDs to Attributes
-# To be added to the ones that are in rfc5652.py
+# Map of Attribute Type OIDs to Attributes is added to the
+# ones that are in rfc5652.py
 
-cmsAttributesMapUpdate = {
+_cmsAttributesMapUpdate = {
     id_aa_wrappedFirmwareKey: WrappedFirmwareKey(),
     id_aa_firmwarePackageInfo: FirmwarePackageInfo(),
     id_aa_communityIdentifiers: CommunityIdentifiers(),
@@ -325,21 +325,26 @@ cmsAttributesMapUpdate = {
     id_aa_fwPkgMessageDigest: FirmwarePackageMessageDigest(),
 }
 
+rfc5652.cmsAttributesMap.update(_cmsAttributesMapUpdate)
 
-# Map of Content Type OIDs to Content Types
-# To be added to the ones that are in rfc5652.py
 
-cmsContentTypesMapUpdate = {
+# Map of Content Type OIDs to Content Types is added to the
+# ones that are in rfc5652.py
+
+_cmsContentTypesMapUpdate = {
     id_ct_firmwareLoadError: FirmwarePackageLoadError(),
     id_ct_firmwareLoadReceipt: FirmwarePackageLoadReceipt(),
     id_ct_firmwarePackage: FirmwarePkgData(),
 }
 
+rfc5652.cmsContentTypesMap.update(_cmsContentTypesMapUpdate)
 
-# Map of Other Name OIDs to Other Name
-# To be added to the ones that are in rfc5280.py
 
-anotherNameMapUpdate = {
+# Map of Other Name OIDs to Other Name is added to the
+# ones that are in rfc5280.py
+
+_anotherNameMapUpdate = {
     id_on_hardwareModuleName: HardwareModuleName(),
 }
 
+rfc5280.anotherNameMap.update(_anotherNameMapUpdate)

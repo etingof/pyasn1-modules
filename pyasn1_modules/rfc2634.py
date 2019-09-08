@@ -308,9 +308,10 @@ Receipt.componentType = namedtype.NamedTypes(
 )
 
 
-# Map of Attribute Type to the Attribute structure
+# Map of Attribute Type to the Attribute structure is added to the
+# ones that are in rfc5652.py
 
-ESSAttributeMap = {
+_cmsAttributesMapUpdate = {
     id_aa_signingCertificate: SigningCertificate(),
     id_aa_mlExpandHistory: MLExpansionHistory(),
     id_aa_securityLabel: ESSSecurityLabel(),
@@ -322,10 +323,14 @@ ESSAttributeMap = {
     id_aa_receiptRequest: ReceiptRequest(),
 }
 
+rfc5652.cmsAttributesMap.update(_cmsAttributesMapUpdate)
 
-# Map of Content Type OIDs to Content Types
-# To be added to the ones that are in rfc5652.py
 
-cmsContentTypesMapUpdate = {
+# Map of Content Type OIDs to Content Types is added to the
+# ones that are in rfc5652.py
+
+_cmsContentTypesMapUpdate = {
     id_ct_receipt: Receipt(),
 }
+
+rfc5652.cmsContentTypesMap.update(_cmsContentTypesMapUpdate)

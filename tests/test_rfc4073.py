@@ -83,8 +83,6 @@ buWO3egPDL8Kf7tBhzjIKLw=
     
             return asn1Object
 
-        rfc5652.cmsAttributesMap.update(rfc2634.ESSAttributeMap)
-        rfc5652.cmsContentTypesMap.update(rfc4073.cmsContentTypesMapUpdate)
         layers = rfc5652.cmsContentTypesMap
 
         getNextLayer = {
@@ -120,14 +118,10 @@ buWO3egPDL8Kf7tBhzjIKLw=
                 this_layer = getNextLayer[this_layer](asn1Object)
 
     def testOpenTypes(self):
-
         substrate = pem.readBase64fromText(self.pem_text)
-
-        rfc5652.cmsAttributesMap.update(rfc2634.ESSAttributeMap)
-        rfc5652.cmsContentTypesMap.update(rfc4073.cmsContentTypesMapUpdate)
         asn1Object, rest = der_decode(substrate,
-                                      asn1Spec=rfc5652.ContentInfo(),
-                                      decodeOpenTypes=True)
+            asn1Spec=rfc5652.ContentInfo(),
+            decodeOpenTypes=True)
         assert not rest
         assert asn1Object.prettyPrint()
         assert der_encode(asn1Object) == substrate
