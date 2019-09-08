@@ -354,8 +354,12 @@ class RevRepContent(univ.Sequence):
                                              OPTIONAL
     """
     componentType = namedtype.NamedTypes(
-        namedtype.NamedType('status', PKIStatusInfo(
-            sizeSpec=constraint.ValueSizeConstraint(1, MAX))),
+        namedtype.NamedType(
+            'status', univ.SequenceOf(
+                componentType=PKIStatusInfo(),
+                sizeSpec=constraint.ValueSizeConstraint(1, MAX)
+            )
+        ),
         namedtype.OptionalNamedType(
             'revCerts', univ.SequenceOf(componentType=rfc2511.CertId()).subtype(
                 sizeSpec=constraint.ValueSizeConstraint(1, MAX),
