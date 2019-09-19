@@ -27,7 +27,7 @@ Revision 0.2.7, released XX-09-2019
   RFC 2634, RFC 3274, RFC 3779, RFC 4073, RFC 4108, RFC 5035, RFC 5083,
   RFC 5084, RFC 5480, RFC 5940, RFC 5958, RFC 6019, and RFC 8520
 - Added RFC5990 providing RSA-KEM Key Transport Algorithm in the CMS
-- Fixed malformed `rfc6402.RevRepContent` data structure layout
+- Fixed malformed `rfc4210.RevRepContent` data structure layout
 - Added RFC5934 providing Trust Anchor Management Protocol (TAMP)
 
 Revision 0.2.6, released 31-07-2019
