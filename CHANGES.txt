@@ -29,6 +29,7 @@ Revision 0.2.7, released XX-09-2019
 - Added RFC5990 providing RSA-KEM Key Transport Algorithm in the CMS
 - Fixed malformed `rfc4210.RevRepContent` data structure layout
 - Added RFC5934 providing Trust Anchor Management Protocol (TAMP)
+- Added RFC6210 providing Experiment for Hash Functions with Parameters
 
 Revision 0.2.6, released 31-07-2019
 -----------------------------------
