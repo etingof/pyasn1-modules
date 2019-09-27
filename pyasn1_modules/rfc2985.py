@@ -565,6 +565,11 @@ rfc5280.certificateAttributesMap.update(_certificateAttributesMapUpdate)
 
 # CMS Attribute Map
 
+# Note: pkcs_9_at_smimeCapabilities is not included in the map because
+#       the definition in RFC 5751 is preferred, which produces the same
+#       encoding, but it allows different parameters for SMIMECapability
+#       and AlgorithmIdentifier.
+
 _cmsAttributesMapUpdate = {
     # Attribute types for use in PKCS #7 data (a.k.a. CMS)
     pkcs_9_at_contentType: ContentType(),
@@ -577,7 +582,7 @@ _cmsAttributesMapUpdate = {
     pkcs_9_at_friendlyName: FriendlyName(),
     pkcs_9_at_localKeyId: univ.OctetString(),
     pkcs_9_at_signingDescription: DirectoryString(),
-    pkcs_9_at_smimeCapabilities: SMIMECapabilities(),
+    # pkcs_9_at_smimeCapabilities: SMIMECapabilities(),
 }
 
 rfc5652.cmsAttributesMap.update(_cmsAttributesMapUpdate)
