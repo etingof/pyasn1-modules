@@ -129,7 +129,9 @@ HktMK+isIjxOTk4yJTOOAgIH0A==
         assert asn1Object.prettyPrint()
         assert der_encode(asn1Object) == substrate
 
-        openTypesMap = { }
+        openTypesMap = {
+            rfc2985.pkcs_9_at_smimeCapabilities: rfc2985.SMIMECapabilities(),
+        }
         openTypesMap.update(rfc5280.certificateAttributesMap)
         openTypesMap.update(rfc5652.cmsAttributesMap)
 
@@ -218,7 +220,9 @@ HktMK+isIjxOTk4yJTOOAgIH0A==
                                 assert nv == 'alice@example.com'
 
     def testOpenTypes(self):
-        openTypesMap = { }
+        openTypesMap = {
+            rfc2985.pkcs_9_at_smimeCapabilities: rfc2985.SMIMECapabilities(),
+        }
         openTypesMap.update(rfc5280.certificateAttributesMap)
         openTypesMap.update(rfc5652.cmsAttributesMap)
 

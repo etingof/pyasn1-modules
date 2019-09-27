@@ -103,6 +103,16 @@ id_cap = _OID(id_smime, 11)
 id_cap_preferBinaryInside = _OID(id_cap, 1)
 
 
+# CMS Attribute Map
+
+_cmsAttributesMapUpdate = {
+    smimeCapabilities: SMIMECapabilities(),
+    id_aa_encrypKeyPref: SMIMEEncryptionKeyPreference(),
+}
+
+rfc5652.cmsAttributesMap.update(_cmsAttributesMapUpdate)
+
+
 # SMIMECapabilities Attribute Map
 #
 # Do not include OIDs in the dictionary when the parameters are absent.
