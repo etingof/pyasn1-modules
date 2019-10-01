@@ -50,7 +50,7 @@ class PrivateKey(univ.OctetString):
 
 
 class Attributes(univ.SetOf):
-    componentType = rfc5280.Attribute()
+    componentType = rfc5652.Attribute()
 
 
 class PublicKey(univ.BitString):
