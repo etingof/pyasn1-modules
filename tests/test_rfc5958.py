@@ -69,7 +69,7 @@ YWlyc4EhABm/RAlphM3+hUG6wWfcO5bIUIaqMLa2ywxcOK1wMWbh
         oneKey = asn1Object['content'][0]
         assert oneKey['privateKeyAlgorithm']['algorithm'] == rfc8410.id_Ed25519
         pkcs_9_at_friendlyName = univ.ObjectIdentifier('1.2.840.113549.1.9.9.20')
-        assert oneKey['attributes'][0]['type'] == pkcs_9_at_friendlyName
+        assert oneKey['attributes'][0]['attrType'] == pkcs_9_at_friendlyName
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
