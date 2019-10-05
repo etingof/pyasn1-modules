@@ -39,6 +39,8 @@ Revision 0.2.7, released XX-09-2019
 - Added RFC8419 providing Edwards-Curve Digital Signature Algorithm
   (EdDSA) Signatures in the CMS
 - Added RFC8479 providing Storing Validation Parameters in PKCS#8
+- Added RFC8360 providing Resource Public Key Infrastructure (RPKI)
+  Validation Reconsidered
 
 Revision 0.2.6, released 31-07-2019
 -----------------------------------
