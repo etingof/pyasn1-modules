@@ -44,6 +44,7 @@ Revision 0.2.7, released XX-09-2019
 - Added RFC8358 providing Digital Signatures on Internet-Draft Documents
 - Added RFC8209 providing BGPsec Router PKI Profile
 - Added RFC8017 providing PKCS #1 Version 2.2
+- Added RFC7914 providing scrypt Password-Based Key Derivation Function
 
 Revision 0.2.6, released 31-07-2019
 -----------------------------------
