@@ -182,6 +182,7 @@ vjnIhxTFoCb5vA==
                 else:
                     assert len(atv['value']['printableString']) > 9
 
+        crl_extn_count = 0
         for extn in asn1Object['tbsCertList']['crlExtensions']:
             if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
                 ev, rest = der_decode(extn['extnValue'],
@@ -189,6 +190,8 @@ vjnIhxTFoCb5vA==
                 assert not rest
                 assert ev.prettyPrint()
                 assert der_encode(ev) == extn['extnValue']
+                crl_extn_count += 1
+        assert crl_extn_count == 1
 
     def testExtensionsMap(self):
         substrate = pem.readBase64fromText(self.pem_text)
@@ -197,12 +200,14 @@ vjnIhxTFoCb5vA==
         assert asn1Object.prettyPrint()
         assert der_encode(asn1Object) == substrate
 
+        cert_extn_count = 0
         for extn in asn1Object['tbsCertList']['crlExtensions']:
             if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
                 extnValue, rest = der_decode(extn['extnValue'],
                     asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
                 assert der_encode(extnValue) == extn['extnValue']
-
+                cert_extn_count += 1
+        assert cert_extn_count == 1
 
 class ORAddressOpenTypeTestCase(unittest.TestCase):
     oraddress_pem_text = """\

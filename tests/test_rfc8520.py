@@ -63,7 +63,10 @@ izaUuU1EEwgOMELjeFL62Ssvq8X+x6hZFCLygI7GNeitlblNhCXhFFurqMs=
         assert asn1Object.prettyPrint()
         assert der_encode(asn1Object) == substrate
 
+        extn_list = [ ]
         for extn in asn1Object['tbsCertificate']['extensions']:
+            extn_list.append(extn['extnID'])
+
             if extn['extnID'] == rfc8520.id_pe_mudsigner:
                 mudsigner, rest = der_decode(extn['extnValue'], rfc8520.MUDsignerSyntax())
                 assert der_encode(mudsigner) == extn['extnValue']
@@ -81,6 +84,9 @@ izaUuU1EEwgOMELjeFL62Ssvq8X+x6hZFCLygI7GNeitlblNhCXhFFurqMs=
                 assert der_encode(mudurl) == extn['extnValue']
 
                 assert mudurl[-5:] == ".json"
+
+        assert rfc8520.id_pe_mudsigner in extn_list
+        assert rfc8520.id_pe_mud_url in extn_list
 
     def testExtensionsMap(self):
         substrate = pem.readBase64fromText(self.mud_cert_pem_text)

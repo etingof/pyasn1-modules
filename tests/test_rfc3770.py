@@ -69,7 +69,9 @@ DAlVlhox680Jxy5J8Pkx
         assert spki_alg['algorithm'] == rfc5480.id_ecPublicKey
         assert spki_alg['parameters']['namedCurve'] == rfc5480.secp384r1
 
+        extn_list = [ ]
         for extn in asn1Object['tbsCertificate']['extensions']:
+            extn_list.append(extn['extnID'])
             if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
                 extnValue, rest = der_decode(extn['extnValue'],
                     asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
@@ -81,6 +83,9 @@ DAlVlhox680Jxy5J8Pkx
                 if extn['extnID'] == rfc5280.id_ce_extKeyUsage:
                      assert rfc3770.id_kp_eapOverLAN in extnValue
                      assert rfc3770.id_kp_eapOverPPP in extnValue
+
+        assert rfc3770.id_pe_wlanSSID in extn_list
+        assert rfc5280.id_ce_extKeyUsage in extn_list
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
