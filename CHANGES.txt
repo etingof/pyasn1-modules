@@ -2,7 +2,7 @@
 Revision 0.2.8, released XX-XX-2019
 -----------------------------------
 
-No changes yet
+- Added RFC7633 providing TLS Features Certificate Extension
 
 Revision 0.2.7, released 09-10-2019
 -----------------------------------
