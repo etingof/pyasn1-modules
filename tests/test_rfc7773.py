@@ -92,7 +92,10 @@ tAGXsYdcuQpglUngmo/FV4Z9qjIDkYQ=
         assert asn1Object.prettyPrint()
         assert der_encode(asn1Object) == substrate
 
+        extn_list = [ ]
         for extn in asn1Object['tbsCertificate']['extensions']:
+            extn_list.append(extn['extnID'])
+
             if extn['extnID'] == rfc7773.id_ce_authContext:
                 s = extn['extnValue']
                 acs, rest = der_decode(s,
@@ -103,6 +106,8 @@ tAGXsYdcuQpglUngmo/FV4Z9qjIDkYQ=
 
                 assert u'id.elegnamnden.se' in acs[0]['contextType']
                 assert u'AuthContextInfo IdentityProvider' in acs[0]['contextInfo']
+
+        assert rfc7773.id_ce_authContext in extn_list
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

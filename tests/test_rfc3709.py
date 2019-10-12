@@ -52,7 +52,9 @@ Pj22pmfmQi5w21UljqoTj/+lQLkU3wfy5BdVKBwI0GfEA+YL3ctSzPNqAA==
         assert asn1Object.prettyPrint()
         assert der_encoder.encode(asn1Object) == substrate
 
+        extn_list = [ ]
         for extn in asn1Object['tbsCertificate']['extensions']:
+            extn_list.append(extn['extnID'])
 
             if extn['extnID'] == rfc3709.id_pe_logotype:
                 s = extn['extnValue']
@@ -63,6 +65,8 @@ Pj22pmfmQi5w21UljqoTj/+lQLkU3wfy5BdVKBwI0GfEA+YL3ctSzPNqAA==
                 ids = logotype['subjectLogo']['direct']['image'][0]['imageDetails']
                 assert ids['mediaType'] == "image/png"
                 assert ids['logotypeURI'][0] == "http://www.vigilsec.com/vigilsec_logo.png"
+
+        assert rfc3709.id_pe_logotype in extn_list
 
     def testExtensionsMap(self):
         substrate = pem.readBase64fromText(self.pem_text)

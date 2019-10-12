@@ -60,7 +60,9 @@ AOQSxhs011emVxyBIXT0ZGbmBY8LFRh6eGIOCAJbkM5T
         assert asn1Object.prettyPrint()
         assert der_encode(asn1Object) == substrate
 
+        extn_list = [ ]
         for extn in asn1Object['tbsCertificate']['extensions']:
+            extn_list.append(extn['extnID'])
             if extn['extnID'] == rfc7633.id_pe_tlsfeature:
                 s = extn['extnValue']
                 features, rest = der_decode(s,
@@ -71,6 +73,8 @@ AOQSxhs011emVxyBIXT0ZGbmBY8LFRh6eGIOCAJbkM5T
 
                 assert len(features) == 1
                 assert features[0] == 5
+
+        assert rfc7633.id_pe_tlsfeature in extn_list
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

@@ -77,7 +77,9 @@ yEFWA6G95b/HbtPMTjLpPKtrOjhofc4LyVCDYhFhKzpvHh1qeA==
         assert asn1Object.prettyPrint()
         assert der_encoder.encode(asn1Object) == substrate
 
+        extn_list = [ ]
         for extn in asn1Object['tbsCertificate']['extensions']:
+            extn_list.append(extn['extnID'])
             if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
                 extnValue, rest = der_decoder.decode(extn['extnValue'],
                     asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
@@ -86,6 +88,7 @@ yEFWA6G95b/HbtPMTjLpPKtrOjhofc4LyVCDYhFhKzpvHh1qeA==
                 if extn['extnID'] == rfc8226.id_pe_TNAuthList:
                     assert extnValue[0]['spc'] == 'fake'
 
+        assert rfc8226.id_pe_TNAuthList in extn_list
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 

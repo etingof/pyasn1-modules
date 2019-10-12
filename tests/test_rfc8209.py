@@ -43,7 +43,9 @@ OCRdZCk1KI3uDDgp
         assert asn1Object.prettyPrint()
         assert der_encode(asn1Object) == substrate
 
+        extn_list = [ ]
         for extn in asn1Object['tbsCertificate']['extensions']:
+            extn_list.append(extn['extnID'])
             if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
                 extnValue, rest = der_decode(extn['extnValue'],
                     asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
@@ -51,6 +53,8 @@ OCRdZCk1KI3uDDgp
 
                 if extn['extnID'] == rfc5280.id_ce_extKeyUsage:
                      assert rfc8209.id_kp_bgpsec_router in extnValue
+
+        assert rfc5280.id_ce_extKeyUsage in extn_list
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

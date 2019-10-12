@@ -58,7 +58,9 @@ V+vo2L72yerdbsP9xjqvhZrLKfsLZjYK4SdYYthi
         assert asn1Object.prettyPrint()
         assert der_encoder.encode(asn1Object) == substrate
 
+        extn_list = [ ]
         for extn in asn1Object['tbsCertificate']['extensions']:
+            extn_list.append(extn['extnID'])
 
             if extn['extnID'] == rfc3779.id_pe_ipAddrBlocks:
                 s = extn['extnValue']
@@ -73,6 +75,10 @@ V+vo2L72yerdbsP9xjqvhZrLKfsLZjYK4SdYYthi
                 assert not rest
                 assert as_ids.prettyPrint()
                 assert der_encoder.encode(as_ids) == s
+
+        assert rfc3779.id_pe_ipAddrBlocks in extn_list
+        assert rfc3779.id_pe_autonomousSysIds in extn_list
+
 
     def testExtensionsMap(self):
         substrate = pem.readBase64fromText(self.pem_text)
