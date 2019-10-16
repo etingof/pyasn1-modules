@@ -6,6 +6,7 @@ Revision 0.2.8, released XX-XX-2019
 - Added RFC7633 providing TLS Features Certificate Extension
 - Added RFC7229 providing OIDs for Test Certificate Policies
 - Added tests for RFC3280, RFC3281, RFC3852, and RFC4211
+- Added RFC6960 providing Online Certificate Status Protocol (OCSP)
 
 Revision 0.2.7, released 09-10-2019
 -----------------------------------
