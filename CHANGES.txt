@@ -9,6 +9,7 @@ Revision 0.2.8, released XX-XX-2019
 - Added tests for RFC3280, RFC3281, RFC3852, and RFC4211
 - Added RFC6960 providing Online Certificate Status Protocol (OCSP)
 - Added RFC6955 providing Diffie-Hellman Proof-of-Possession Algorithms
+- Updated the handling of maps for use with openType for RFC 3279
 
 Revision 0.2.7, released 09-10-2019
 -----------------------------------
