@@ -19,7 +19,7 @@ except ImportError:
     import unittest
 
 
-class RPKICertificateTestCase(unittest.TestCase):
+class CertificateWithManifestTestCase(unittest.TestCase):
     rpki_cert_pem_text = """\
 MIIGCTCCBPGgAwIBAgICKJgwDQYJKoZIhvcNAQELBQAwRjERMA8GA1UEAxMIQTkwREM1QkUx
 MTAvBgNVBAUTKDBDRkNFNzc4NTdGQ0YwMUYzOUQ5OUE2MkI0QUE2MkU2MTU5RTc2RjgwHhcN
@@ -76,6 +76,64 @@ HDFd3u1ztO8WGjH/LOehoO30xsm52kbxZjc4SJWubgBgxTMIWyjPHbKqCF44NwYev/6eFcOC
                     if ad['accessMethod'] in access_methods:
                         uri = ad['accessLocation']['uniformResourceIdentifier']
                         assert 'rpki.apnic.net' in uri
+                        count += 1
+
+        assert count == 1
+
+class CertificateWithSignedObjectTestCase(unittest.TestCase):
+    rpki_cert_pem_text = """\
+MIIEuDCCA6CgAwIBAgICBhgwDQYJKoZIhvcNAQELBQAwMzExMC8GA1UEAxMoNmQ2
+ZmJmYTk3NTNkYjhkODQ2NDMzZGI1MzUxZDlhOWVjMDdjOTZiZDAeFw0xOTA4MjAw
+MDQ5MjlaFw0yMDA3MDEwMDAwMDBaMDMxMTAvBgNVBAMTKDVCODNERDg3REU5QUM3
+QzZFMzRCODc3REY1MDFBMkIxMjMwQTgxQjQwggEiMA0GCSqGSIb3DQEBAQUAA4IB
+DwAwggEKAoIBAQCXJw4ElLYkHnpRkLE8djruXIJn6uij0hIDM/18ma0c48HKlEPw
+8jGB8kSSvLpimY3zLvqyLaD0pBNulovT3Ep37mPkskvXIUwLTThjBEujG7R4zU5g
+RV2q+QhRjPLXiyER5QnEnHrIEke6tnioEPnC4i02Z6JdDKZrn9jSLPlet2OB5/0+
+0DqLnYPZ1LZrId9YVDeIyBDRFxbzQ6L5K2stua5fWqhX1vnbZKDbXSY6d+u5zVwn
+adxnRP989EiKk/MJ4Reu7YEdtpsM3sd7prXkAcJjPokdvL7hy+BOY8ESgaIhIBj2
+Kqu4G35HKBbUdwFekBikitmiVJlIvvVYXku/AgMBAAGjggHUMIIB0DAdBgNVHQ4E
+FgQUW4Pdh96ax8bjS4d99QGisSMKgbQwHwYDVR0jBBgwFoAUbW+/qXU9uNhGQz21
+NR2ansB8lr0wGAYDVR0gAQH/BA4wDDAKBggrBgEFBQcOAjBQBgNVHR8ESTBHMEWg
+Q6BBhj9yc3luYzovL2NhLnJnLm5ldC9ycGtpL1JHbmV0LU9VL2JXLV9xWFU5dU5o
+R1F6MjFOUjJhbnNCOGxyMC5jcmwwZAYIKwYBBQUHAQEEWDBWMFQGCCsGAQUFBzAC
+hkhyc3luYzovL3Jwa2kucmlwZS5uZXQvcmVwb3NpdG9yeS9ERUZBVUxUL2JXLV9x
+WFU5dU5oR1F6MjFOUjJhbnNCOGxyMC5jZXIwDgYDVR0PAQH/BAQDAgeAMIGKBggr
+BgEFBQcBCwR+MHwwSwYIKwYBBQUHMAuGP3JzeW5jOi8vY2EucmcubmV0L3Jwa2kv
+UkduZXQtT1UvVzRQZGg5NmF4OGJqUzRkOTlRR2lzU01LZ2JRLnJvYTAtBggrBgEF
+BQcwDYYhaHR0cHM6Ly9jYS5yZy5uZXQvcnJkcC9ub3RpZnkueG1sMB8GCCsGAQUF
+BwEHAQH/BBAwDjAMBAIAATAGAwQAkxwtMA0GCSqGSIb3DQEBCwUAA4IBAQCoYaCd
+17R3o7xul5BWgk8SXItdIDoDb7zxVqs/gnzl9i5gdDd0IWIy4gGW32EjsTUXsi+G
+1gyv7aWYFQNlR7kvBgfHyPPp2rkFIj9/KK1VygG3FFMaO1JBDB8UOU+tRbV6xGcf
+IYCk5bH6H9BtkPm2kiczVdjCFIB5krMy+DMf3x1F7/G+5f+ZmUG3b93GfUmzgxw9
+IjlQMyt35h3rgOK6EjpOJgUA1jUWNTpPsR/xzA0HaDlbW38ue02SNluztrsXxJSr
+8XwXhHPUzmlqg89Mb5iem3WZ5lkbr6lteO+ZocYtLPyOHhNmXWgop764K4JQaf46
+WYtY4rWNeHcfgNTz
+"""
+
+    def setUp(self):
+        self.asn1Spec = rfc5280.Certificate()
+
+    def testDerCodec(self):
+        access_methods = [
+            rfc6487.id_ad_rpkiManifest,
+            rfc6487.id_ad_signedObject,
+        ]
+
+        substrate = pem.readBase64fromText(self.rpki_cert_pem_text)
+        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
+        assert not rest
+        assert asn1Object.prettyPrint()
+        assert der_encode(asn1Object) == substrate
+
+        count = 0
+        for extn in asn1Object['tbsCertificate']['extensions']:
+            if extn['extnID'] == rfc5280.id_pe_subjectInfoAccess:
+                extnValue, rest = der_decode(extn['extnValue'],
+                    asn1Spec=rfc5280.SubjectInfoAccessSyntax())
+                for ad in extnValue:
+                    if ad['accessMethod'] in access_methods:
+                        uri = ad['accessLocation']['uniformResourceIdentifier']
+                        assert 'ca.rg.net' in uri
                         count += 1
 
         assert count == 1
