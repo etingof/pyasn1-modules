@@ -11,6 +11,7 @@ Revision 0.2.8, released XX-XX-2019
 - Added RFC6955 providing Diffie-Hellman Proof-of-Possession Algorithms
 - Updated the handling of maps for use with openType for RFC 3279
 - Added RFC6486 providing RPKI Manifests
+- Added RFC6487 providing Profile for X.509 PKIX Resource Certificates
 
 Revision 0.2.7, released 09-10-2019
 -----------------------------------
