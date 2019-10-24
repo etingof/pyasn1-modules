@@ -12,6 +12,8 @@ Revision 0.2.8, released XX-XX-2019
 - Updated the handling of maps for use with openType for RFC 3279
 - Added RFC6486 providing RPKI Manifests
 - Added RFC6487 providing Profile for X.509 PKIX Resource Certificates
+- Added RFC6170 providing Certificate Image in the Internet X.509 Public
+  Key Infrastructure, and import the object identifier into RFC3709.
 
 Revision 0.2.7, released 09-10-2019
 -----------------------------------
