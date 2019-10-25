@@ -14,6 +14,9 @@ Revision 0.2.8, released XX-XX-2019
 - Added RFC6487 providing Profile for X.509 PKIX Resource Certificates
 - Added RFC6170 providing Certificate Image in the Internet X.509 Public
   Key Infrastructure, and import the object identifier into RFC3709.
+- Added RFC6187 providing Certificates for Secure Shell Authentication
+- Added RFC6482 providing RPKI Route Origin Authorizations (ROAs)
+- Added RFC6664 providing S/MIME Capabilities for Public Keys
 
 Revision 0.2.7, released 09-10-2019
 -----------------------------------
