@@ -19,6 +19,8 @@ Revision 0.2.8, released XX-XX-2019
 - Added RFC6664 providing S/MIME Capabilities for Public Keys
 - Added RFC6120 providing Extensible Messaging and Presence Protocol
   names in certificates
+- Added RFC4985 providing Subject Alternative Name for expression of
+  service names in certificates
 
 Revision 0.2.7, released 09-10-2019
 -----------------------------------
