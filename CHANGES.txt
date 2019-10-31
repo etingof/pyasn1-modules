@@ -21,6 +21,8 @@ Revision 0.2.8, released XX-XX-2019
   names in certificates
 - Added RFC4985 providing Subject Alternative Name for expression of
   service names in certificates
+- Added RFC5924 providing Extended Key Usage for Session Initiation
+  Protocol (SIP) in X.509 certificates
 
 Revision 0.2.7, released 09-10-2019
 -----------------------------------
