@@ -24,6 +24,8 @@ Revision 0.2.8, released XX-XX-2019
 - Added RFC5924 providing Extended Key Usage for Session Initiation
   Protocol (SIP) in X.509 certificates
 - Added RFC5916 providing Device Owner Attribute
+- Update RFC8226 to use ComponentPresentConstraint() instead of the
+  previous work around
 
 Revision 0.2.7, released 09-10-2019
 -----------------------------------
