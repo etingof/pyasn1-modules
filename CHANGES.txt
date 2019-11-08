@@ -24,6 +24,7 @@ Revision 0.2.8, released XX-XX-2019
 - Added RFC5924 providing Extended Key Usage for Session Initiation
   Protocol (SIP) in X.509 certificates
 - Added RFC5916 providing Device Owner Attribute
+- Added RFC7508 providing Securing Header Fields with S/MIME
 - Update RFC8226 to use ComponentPresentConstraint() instead of the
   previous work around
 - Add RFC2631 providing OtherInfo for Diffie-Hellman Key Agreement
