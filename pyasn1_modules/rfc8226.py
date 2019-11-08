@@ -75,8 +75,12 @@ JWTClaimConstraints.componentType = namedtype.NamedTypes(
             tag.tagFormatSimple, 1)))
 )
 
-
-JWTClaimConstraints.sizeSpec = univ.Sequence.sizeSpec + constraint.ValueSizeConstraint(1, 2)
+JWTClaimConstraints.subtypeSpec = constraint.ConstraintsUnion(
+    constraint.WithComponentsConstraint(
+        ('mustInclude', constraint.ComponentPresentConstraint())),
+    constraint.WithComponentsConstraint(
+        ('permittedValues', constraint.ComponentPresentConstraint()))
+)
 
 
 id_pe_JWTClaimConstraints = _OID(1, 3, 6, 1, 5, 5, 7, 1, 27)
