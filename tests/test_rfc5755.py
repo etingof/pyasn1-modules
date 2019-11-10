@@ -82,7 +82,7 @@ Q4eikPk4LQey
             assert attr['type'] in rfc5280.certificateAttributesMap.keys()
             count += 1
             if attr['type'] == rfc5755.id_aca_authenticationInfo:
-                assert attr['values'][0]['authInfo'] == 'password'
+                assert str(attr['values'][0]['authInfo']) == 'password'
 
         assert count == 5
 
