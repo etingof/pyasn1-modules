@@ -10,7 +10,7 @@ import sys
 
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
-from pyasn1.compat import str2octs
+from pyasn1.compat.octets import str2octs
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5280
