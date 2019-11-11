@@ -33,6 +33,9 @@ Revision 0.2.8, released XX-XX-2019
 - Add RFC5913 providing Clearance Attribute and Authority Clearance
   Constraints Certificate Extension
 - Add RFC5917 providing Clearance Sponsor Attribute
+- Add RFC4043 providing Internet X.509 PKI Permanent Identifier
+- Add RFC7585 providing Network Access Identifier (NAI) Realm Name
+  for Certificates
 
 Revision 0.2.7, released 09-10-2019
 -----------------------------------
