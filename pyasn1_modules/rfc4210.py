@@ -743,11 +743,11 @@ class PKIHeader(univ.Sequence):
         namedtype.OptionalNamedType('generalInfo',
                                     univ.SequenceOf(
                                         componentType=InfoTypeAndValue().subtype(
-                                            sizeSpec=constraint.ValueSizeConstraint(1, MAX),
-                                            explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 8)
+                                            sizeSpec=constraint.ValueSizeConstraint(1, MAX)
                                         )
-                                    )
-                                    )
+                                    ).subtype(
+            explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 8))
+        )
     )
 
 
