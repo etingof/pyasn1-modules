@@ -36,6 +36,9 @@ Revision 0.2.8, released XX-XX-2019
 - Add RFC4043 providing Internet X.509 PKI Permanent Identifier
 - Add RFC7585 providing Network Access Identifier (NAI) Realm Name
   for Certificates
+- Update RFC3770 to support openType for attributes and reported errata
+- Add RFC4334 providing Certificate Extensions and Attributes for
+  Authentication in PPP and Wireless LAN Networks
 
 Revision 0.2.7, released 09-10-2019
 -----------------------------------
