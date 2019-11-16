@@ -12,11 +12,6 @@ from pyasn1.codec.der.encoder import encode as der_encode
 from pyasn1_modules import pem
 from pyasn1_modules import rfc8494
 
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
-
 
 class CompresssedDataTestCase(unittest.TestCase):
     pem_text = """\
@@ -49,7 +44,5 @@ EiIPVQPtvBuLBxjW5qx3TbXXo6vHJ1OhhLY=
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
 if __name__ == '__main__':
-    import sys
-
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

@@ -6,6 +6,8 @@
 # License: http://snmplabs.com/pyasn1/license.html
 #
 import sys
+import unittest
+
 
 doclines = """A collection of ASN.1-based protocols modules.
 
@@ -29,13 +31,8 @@ License :: OSI Approved :: BSD License
 Natural Language :: English
 Operating System :: OS Independent
 Programming Language :: Python :: 2
-Programming Language :: Python :: 2.4
-Programming Language :: Python :: 2.5
-Programming Language :: Python :: 2.6
 Programming Language :: Python :: 2.7
 Programming Language :: Python :: 3
-Programming Language :: Python :: 3.2
-Programming Language :: Python :: 3.3
 Programming Language :: Python :: 3.4
 Programming Language :: Python :: 3.5
 Programming Language :: Python :: 3.6
@@ -61,8 +58,8 @@ def howto_install_setuptools():
 """)
 
 
-if sys.version_info[:2] < (2, 4):
-    print("ERROR: this package requires Python 2.4 or later!")
+if sys.version_info[:2] < (2, 7):
+    print("ERROR: this package requires Python 2.7 or later!")
     sys.exit(1)
 
 try:
@@ -70,7 +67,7 @@ try:
 
     params = {
         'zip_safe': True,
-        'install_requires': ['pyasn1>=0.4.6,<0.5.0']
+        'install_requires': ['pyasn1>=0.4.6,<0.6.0']
     }
 
 except ImportError:
@@ -81,14 +78,9 @@ except ImportError:
 
     from distutils.core import setup, Command
 
-    if sys.version_info[:2] > (2, 4):
-        params = {
-            'requires': ['pyasn1(>=0.4.6,<0.5.0)']
-        }
-    else:
-        params = {
-            'requires': ['pyasn1']
-        }
+    params = {
+        'requires': ['pyasn1(>=0.4.6,<0.6.0)']
+    }
 
 params.update(
     {'name': 'pyasn1-modules',
@@ -102,15 +94,10 @@ params.update(
      'platforms': ['any'],
      'classifiers': [x for x in classifiers.split('\n') if x],
      'license': 'BSD-2-Clause',
-     'packages': ['pyasn1_modules']}
+     'packages': ['pyasn1_modules'],
+     'python_requires': '>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*'})
+
 )
-
-
-# handle unittest discovery feature
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
 
 
 class PyTest(Command):

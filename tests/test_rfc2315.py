@@ -5,18 +5,13 @@
 # License: http://snmplabs.com/pyasn1/license.html
 #
 import sys
+import unittest
 
 from pyasn1.codec.der import decoder as der_decoder
 from pyasn1.codec.der import encoder as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc2315
-
-try:
-    import unittest2 as unittest
-
-except ImportError:
-    import unittest
 
 
 class Pkcs7TestCase(unittest.TestCase):
@@ -166,7 +161,5 @@ Kv0xuR3b3Le+ZqolT8wQELd5Mmw5JPofZ+O2cGNvet8tYwOKFjEA
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
 if __name__ == '__main__':
-    import sys
-
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

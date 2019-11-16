@@ -5,8 +5,8 @@
 # Copyright (c) 2019, Vigil Security, LLC
 # License: http://snmplabs.com/pyasn1/license.html
 #
-
 import sys
+import unittest
 
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
@@ -16,11 +16,6 @@ from pyasn1_modules import rfc5280
 from pyasn1_modules import rfc5913
 from pyasn1_modules import rfc5755
 from pyasn1_modules import rfc3114
-
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
 
 
 class ClearanceTestCase(unittest.TestCase):
@@ -107,6 +102,7 @@ AgTwMBEGCyqGSIb3DQEJEAcBAwIF4DAKBggqhkjOPQQDAwNnADBkAjAZSD+BVqzc
                                 cat_value_found = True
 
         assert cat_value_found
+
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 

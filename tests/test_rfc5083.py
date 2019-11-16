@@ -5,8 +5,8 @@
 # Copyright (c) 2018, 2019  Vigil Security, LLC
 # License: http://snmplabs.com/pyasn1/license.html
 #
-
 import sys
+import unittest
 
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
@@ -15,11 +15,6 @@ from pyasn1_modules import pem
 from pyasn1_modules import rfc5652
 from pyasn1_modules import rfc5083
 from pyasn1_modules import rfc5035
-
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
 
 
 class AuthEnvelopedDataTestCase(unittest.TestCase):
@@ -94,7 +89,5 @@ IDAeDBFXYXRzb24sIGNvbWUgaGVyZQYJKoZIhvcNAQcB
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
 if __name__ == '__main__':
-    import sys
-
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

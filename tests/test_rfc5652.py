@@ -5,24 +5,17 @@
 # License: http://snmplabs.com/pyasn1/license.html
 #
 import sys
+import unittest
 
 from pyasn1.codec.der import decoder as der_decoder
 from pyasn1.codec.der import encoder as der_encoder
-
 from pyasn1.type import char
 from pyasn1.type import namedtype
 from pyasn1.type import univ
 
 from pyasn1_modules import pem
-from pyasn1_modules import rfc5280
 from pyasn1_modules import rfc5652
 from pyasn1_modules import rfc6402
-
-try:
-    import unittest2 as unittest
-
-except ImportError:
-    import unittest
 
 
 class ContentInfoTestCase(unittest.TestCase):
@@ -164,7 +157,5 @@ xicQmJP+VoMHo/ZpjFY9fYCjNZUArgKsEwK/s+p9yrVVeB1Nf8Mn
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
 if __name__ == '__main__':
-    import sys
-
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

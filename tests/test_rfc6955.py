@@ -5,12 +5,11 @@
 # Copyright (c) 2019, Vigil Security, LLC
 # License: http://snmplabs.com/pyasn1/license.html
 #
-
 import sys
+import unittest
 
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
-
 from pyasn1.type import univ
 
 from pyasn1_modules import pem
@@ -18,12 +17,6 @@ from pyasn1_modules import rfc5280
 from pyasn1_modules import rfc5480
 from pyasn1_modules import rfc6402
 from pyasn1_modules import rfc6955
-
-try:
-    import unittest2 as unittest
-
-except ImportError:
-    import unittest
 
 
 class CertificationRequestTestCase(unittest.TestCase):
@@ -93,7 +86,5 @@ Xo9l9a+tyVybAsCoiClhYw==
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
 if __name__ == '__main__':
-    import sys
-
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

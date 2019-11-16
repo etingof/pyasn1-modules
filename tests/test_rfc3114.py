@@ -7,6 +7,7 @@
 #
 
 import sys
+import unittest
 
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
@@ -15,15 +16,9 @@ from pyasn1_modules import pem
 from pyasn1_modules import rfc3114
 from pyasn1_modules import rfc5035
 from pyasn1_modules import rfc5083
-from pyasn1_modules import rfc5084
 from pyasn1_modules import rfc5280
 from pyasn1_modules import rfc5652
 from pyasn1_modules import rfc5755
-
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
 
 
 class SecurityLabelTestCase(unittest.TestCase):
@@ -229,7 +224,5 @@ uuDSOoaUIz+G9aemAE0ldpo1c0avNGa7BtynUTHmwosD6Sjfj0epAg9OnMedOjbr
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
 if __name__ == '__main__':
-    import sys
-
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

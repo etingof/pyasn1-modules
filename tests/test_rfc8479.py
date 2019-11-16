@@ -5,10 +5,10 @@
 # License: http://snmplabs.com/pyasn1/license.html
 #
 import sys
+import unittest
 
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
-
 from pyasn1.type import univ
 
 from pyasn1_modules import pem
@@ -16,11 +16,6 @@ from pyasn1_modules import rfc4055
 from pyasn1_modules import rfc5652
 from pyasn1_modules import rfc5958
 from pyasn1_modules import rfc8479
-
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
 
 
 class ValidationParmTestCase(unittest.TestCase):
@@ -98,7 +93,5 @@ BCCK9DKMh7687DHjA7j1U37/y2qR2UcITZmjaYI7NvAUYg==
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
 if __name__ == '__main__':
-    import sys
-
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

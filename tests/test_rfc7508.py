@@ -7,8 +7,7 @@
 #
 
 import sys
-
-from pyasn1.type import univ
+import unittest
 
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
@@ -16,11 +15,6 @@ from pyasn1.codec.der.encoder import encode as der_encode
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5652
 from pyasn1_modules import rfc7508
-
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
 
 
 class SignedMessageTestCase(unittest.TestCase):
@@ -126,7 +120,5 @@ bEtkkWCao1uNm5TOzphK0NbxzOsD854aC5ReKPSDAjAm1U0siLQw5p4qzGwyxDw9
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
 if __name__ == '__main__':
-    import sys
-
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

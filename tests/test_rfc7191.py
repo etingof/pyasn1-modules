@@ -7,20 +7,14 @@
 #
 
 import sys
+import unittest
 
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
 
-from pyasn1.type import univ
-
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5652
 from pyasn1_modules import rfc7191
-
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
 
 
 class ReceiptRequestTestCase(unittest.TestCase):
@@ -193,6 +187,7 @@ bUcOYuCdivgxVuhlAgIxAPR9JavxziwCbVyBUWOAiKKYfglTgG3AwNmrKDj0NtXUQ9qDmGAc
         package_id = pem.readBase64fromText(package_id_pem_text)
         assert receipt['receiptOf']['pkgID'] == package_id
 
+
 class ErrorTestCase(unittest.TestCase):
     message3_pem_text = """\
 MIIEbwYJKoZIhvcNAQcCoIIEYDCCBFwCAQMxDTALBglghkgBZQMEAgIwga0GCmCGSAFlAgEC
@@ -285,7 +280,5 @@ iNF8uKtW/lk0AjA7z2q40N0lamXkSU7ECasiWOYV1X4cWGiQwMZDKknBPDqXqB6Es6p4J+qe
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
 if __name__ == '__main__':
-    import sys
-
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

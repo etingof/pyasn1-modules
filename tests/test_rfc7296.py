@@ -5,22 +5,14 @@
 # Copyright (c) 2019, Vigil Security, LLC
 # License: http://snmplabs.com/pyasn1/license.html
 #
-
 import sys
+import unittest
 
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
 
 from pyasn1_modules import pem
-from pyasn1_modules import rfc5280
 from pyasn1_modules import rfc7296
-
-from pyasn1.type.univ import noValue
-
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
 
 
 class CertBundleTestCase(unittest.TestCase):
