@@ -1,3 +1,1 @@
-#pyasn1>=0.4.7,<0.5.0
-# temporarily depend on git master to test bew constraints
--e git://github.com/etingof/pyasn1.git#egg=pyasn1
+pyasn1>=0.4.7,<0.6.0
