@@ -92,6 +92,7 @@ params.update(
      'author_email': 'etingof@gmail.com',
      'url': 'https://github.com/etingof/pyasn1-modules',
      'platforms': ['any'],
+     'python_requires': '>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
      'classifiers': [x for x in classifiers.split('\n') if x],
      'license': 'BSD-2-Clause',
      'packages': ['pyasn1_modules'],
