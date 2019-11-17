@@ -24,14 +24,15 @@ class HKDFSHA256TestCase(unittest.TestCase):
     def testDerCodec(self):
 
         substrate = pem.readBase64fromText(self.alg_id_1_pem_text)
+        asn1Object, rest = der_decoder.decode(
+            substrate, asn1Spec=self.asn1Spec)
 
-        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder.encode(asn1Object))
 
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
-        
-        assert asn1Object['algorithm'] == rfc8619.id_alg_hkdf_with_sha256
+        self.assertEqual(
+            rfc8619.id_alg_hkdf_with_sha256, asn1Object['algorithm'])
 
 
 class HKDFSHA384TestCase(unittest.TestCase):
@@ -43,14 +44,13 @@ class HKDFSHA384TestCase(unittest.TestCase):
     def testDerCodec(self):
 
         substrate = pem.readBase64fromText(self.alg_id_1_pem_text)
-
         asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
 
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
-        
-        assert asn1Object['algorithm'] == rfc8619.id_alg_hkdf_with_sha384
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder.encode(asn1Object))
+        self.assertEqual(
+            rfc8619.id_alg_hkdf_with_sha384, asn1Object['algorithm'])
 
 
 class HKDFSHA512TestCase(unittest.TestCase):
@@ -63,13 +63,14 @@ class HKDFSHA512TestCase(unittest.TestCase):
 
         substrate = pem.readBase64fromText(self.alg_id_1_pem_text)
 
-        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decoder.decode(
+            substrate, asn1Spec=self.asn1Spec)
 
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
-        
-        assert asn1Object['algorithm'] == rfc8619.id_alg_hkdf_with_sha512
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder.encode(asn1Object))
+        self.assertEqual(
+            rfc8619.id_alg_hkdf_with_sha512, asn1Object['algorithm'])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

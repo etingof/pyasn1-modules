@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1.type import univ
 
 from pyasn1_modules import pem
@@ -33,39 +33,47 @@ hvcNAQEPBQAwDQYJKoZIhvcNAQEQBQA=
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.smime_capabilities_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         for cap in asn1Object:
-            assert cap['algorithm'] in rfc5280.algorithmIdentifierMap.keys()
+            self.assertIn(cap['algorithm'], rfc5280.algorithmIdentifierMap)
+
             if cap['parameters'].hasValue():
-                p, rest = der_decode(cap['parameters'],
+                p, rest = der_decoder(
+                    cap['parameters'],
                     asn1Spec=rfc5280.algorithmIdentifierMap[cap['algorithm']])
-                assert not rest
+
+                self.assertFalse(rest)
                 if not p == univ.Null(""):
-                    assert p.prettyPrint()
-                assert der_encode(p) == cap['parameters']
+                    self.assertTrue(p.prettyPrint())
+                self.assertEqual(cap['parameters'], der_encoder(p))
 
                 if cap['algorithm'] == rfc8017.id_RSAES_OAEP:
-                    assert p['hashFunc']['algorithm'] == rfc8017.id_sha384
-                    assert p['maskGenFunc']['algorithm'] == rfc8017.id_mgf1
+                    self.assertEqual(
+                        rfc8017.id_sha384, p['hashFunc']['algorithm'])
+                    self.assertEqual(
+                        rfc8017.id_mgf1, p['maskGenFunc']['algorithm'])
 
     def OpenTypesCodec(self):
         substrate = pem.readBase64fromText(self.smime_capabilities_pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         for cap in asn1Object:
             if cap['algorithm'] == rfc8017.id_RSAES_OAEP:
                 p = cap['parameters']
-                assert p['hashFunc']['algorithm'] == rfc8017.id_sha384
-                assert p['maskGenFunc']['algorithm'] == rfc8017.id_mgf1
+                self.assertEqual(
+                    rfc8017.id_sha384, p['hashFunc']['algorithm'])
+                self.assertEqual(
+                    rfc8017.id_mgf1, p['maskGenFunc']['algorithm'])
 
 
 class MultiprimeRSAPrivateKeyTestCase(unittest.TestCase):
@@ -103,10 +111,11 @@ EeEs9dusHakg1ERXAg4Vo1YowPW8kuVbZ9faxeVrmuER5NcCuZzS5X/obGUw
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

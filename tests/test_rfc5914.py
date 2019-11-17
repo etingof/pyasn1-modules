@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5914
@@ -58,18 +58,19 @@ IEVDQyBTZWN1cmUgU2VydmVyIENBggIFIIICZW4=
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.trust_anchor_list_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        assert asn1Object['contentType'] == rfc5914.id_ct_trustAnchorList
-        tal, rest = der_decode(asn1Object['content'], rfc5914.TrustAnchorList())
-        assert not rest
-        assert tal.prettyPrint()
-        assert der_encode(tal) == asn1Object['content']
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertEqual(rfc5914.id_ct_trustAnchorList, asn1Object['contentType'])
 
-        assert sum (1 for _ in tal) == 3
+        tal, rest = der_decoder(asn1Object['content'], rfc5914.TrustAnchorList())
+
+        self.assertFalse(rest)
+        self.assertTrue(tal.prettyPrint())
+        self.assertEqual(asn1Object['content'], der_encoder(tal))
+        self.assertEqual(3, sum(1 for _ in tal))
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

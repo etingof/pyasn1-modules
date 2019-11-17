@@ -9,8 +9,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc3114
@@ -147,10 +147,11 @@ uuDSOoaUIz+G9aemAE0ldpo1c0avNGa7BtynUTHmwosD6Sjfj0epAg9OnMedOjbr
 
         next_layer = rfc5652.id_ct_contentInfo
         while next_layer:
-            asn1Object, rest = der_decode(substrate, asn1Spec=layers[next_layer])
-            assert not rest
-            assert asn1Object.prettyPrint()
-            assert der_encode(asn1Object) == substrate
+            asn1Object, rest = der_decoder(substrate, asn1Spec=layers[next_layer])
+
+            self.assertFalse(rest)
+            self.assertTrue(asn1Object.prettyPrint())
+            self.assertEqual(substrate, der_encoder(asn1Object))
 
             if next_layer == rfc5652.id_signedData:
                 attrs = asn1Object['signerInfos'][0]['signedAttrs']
@@ -163,62 +164,77 @@ uuDSOoaUIz+G9aemAE0ldpo1c0avNGa7BtynUTHmwosD6Sjfj0epAg9OnMedOjbr
         catid = rfc3114.id_tsp_TEST_Whirlpool_Categories
         conf = rfc3114.Whirlpool_SecurityClassification(value='whirlpool-confidential')
 
-        assert catid in rfc5755.securityCategoryMap.keys()
-        assert rfc5755.id_at_clearance in rfc5280.certificateAttributesMap.keys()
-        assert rfc5280.id_ce_subjectDirectoryAttributes in rfc5280.certificateExtensionsMap.keys()
+        self.assertIn(catid, rfc5755.securityCategoryMap)
+        self.assertIn(rfc5755.id_at_clearance, rfc5280.certificateAttributesMap)
+        self.assertIn(rfc5280.id_ce_subjectDirectoryAttributes, rfc5280.certificateExtensionsMap)
 
         security_label_okay = False
+
         for attr in attrs:
             if attr['attrType'] == rfc5035.id_aa_securityLabel:
-                esssl, rest = der_decode(attr['attrValues'][0],
-                    asn1Spec=rfc5035.ESSSecurityLabel())
-                assert not rest
-                assert esssl.prettyPrint()
-                assert der_encode(esssl) == attr['attrValues'][0]
+                esssl, rest = der_decoder(
+                    attr['attrValues'][0], asn1Spec=rfc5035.ESSSecurityLabel())
 
-                assert esssl['security-policy-identifier'] == spid
-                assert esssl['security-classification'] == conf
+                self.assertFalse(rest)
+                self.assertTrue(esssl.prettyPrint())
+                self.assertEqual(attr['attrValues'][0], der_encoder(esssl))
+
+                self.assertEqual(spid, esssl['security-policy-identifier'])
+                self.assertEqual(conf, esssl['security-classification'])
 
                 for cat in esssl['security-categories']:
                     if cat['type'] == catid:
-                        scv, rest = der_decode(cat['value'],
-                            asn1Spec=rfc3114.SecurityCategoryValues())
-                        assert not rest
-                        assert scv.prettyPrint()
-                        assert der_encode(scv) == cat['value']
+                        scv, rest = der_decoder(
+                            cat['value'], asn1Spec=rfc3114.SecurityCategoryValues())
+
+                        self.assertFalse(rest)
+                        self.assertTrue(scv.prettyPrint())
+                        self.assertEqual(cat['value'], der_encoder(scv))
+
                         for scv_str in scv:
-                            assert 'USE ONLY' in scv_str
+                            self.assertIn('USE ONLY', scv_str)
                             security_label_okay = True
 
-        assert security_label_okay
+        self.assertTrue(security_label_okay)
 
         clearance_okay = False
         for cert_choice in certs:
             for extn in cert_choice['certificate']['tbsCertificate']['extensions']:
                 if extn['extnID'] == rfc5280.id_ce_subjectDirectoryAttributes:
-                    ev, rest = der_decode(extn['extnValue'],
+                    ev, rest = der_decoder(
+                        extn['extnValue'],
                         asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-                    assert not rest
-                    assert ev.prettyPrint()
-                    assert der_encode(ev) == extn['extnValue']
+
+                    self.assertFalse(rest)
+                    self.assertTrue(ev.prettyPrint())
+                    self.assertEqual(extn['extnValue'], der_encoder(ev))
 
                     for attr in ev:
+
                         if attr['type'] == rfc5755.id_at_clearance:
-                            av, rest = der_decode(attr['values'][0],
+                            av, rest = der_decoder(
+                                attr['values'][0],
                                 asn1Spec=rfc5280.certificateAttributesMap[attr['type']])
-                            assert av['policyId'] == spid
+
+                            self.assertEqual(spid, av['policyId'])
+
                             for cat in av['securityCategories']:
-                                assert cat['type'] == catid
-                                scv, rest = der_decode(cat['value'],
+
+                                self.assertEqual(catid, cat['type'])
+
+                                scv, rest = der_decoder(
+                                    cat['value'],
                                     asn1Spec=rfc5755.securityCategoryMap[cat['type']])
-                                assert not rest
-                                assert scv.prettyPrint()
-                                assert der_encode(scv) == cat['value']
+
+                                self.assertFalse(rest)
+                                self.assertTrue(scv.prettyPrint())
+                                self.assertEqual(cat['value'], der_encoder(scv))
+
                                 for scv_str in scv:
-                                    assert 'USE ONLY' in scv_str
+                                    self.assertIn('USE ONLY', scv_str)
                                     clearance_okay = True
 
-        assert clearance_okay
+        self.assertTrue(clearance_okay)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

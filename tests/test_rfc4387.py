@@ -7,18 +7,14 @@
 #
 
 import sys
+import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5280
 from pyasn1_modules import rfc4387
-
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
 
 
 class CertificateTestCase(unittest.TestCase):
@@ -48,10 +44,11 @@ kjBJ
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode (substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         oid_list = [
             rfc4387.id_ad_http_certs,
@@ -61,19 +58,21 @@ kjBJ
         count = 0
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] == rfc5280.id_pe_authorityInfoAccess:
-                extnValue, rest = der_decode(extn['extnValue'],
+                extnValue, rest = der_decoder(
+                    extn['extnValue'],
                     asn1Spec=rfc5280.AuthorityInfoAccessSyntax())
-                assert not rest
-                assert extnValue.prettyPrint()
-                assert der_encode(extnValue) == extn['extnValue']
+
+                self.assertFalse(rest)
+                self.assertTrue(extnValue.prettyPrint())
+                self.assertEqual(extn['extnValue'], der_encoder(extnValue))
 
                 for ad in extnValue:
                     if ad['accessMethod'] in oid_list:
                         uri = ad['accessLocation']['uniformResourceIdentifier']
-                        assert 'http://repo.example.com/c' in uri
+                        self.assertIn('http://repo.example.com/c', uri)
                         count += 1
 
-        assert count == len(oid_list)
+        self.assertEqual(len(oid_list), count)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

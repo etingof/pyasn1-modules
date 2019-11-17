@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1.compat.octets import str2octs
 
 from pyasn1_modules import pem
@@ -32,47 +32,62 @@ YIZIAWUCAQVCMRAEDnB0Zi1rZGMtODEyMzc0
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.encrypted_key_pkg_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
-        assert asn1Object['contentType'] == rfc6032.id_ct_KP_encryptedKeyPkg
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        content, rest = der_decode(asn1Object['content'], rfc6032.EncryptedKeyPackage())
-        assert not rest
-        assert content.prettyPrint()
-        assert der_encode(content) == asn1Object['content']
-        assert content.getName() == 'encrypted'
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+
+        self.assertEqual(
+            rfc6032.id_ct_KP_encryptedKeyPkg, asn1Object['contentType'])
+
+        content, rest = der_decoder(
+            asn1Object['content'], rfc6032.EncryptedKeyPackage())
+
+        self.assertFalse(rest)
+        self.assertTrue(content.prettyPrint())
+        self.assertEqual(asn1Object['content'], der_encoder(content))
+        self.assertEqual('encrypted', content.getName())
+
         eci = content['encrypted']['encryptedContentInfo']
-        assert eci['contentType'] == rfc6032.id_ct_KP_encryptedKeyPkg
+
+        self.assertEqual(
+            rfc6032.id_ct_KP_encryptedKeyPkg, eci['contentType'])
+
         attrType = content['encrypted']['unprotectedAttrs'][0]['attrType']
-        assert attrType == rfc6032.id_aa_KP_contentDecryptKeyID
+
+        self.assertEqual(rfc6032.id_aa_KP_contentDecryptKeyID, attrType)
 
         attrVal0 = content['encrypted']['unprotectedAttrs'][0]['attrValues'][0]
-        keyid, rest = der_decode(attrVal0, rfc6032.ContentDecryptKeyID())
-        assert not rest
-        assert keyid.prettyPrint()
-        assert der_encode(keyid) == attrVal0
-        assert keyid == b'ptf-kdc-812374'
+        keyid, rest = der_decoder(attrVal0, rfc6032.ContentDecryptKeyID())
+
+        self.assertFalse(rest)
+        self.assertTrue(keyid.prettyPrint())
+        self.assertEqual(attrVal0, der_encoder(keyid))
+        self.assertEqual(str2octs('ptf-kdc-812374'), keyid)
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.encrypted_key_pkg_pem_text)
-        asn1Object, rest = der_decode(substrate,
-                                      asn1Spec=self.asn1Spec,
-                                      decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate,
+                                       asn1Spec=self.asn1Spec,
+                                       decodeOpenTypes=True)
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
-        assert asn1Object['contentType'] in rfc5652.cmsContentTypesMap
+        self.assertIn(asn1Object['contentType'], rfc5652.cmsContentTypesMap)
+
         eci = asn1Object['content']['encrypted']['encryptedContentInfo']
-        assert eci['contentType'] in rfc5652.cmsContentTypesMap
+
+        self.assertIn(eci['contentType'], rfc5652.cmsContentTypesMap)
 
         for attr in asn1Object['content']['encrypted']['unprotectedAttrs']:
-            assert attr['attrType'] in rfc5652.cmsAttributesMap.keys()
-            assert attr['attrValues'][0].prettyPrint()[:2] != '0x'
+            self.assertIn(attr['attrType'], rfc5652.cmsAttributesMap)
+            self.assertNotEqual('0x', attr['attrValues'][0].prettyPrint()[:2])
+
             if attr['attrType'] == rfc6032.id_aa_KP_contentDecryptKeyID:
-                assert attr['attrValues'][0] == str2octs('ptf-kdc-812374')
+                self.assertEqual(str2octs(
+                    'ptf-kdc-812374'), attr['attrValues'][0])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

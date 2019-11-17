@@ -7,8 +7,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5652
@@ -51,52 +51,59 @@ dsnhVtIdkPtfJIvcYteYJg==
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
 
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
-        assert asn1Object['contentType'] == rfc5652.id_signedData
-        inner, rest = der_decode(asn1Object['content'], asn1Spec=rfc5652.SignedData())
+        self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
 
-        assert inner['encapContentInfo']['eContentType'] == rfc4108.id_ct_firmwarePackage
-        assert inner['encapContentInfo']['eContent']
+        inner, rest = der_decoder(asn1Object['content'], asn1Spec=rfc5652.SignedData())
 
-        attribute_list = [ ]
+        self.assertEqual(
+            rfc4108.id_ct_firmwarePackage, inner['encapContentInfo']['eContentType'])
+
+        self.assertTrue(inner['encapContentInfo']['eContent'])
+
+        attribute_list = []
+
         for attr in inner['signerInfos'][0]['signedAttrs']:
             attribute_list.append(attr['attrType'])
             if attr['attrType'] == rfc4108.id_aa_targetHardwareIDs:
-                av, rest = der_decode(attr['attrValues'][0],
-                    asn1Spec=rfc4108.TargetHardwareIdentifiers())
-                assert len(av) == 2
-                for oid in av:
-                    assert '1.3.6.1.4.1.221121.1.1.' in oid.prettyPrint()
+                av, rest = der_decoder(attr['attrValues'][0],
+                                       asn1Spec=rfc4108.TargetHardwareIdentifiers())
+                self.assertEqual(2, len(av))
 
-        assert rfc5652.id_contentType in attribute_list
-        assert rfc5652.id_messageDigest in attribute_list
-        assert rfc4108.id_aa_targetHardwareIDs in attribute_list
-        assert rfc4108.id_aa_fwPkgMessageDigest in attribute_list
+                for oid in av:
+                    self.assertIn('1.3.6.1.4.1.221121.1.1.', oid.prettyPrint())
+
+        self.assertIn( rfc5652.id_contentType, attribute_list)
+        self.assertIn( rfc5652.id_messageDigest, attribute_list)
+        self.assertIn(rfc4108.id_aa_targetHardwareIDs, attribute_list)
+        self.assertIn(rfc4108.id_aa_fwPkgMessageDigest, attribute_list)
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
 
-        assert asn1Object['contentType'] == rfc5652.id_signedData
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+
+        self.assertEqual(asn1Object['contentType'], rfc5652.id_signedData)
+
         sd_eci = asn1Object['content']['encapContentInfo']
-        assert sd_eci['eContentType'] == rfc4108.id_ct_firmwarePackage
-        assert sd_eci['eContent'].hasValue()
+
+        self.assertEqual(sd_eci['eContentType'], rfc4108.id_ct_firmwarePackage)
+        self.assertTrue(sd_eci['eContent'].hasValue())
 
         for attr in asn1Object['content']['signerInfos'][0]['signedAttrs']:
-            assert attr['attrType'] in rfc5652.cmsAttributesMap.keys()
+            self.assertIn(attr['attrType'], rfc5652.cmsAttributesMap)
             if attr['attrType'] == rfc4108.id_aa_targetHardwareIDs:
                for oid in attr['attrValues'][0]:
-                   assert '1.3.6.1.4.1.221121.1.1.' in oid.prettyPrint()
+                   self.assertIn('1.3.6.1.4.1.221121.1.1.', oid.prettyPrint())
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

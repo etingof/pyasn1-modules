@@ -9,8 +9,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5652
@@ -53,68 +53,78 @@ bEtkkWCao1uNm5TOzphK0NbxzOsD854aC5ReKPSDAjAm1U0siLQw5p4qzGwyxDw9
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.signed_message_pem_text)
-        asn1Object, rest = der_decode (substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         secure_header_field_attr_found = False
-        assert asn1Object['contentType'] == rfc5652.id_signedData
-        sd, rest = der_decode (asn1Object['content'], asn1Spec=rfc5652.SignedData())
+
+        self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
+
+        sd, rest = der_decoder(
+            asn1Object['content'], asn1Spec=rfc5652.SignedData())
+
         for sa in sd['signerInfos'][0]['signedAttrs']:
             sat = sa['attrType']
             sav0 = sa['attrValues'][0]
 
             if sat == rfc7508.id_aa_secureHeaderFieldsIdentifier:
-                assert sat in rfc5652.cmsAttributesMap.keys()
-                sav, rest = der_decode(sav0, asn1Spec=rfc5652.cmsAttributesMap[sat])
-                assert not rest
-                assert sav.prettyPrint()
-                assert der_encode(sav) == sav0
+                self.assertIn(sat, rfc5652.cmsAttributesMap)
+                sav, rest = der_decoder(
+                    sav0, asn1Spec=rfc5652.cmsAttributesMap[sat])
+
+                self.assertFalse(rest)
+                self.assertTrue(sav.prettyPrint())
+                self.assertEqual(sav0, der_encoder(sav))
 
                 from_field = rfc7508.HeaderFieldName('From')
                 alice_email = rfc7508.HeaderFieldValue('alice@example.com')
                 for shf in sav['secHeaderFields']:
                     if shf['field-Name'] == from_field:
-                        assert shf['field-Value'] == alice_email
+                        self.assertEqual(alice_email, shf['field-Value'])
                         secure_header_field_attr_found = True
 
-        assert secure_header_field_attr_found
+        self.assertTrue(secure_header_field_attr_found)
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.signed_message_pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
 
-        assert asn1Object['contentType'] in rfc5652.cmsContentTypesMap.keys()
-        assert asn1Object['contentType'] == rfc5652.id_signedData
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertIn(asn1Object['contentType'], rfc5652.cmsContentTypesMap)
+        self.assertEqual(asn1Object['contentType'], rfc5652.id_signedData)
 
         sd = asn1Object['content']
-        assert sd['version'] == rfc5652.CMSVersion().subtype(value='v1')
+
+        self.assertEqual(
+            rfc5652.CMSVersion().subtype(value='v1'), sd['version'])
 
         ect = sd['encapContentInfo']['eContentType']
-        assert ect in rfc5652.cmsContentTypesMap.keys()
-        assert ect == rfc5652.id_data
+
+        self.assertIn(ect, rfc5652.cmsContentTypesMap)
+        self.assertEqual(rfc5652.id_data, ect)
 
         for sa in sd['signerInfos'][0]['signedAttrs']:
             if sa['attrType'] == rfc7508.id_aa_secureHeaderFieldsIdentifier:
-                assert sa['attrType'] in rfc5652.cmsAttributesMap.keys()
+                self.assertIn(sa['attrType'], rfc5652.cmsAttributesMap)
 
                 secure_header_field_attr_found = False
                 for sa in sd['signerInfos'][0]['signedAttrs']:
                     if sa['attrType'] == rfc7508.id_aa_secureHeaderFieldsIdentifier:
-                        assert sa['attrType'] in rfc5652.cmsAttributesMap.keys()
+                        self.assertIn(sa['attrType'], rfc5652.cmsAttributesMap)
                         from_field = rfc7508.HeaderFieldName('From')
                         alice_email = rfc7508.HeaderFieldValue('alice@example.com')
                         for shf in sa['attrValues'][0]['secHeaderFields']:
                             if shf['field-Name'] == from_field:
-                                assert shf['field-Value'] == alice_email
+                                self.assertEqual(alice_email, shf['field-Value'])
                                 secure_header_field_attr_found = True
 
-                assert secure_header_field_attr_found
+                self.assertTrue(secure_header_field_attr_found)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

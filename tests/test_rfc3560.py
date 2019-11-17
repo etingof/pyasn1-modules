@@ -25,11 +25,10 @@ class OAEPDefautTestCase(unittest.TestCase):
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.oaep_default_pem_text)
         asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert asn1Object[0] == rfc3560.id_RSAES_OAEP
-        assert der_encoder.encode(asn1Object) == substrate
-        assert substrate == der_encoder.encode(asn1Object)
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(rfc3560.id_RSAES_OAEP, asn1Object[0])
+        self.assertEqual(substrate, der_encoder.encode(asn1Object))
 
 
 class OAEPSHA256TestCase(unittest.TestCase):
@@ -41,11 +40,10 @@ class OAEPSHA256TestCase(unittest.TestCase):
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.oaep_sha256_pem_text)
         asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert asn1Object[0] == rfc3560.id_RSAES_OAEP
-        assert der_encoder.encode(asn1Object) == substrate
-        assert substrate == der_encoder.encode(asn1Object)
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(rfc3560.id_RSAES_OAEP, asn1Object[0])
+        self.assertEqual(substrate, der_encoder.encode(asn1Object))
 
 
 class OAEPFullTestCase(unittest.TestCase):
@@ -57,11 +55,10 @@ class OAEPFullTestCase(unittest.TestCase):
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.oaep_full_pem_text)
         asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert asn1Object[0] == rfc3560.id_RSAES_OAEP
-        assert der_encoder.encode(asn1Object) == substrate
-        assert substrate == der_encoder.encode(asn1Object)
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(rfc3560.id_RSAES_OAEP, asn1Object[0])
+        self.assertEqual(substrate, der_encoder.encode(asn1Object))
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

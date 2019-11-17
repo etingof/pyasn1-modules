@@ -8,6 +8,8 @@ Revision 0.3.0, released XX-11-2019
 - Removed support for EOL Pythons 2.4, 2.5, 2.6, 3.2, 3.3 and 3.4.
 - Improve test routines for RFC5126
 - Add RFC4387 providing Certificate Store Access via HTTP
+- Changed assertion in unit tests from Python built-in to `unittest`
+  provided
 
 Revision 0.2.8, released 16-11-2019
 -----------------------------------

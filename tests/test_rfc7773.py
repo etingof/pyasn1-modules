@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5280
@@ -81,27 +81,29 @@ tAGXsYdcuQpglUngmo/FV4Z9qjIDkYQ=
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        extn_list = [ ]
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+
+        extn_list = []
+
         for extn in asn1Object['tbsCertificate']['extensions']:
             extn_list.append(extn['extnID'])
 
             if extn['extnID'] == rfc7773.id_ce_authContext:
                 s = extn['extnValue']
-                acs, rest = der_decode(s,
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-                assert not rest
-                assert acs.prettyPrint()
-                assert s == der_encode(acs)
+                acs, rest = der_decoder(
+                    s, asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
+                self.assertFalse(rest)
+                self.assertTrue(acs.prettyPrint())
+                self.assertEqual(s, der_encoder(acs))
+                self.assertIn('id.elegnamnden.se', acs[0]['contextType'])
+                self.assertIn(
+                    'AuthContextInfo IdentityProvider', acs[0]['contextInfo'])
 
-                assert u'id.elegnamnden.se' in acs[0]['contextType']
-                assert u'AuthContextInfo IdentityProvider' in acs[0]['contextInfo']
-
-        assert rfc7773.id_ce_authContext in extn_list
+        self.assertIn(rfc7773.id_ce_authContext, extn_list)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

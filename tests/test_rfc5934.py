@@ -9,8 +9,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1.type import univ
 
@@ -150,44 +150,48 @@ iPxQyqz7LIQe9/5ynJV5/CPUDBL9QK2vSCOQaihWCg==
         next_layer = rfc5652.id_ct_contentInfo
 
         while next_layer:
-            asn1Object, rest = der_decode(substrate, asn1Spec=layers[next_layer])
-            assert not rest
-            assert asn1Object.prettyPrint()
-            assert der_encode(asn1Object) == substrate
+            asn1Object, rest = der_decoder(substrate, asn1Spec=layers[next_layer])
+            self.assertFalse(rest)
+            self.assertTrue(asn1Object.prettyPrint())
+            self.assertEqual(substrate, der_encoder(asn1Object))
 
             substrate = getNextSubstrate[next_layer](asn1Object)
             next_layer = getNextLayer[next_layer](asn1Object)
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.tsr_pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=rfc5652.ContentInfo(),
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=rfc5652.ContentInfo(), decodeOpenTypes=True)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         eci = asn1Object['content']['encapContentInfo']
-        assert eci['eContentType'] in rfc5652.cmsContentTypesMap.keys()
-        assert eci['eContentType'] == rfc5934.id_ct_TAMP_statusResponse
-        tsr, rest = der_decode(eci['eContent'],
+
+        self.assertIn(eci['eContentType'], rfc5652.cmsContentTypesMap)
+        self.assertEqual(rfc5934.id_ct_TAMP_statusResponse, eci['eContentType'])
+
+        tsr, rest = der_decoder(
+            eci['eContent'],
             asn1Spec=rfc5652.cmsContentTypesMap[eci['eContentType']],
             decodeOpenTypes=True)
-        assert not rest
-        assert tsr.prettyPrint()
-        assert der_encode(tsr) == eci['eContent']
 
-        assert tsr['version'] == 2
-        assert tsr['query']['target'] == univ.Null("")
-        assert tsr['query']['seqNum'] == 1568307071
-        assert tsr['usesApex'] == False
+        self.assertFalse(rest)
+        self.assertTrue(tsr.prettyPrint())
+        self.assertEqual(eci['eContent'], der_encoder(tsr))
+        self.assertEqual(2, tsr['version'])
+        self.assertEqual(univ.Null(""), tsr['query']['target'])
+        self.assertEqual(1568307071, tsr['query']['seqNum'])
+        self.assertFalse(tsr['usesApex'])
 
         count = 0
+
         for tai in tsr['response']['verboseResponse']['taInfo']:
             count += 1
-            assert tai['taInfo']['version'] == 1
+            self.assertEqual(1, tai['taInfo']['version'])
 
-        assert count == 3
+        self.assertEqual(3, count)
 
 
 class TrustAnchorUpdateTestCase(unittest.TestCase):
@@ -251,42 +255,41 @@ ZidB8vj4jIZT3S2gqWhtBLMUc11j+kWlXEZEigSL8WgCbAu7lqhItMwz2dy4C5aAWq8r"""
         next_layer = rfc5652.id_ct_contentInfo
 
         while next_layer:
-            asn1Object, rest = der_decode(substrate, asn1Spec=layers[next_layer])
-            assert not rest
-            assert asn1Object.prettyPrint()
-            assert der_encode(asn1Object) == substrate
+            asn1Object, rest = der_decoder(substrate, asn1Spec=layers[next_layer])
+
+            self.assertFalse(rest)
+            self.assertTrue(asn1Object.prettyPrint())
+            self.assertEqual(substrate, der_encoder(asn1Object))
 
             substrate = getNextSubstrate[next_layer](asn1Object)
             next_layer = getNextLayer[next_layer](asn1Object)
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.tau_pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=rfc5652.ContentInfo(),
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=rfc5652.ContentInfo(),
             decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         eci = asn1Object['content']['encapContentInfo']
-        assert eci['eContentType'] in rfc5652.cmsContentTypesMap.keys()
-        assert eci['eContentType'] == rfc5934.id_ct_TAMP_update
-        tau, rest = der_decode(eci['eContent'],
+        self.assertIn(eci['eContentType'], rfc5652.cmsContentTypesMap)
+        self.assertEqual(rfc5934.id_ct_TAMP_update, eci['eContentType'])
+
+        tau, rest = der_decoder(
+            eci['eContent'],
             asn1Spec=rfc5652.cmsContentTypesMap[eci['eContentType']],
             decodeOpenTypes=True)
-        assert not rest
-        assert tau.prettyPrint()
-        assert der_encode(tau) == eci['eContent']
 
-        assert tau['version'] == 2
-        assert tau['msgRef']['target'] == univ.Null("")
-        assert tau['msgRef']['seqNum'] == 1568307088
-
-        count = 0
-        for u in tau['updates']:
-            count += 1
-
-        assert count == 1
+        self.assertFalse(rest)
+        self.assertTrue(tau.prettyPrint())
+        self.assertEqual(eci['eContent'], der_encoder(tau))
+        self.assertEqual(2, tau['version'])
+        self.assertEqual(univ.Null(""), tau['msgRef']['target'])
+        self.assertEqual(1568307088, tau['msgRef']['seqNum'])
+        self.assertEqual(1, len(tau['updates']))
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

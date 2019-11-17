@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5280
@@ -436,22 +436,25 @@ AgMA++8wCgIDAwAAAgMDNZs=
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.extns_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        oids = [ ]
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+
+        oids = []
         for extn in asn1Object:
             oids.append(extn['extnID'])
-            extn_value, rest = der_decode(extn['extnValue'],
+            extn_value, rest = der_decoder(
+                extn['extnValue'],
                 rfc5280.certificateExtensionsMap[extn['extnID']])
-            assert not rest
-            assert extn_value.prettyPrint()
-            assert der_encode(extn_value) == extn['extnValue']
 
-        assert rfc8360.id_pe_ipAddrBlocks_v2 in oids
-        assert rfc8360.id_pe_autonomousSysIds_v2 in oids
+            self.assertFalse(rest)
+            self.assertTrue(extn_value.prettyPrint())
+            self.assertEqual(extn['extnValue'], der_encoder(extn_value))
+
+        self.assertIn(rfc8360.id_pe_ipAddrBlocks_v2, oids)
+        self.assertIn(rfc8360.id_pe_autonomousSysIds_v2, oids)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

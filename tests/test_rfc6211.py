@@ -10,8 +10,8 @@ import unittest
 
 from pyasn1.type import univ
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5652
 from pyasn1_modules import rfc6211
@@ -52,54 +52,67 @@ fIUedSwWYrcSnSa1pq2s3Wue+pNBfecEjYECMGrUNu1UpWdafEJulP9Vz76qOPMa
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.signed_message_pem_text)
-        asn1Object, rest = der_decode (substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder (substrate, asn1Spec=self.asn1Spec)
 
-        assert asn1Object['contentType'] == rfc5652.id_signedData
-        sd, rest = der_decode(asn1Object['content'], asn1Spec=rfc5652.SignedData())
-        assert not rest
-        assert sd.prettyPrint()
-        assert der_encode(sd) == asn1Object['content'] 
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+
+        self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
+
+        sd, rest = der_decoder(
+            asn1Object['content'], asn1Spec=rfc5652.SignedData())
+
+        self.assertFalse(rest)
+        self.assertTrue(sd.prettyPrint())
+        self.assertEqual(asn1Object['content'], der_encoder(sd))
        
         for sa in sd['signerInfos'][0]['signedAttrs']:
             sat = sa['attrType']
             sav0 = sa['attrValues'][0]
 
             if sat in rfc6211.id_aa_cmsAlgorithmProtect:
-                sav, rest = der_decode(sav0, asn1Spec=rfc6211.CMSAlgorithmProtection())
-                assert not rest
-                assert sav.prettyPrint()
-                assert der_encode(sav) == sav0
+                sav, rest = der_decoder(
+                    sav0, asn1Spec=rfc6211.CMSAlgorithmProtection())
+
+                self.assertFalse(rest)
+                self.assertTrue(sav.prettyPrint())
+                self.assertEqual(sav0, der_encoder(sav))
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.signed_message_pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
 
-        assert asn1Object['contentType'] in rfc5652.cmsContentTypesMap.keys()
-        assert asn1Object['contentType'] == rfc5652.id_signedData
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+
+        self.assertIn(asn1Object['contentType'], rfc5652.cmsContentTypesMap)
+        self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
 
         sd = asn1Object['content']
-        assert sd['version'] == rfc5652.CMSVersion().subtype(value='v1')
+
+        self.assertEqual(
+            rfc5652.CMSVersion().subtype(value='v1'), sd['version'])
 
         ect = sd['encapContentInfo']['eContentType']
-        assert ect in rfc5652.cmsContentTypesMap.keys()
-        assert ect == rfc5652.id_data
+
+        self.assertIn(ect, rfc5652.cmsContentTypesMap)
+        self.assertEqual(rfc5652.id_data, ect)
 
         for sa in sd['signerInfos'][0]['signedAttrs']:
             if sa['attrType'] == rfc6211.id_aa_cmsAlgorithmProtect:
-                assert sa['attrType'] in rfc5652.cmsAttributesMap.keys()
+                self.assertIn(sa['attrType'], rfc5652.cmsAttributesMap)
                 
                 sav0 = sa['attrValues'][0]
                 digest_oid = univ.ObjectIdentifier('2.16.840.1.101.3.4.2.2')
                 sig_oid = univ.ObjectIdentifier('1.2.840.10045.4.3.3')
-                assert sav0['digestAlgorithm']['algorithm'] == digest_oid
-                assert sav0['signatureAlgorithm']['algorithm'] == sig_oid
+
+                self.assertEqual(
+                    digest_oid, sav0['digestAlgorithm']['algorithm'])
+                self.assertEqual(
+                    sig_oid, sav0['signatureAlgorithm']['algorithm'])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

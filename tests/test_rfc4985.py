@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5280
@@ -41,58 +41,69 @@ nOzhcMpnHs2U/eN0lHl/JNgnbftl6Dvnt59xdA==
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.xmpp_server_cert_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         count = 0
+
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] == rfc5280.id_ce_subjectAltName:
-                extnValue, rest = der_decode(extn['extnValue'],
-                    asn1Spec=rfc5280.SubjectAltName())
-                assert not rest
-                assert extnValue.prettyPrint()
-                assert der_encode(extnValue) == extn['extnValue']
+                extnValue, rest = der_decoder(
+                    extn['extnValue'], asn1Spec=rfc5280.SubjectAltName())
+
+                self.assertFalse(rest)
+                self.assertTrue(extnValue.prettyPrint())
+                self.assertEqual(extn['extnValue'], der_encoder(extnValue))
+
                 for gn in extnValue:
                     if gn['otherName'].hasValue():
                         gn_on = gn['otherName']
                         if gn_on['type-id'] == rfc4985.id_on_dnsSRV:
-                            assert gn_on['type-id'] in rfc5280.anotherNameMap.keys()
+                            self.assertIn(gn_on['type-id'], rfc5280.anotherNameMap)
+
                             spec = rfc5280.anotherNameMap[gn['otherName']['type-id']]
-                            on, rest = der_decode(gn_on['value'], asn1Spec=spec)
-                            assert not rest
-                            assert on.prettyPrint()
-                            assert der_encode(on) == gn_on['value']
-                            assert 'im.example.com' in on
+                            on, rest = der_decoder(gn_on['value'], asn1Spec=spec)
+
+                            self.assertFalse(rest)
+                            self.assertTrue(on.prettyPrint())
+                            self.assertEqual(gn_on['value'], der_encoder(on))
+                            self.assertIn('im.example.com', on)
+
                             count += 1
 
-        assert count == 2
+        self.assertEqual(2, count)
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.xmpp_server_cert_pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         count = 0
+
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] == rfc5280.id_ce_subjectAltName:
-                extnValue, rest = der_decode(extn['extnValue'],
-                    asn1Spec=rfc5280.SubjectAltName(), decodeOpenTypes=True)
-                assert not rest
-                assert extnValue.prettyPrint()
-                assert der_encode(extnValue) == extn['extnValue']
+                extnValue, rest = der_decoder(
+                    extn['extnValue'], asn1Spec=rfc5280.SubjectAltName(),
+                    decodeOpenTypes=True)
+
+                self.assertFalse(rest)
+                self.assertTrue(extnValue.prettyPrint())
+                self.assertEqual(extn['extnValue'], der_encoder(extnValue))
+
                 for gn in extnValue:
                     if gn['otherName'].hasValue():
                         if gn['otherName']['type-id'] == rfc4985.id_on_dnsSRV:
-                            assert 'im.example.com' in gn['otherName']['value']
+                            self.assertIn('im.example.com', gn['otherName']['value'])
                             count += 1
 
-        assert count == 2
+        self.assertEqual(2, count)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

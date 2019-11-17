@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5280
@@ -46,59 +46,71 @@ FFMC7GjGtCeLtXYqWfBnRdK26dOaHLB2
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.cert_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         cs = rfc5917.DirectoryString()
         cs['utf8String'] = u'Human Resources Department'
-        encoded_cs = der_encode(cs)
+        encoded_cs = der_encoder(cs)
 
         clearance_sponsor_found = False
+
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] == rfc5280.id_ce_subjectDirectoryAttributes:
-                assert extn['extnID'] in rfc5280.certificateExtensionsMap.keys()
-                ev, rest = der_decode(extn['extnValue'],
+
+                self.assertIn(extn['extnID'], rfc5280.certificateExtensionsMap)
+
+                ev, rest = der_decoder(
+                    extn['extnValue'],
                     asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-                assert not rest
-                assert ev.prettyPrint()
-                assert der_encode(ev) == extn['extnValue']
+
+                self.assertFalse(rest)
+                self.assertTrue(ev.prettyPrint())
+                self.assertEqual(extn['extnValue'], der_encoder(ev))
 
                 for attr in ev:
                     if attr['type'] == rfc5917.id_clearanceSponsor:
-                        assert attr['values'][0] == encoded_cs
+                        self.assertEqual(encoded_cs, attr['values'][0])
                         clearance_sponsor_found = True
 
-        assert clearance_sponsor_found
+        self.assertTrue(clearance_sponsor_found)
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.cert_pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         clearance_sponsor_found = False
+
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] == rfc5280.id_ce_subjectDirectoryAttributes:
-                assert extn['extnID'] in rfc5280.certificateExtensionsMap.keys()
-                ev, rest = der_decode(extn['extnValue'],
+                self.assertIn(extn['extnID'], rfc5280.certificateExtensionsMap)
+
+                ev, rest = der_decoder(
+                    extn['extnValue'],
                     asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']],
                     decodeOpenTypes=True)
-                assert not rest
-                assert ev.prettyPrint()
-                assert der_encode(ev) == extn['extnValue']
+
+                self.assertFalse(rest)
+                self.assertTrue(ev.prettyPrint())
+                self.assertEqual(extn['extnValue'], der_encoder(ev))
 
                 for attr in ev:
                     if attr['type'] == rfc5917.id_clearanceSponsor:
                         hrd = u'Human Resources Department'
-                        assert attr['values'][0]['utf8String'] == hrd
+
+                        self.assertEqual(hrd, attr['values'][0]['utf8String'])
+
                         clearance_sponsor_found = True
 
-        assert clearance_sponsor_found
+        self.assertTrue(clearance_sponsor_found)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

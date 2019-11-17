@@ -7,8 +7,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der import decoder as der_decoder
-from pyasn1.codec.der import encoder as der_encoder
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc2459
@@ -41,21 +41,22 @@ PhmcGcwTTYJBtYze4D1gCCAPRX5ron+jjBXu
 
         substrate = pem.readBase64fromText(self.pem_text)
 
-        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(der_encoder(asn1Object), substrate)
 
     def testDerCodecDecodeOpenTypes(self):
 
         substrate = pem.readBase64fromText(self.pem_text)
 
-        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
 
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(der_encoder(asn1Object), substrate)
 
 
 class CertificateListTestCase(unittest.TestCase):
@@ -77,21 +78,22 @@ vjnIhxTFoCb5vA==
 
         substrate = pem.readBase64fromText(self.pem_text)
 
-        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(der_encoder(asn1Object), substrate)
 
     def testDerCodecDecodeOpenTypes(self):
 
         substrate = pem.readBase64fromText(self.pem_text)
 
-        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
 
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(der_encoder(asn1Object), substrate)
 
 
 class DSAPrivateKeyTestCase(unittest.TestCase):
@@ -115,21 +117,22 @@ INow2I3/ks+0MxDabTY=
 
         substrate = pem.readBase64fromText(self.pem_text)
 
-        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
     def testDerCodecDecodeOpenTypes(self):
 
         substrate = pem.readBase64fromText(self.pem_text)
 
-        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
 
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

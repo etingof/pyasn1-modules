@@ -9,8 +9,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1.type import univ
 
 from pyasn1_modules import pem
@@ -54,36 +54,41 @@ M2jlVZ6qW8swC53HD79oRIGXi1FK
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.rsa_cert_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         spki_a = asn1Object['tbsCertificate']['subjectPublicKeyInfo']['algorithm']
-        assert spki_a['algorithm'] == rfc3279.rsaEncryption
+
+        self.assertEqual(rfc3279.rsaEncryption, spki_a['algorithm'])
 
         spki_pk = asn1Object['tbsCertificate']['subjectPublicKeyInfo']['subjectPublicKey'].asOctets()
-        pk, rest = der_decode(spki_pk, asn1Spec=rfc3279.RSAPublicKey())
-        assert not rest
-        assert pk.prettyPrint()
-        assert der_encode(pk) == spki_pk
-        assert pk['publicExponent'] == 65537
+        pk, rest = der_decoder(spki_pk, asn1Spec=rfc3279.RSAPublicKey())
 
-        assert asn1Object['tbsCertificate']['signature']['algorithm'] == rfc3279.sha1WithRSAEncryption
-        assert asn1Object['signatureAlgorithm']['algorithm'] == rfc3279.sha1WithRSAEncryption
+        self.assertFalse(rest)
+        self.assertTrue(pk.prettyPrint())
+        self.assertEqual(spki_pk, der_encoder(pk))
+        self.assertEqual(65537, pk['publicExponent'])
+        self.assertEqual(rfc3279.sha1WithRSAEncryption,
+                         asn1Object['tbsCertificate']['signature']['algorithm'])
+        self.assertEqual(rfc3279.sha1WithRSAEncryption,
+                         asn1Object['signatureAlgorithm']['algorithm'])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.rsa_cert_pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         spki_a = asn1Object['tbsCertificate']['subjectPublicKeyInfo']['algorithm']
-        assert spki_a['algorithm'] == rfc3279.rsaEncryption
-        assert spki_a['parameters'] == univ.Null("")
+
+        self.assertEqual(rfc3279.rsaEncryption, spki_a['algorithm'])
+        self.assertEqual(univ.Null(""), spki_a['parameters'])
 
 
 class ECCertificateTestCase(unittest.TestCase):
@@ -115,34 +120,38 @@ Ea8/B6hPatJ0ES8q/HO3X8IVQwVs1n3aAr0im0/T+Xc=
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.ec_cert_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         spki_a = asn1Object['tbsCertificate']['subjectPublicKeyInfo']['algorithm']
-        assert spki_a['algorithm'] == rfc3279.id_ecPublicKey
 
-        spki_a_p, rest = der_decode(spki_a['parameters'],
-            asn1Spec=rfc3279.EcpkParameters())
-        assert not rest
-        assert spki_a_p.prettyPrint()
-        assert der_encode(spki_a_p) == spki_a['parameters']
-        assert spki_a_p['namedCurve'] == univ.ObjectIdentifier('1.3.132.0.34')
+        self.assertEqual(rfc3279.id_ecPublicKey, spki_a['algorithm'])
+
+        spki_a_p, rest = der_decoder(
+            spki_a['parameters'], asn1Spec=rfc3279.EcpkParameters())
+
+        self.assertFalse(rest)
+        self.assertTrue(spki_a_p.prettyPrint())
+        self.assertEqual(spki_a['parameters'], der_encoder(spki_a_p))
+        self.assertEqual(univ.ObjectIdentifier('1.3.132.0.34'), spki_a_p['namedCurve'])
 
     def testOpenTypes(self):
-        asn1Spec = rfc5280.Certificate()
         substrate = pem.readBase64fromText(self.ec_cert_pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         spki_a = asn1Object['tbsCertificate']['subjectPublicKeyInfo']['algorithm']
-        assert spki_a['algorithm'] == rfc3279.id_ecPublicKey
-        assert spki_a['parameters']['namedCurve'] == univ.ObjectIdentifier('1.3.132.0.34')
+
+        self.assertEqual(rfc3279.id_ecPublicKey, spki_a['algorithm'])
+        self.assertEqual(
+            univ.ObjectIdentifier('1.3.132.0.34'), spki_a['parameters']['namedCurve'])
 
 
 class DSACertificateTestCase(unittest.TestCase):
@@ -174,43 +183,51 @@ pNqdXqZZGESXy1MT1aBc4ynPGLFUr2r7cPY=
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.dsa_cert_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         spki_a = asn1Object['tbsCertificate']['subjectPublicKeyInfo']['algorithm']
-        assert spki_a['algorithm'] == rfc3279.id_dsa
 
-        spki_a_p, rest = der_decode(spki_a['parameters'],
-            asn1Spec=rfc3279.Dss_Parms())
-        assert not rest
-        assert spki_a_p.prettyPrint()
-        assert der_encode(spki_a_p) == spki_a['parameters']
+        self.assertEqual(rfc3279.id_dsa, spki_a['algorithm'])
+
+        spki_a_p, rest = der_decoder(spki_a['parameters'],
+                                     asn1Spec=rfc3279.Dss_Parms())
+        self.assertFalse(rest)
+        self.assertTrue(spki_a_p.prettyPrint())
+        self.assertEqual(spki_a['parameters'], der_encoder(spki_a_p))
+
         q_value = 1260916123897116834511257683105158021801897369967
-        assert spki_a_p['q'] == q_value
 
-        sig_value, rest = der_decode(asn1Object['signature'].asOctets(),
-            asn1Spec=rfc3279.Dss_Sig_Value())
-        assert not rest
-        assert sig_value.prettyPrint()
-        assert der_encode(sig_value) == asn1Object['signature'].asOctets()
-        assert sig_value['r'].hasValue()
-        assert sig_value['s'].hasValue()
+        self.assertEqual(q_value, spki_a_p['q'])
+
+        sig_value, rest = der_decoder(
+            asn1Object['signature'].asOctets(), asn1Spec=rfc3279.Dss_Sig_Value())
+
+        self.assertFalse(rest)
+        self.assertTrue(sig_value.prettyPrint())
+        self.assertEqual(asn1Object['signature'].asOctets(), der_encoder(sig_value))
+        self.assertTrue(sig_value['r'].hasValue())
+        self.assertTrue(sig_value['s'].hasValue())
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.dsa_cert_pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         spki_a = asn1Object['tbsCertificate']['subjectPublicKeyInfo']['algorithm']
-        assert spki_a['algorithm'] == rfc3279.id_dsa
+
+        self.assertEqual(rfc3279.id_dsa, spki_a['algorithm'])
+
         q_value = 1260916123897116834511257683105158021801897369967
-        assert spki_a['parameters']['q'] == q_value
+
+        self.assertEqual(q_value, spki_a['parameters']['q'])
 
 
 class KEACertificateTestCase(unittest.TestCase):
@@ -235,49 +252,56 @@ TPnJ5Wym0hv2fOpnPPsWTgqvLFYfX27GGTquuOd/6A==
         self.asn1Spec = rfc5280.Certificate()
 
     def testDerCodec(self):
-        asn1Spec = rfc5280.Certificate()
         substrate = pem.readBase64fromText(self.kea_cert_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         spki_a = asn1Object['tbsCertificate']['subjectPublicKeyInfo']['algorithm']
-        assert spki_a['algorithm'] == rfc3279.id_keyExchangeAlgorithm
 
-        spki_a_p, rest = der_decode(spki_a['parameters'],
-            asn1Spec=rfc3279.KEA_Parms_Id())
-        assert not rest
-        assert spki_a_p.prettyPrint()
-        assert der_encode(spki_a_p) == spki_a['parameters']
-        assert spki_a_p == univ.OctetString(hexValue='5cf8f127e6569d6d88b3')
+        self.assertEqual(rfc3279.id_keyExchangeAlgorithm, spki_a['algorithm'])
 
-        assert asn1Object['tbsCertificate']['signature']['algorithm'] == rfc3279.id_dsa_with_sha1
-        assert asn1Object['signatureAlgorithm']['algorithm'] == rfc3279.id_dsa_with_sha1
+        spki_a_p, rest = der_decoder(spki_a['parameters'],
+                                     asn1Spec=rfc3279.KEA_Parms_Id())
+        self.assertFalse(rest)
+        self.assertTrue(spki_a_p.prettyPrint())
 
-        sig_value, rest = der_decode(asn1Object['signature'].asOctets(),
-            asn1Spec=rfc3279.Dss_Sig_Value())
-        assert not rest
-        assert sig_value.prettyPrint()
-        assert der_encode(sig_value) == asn1Object['signature'].asOctets()
-        assert sig_value['r'].hasValue()
-        assert sig_value['s'].hasValue()
+        self.assertEqual(spki_a['parameters'], der_encoder(spki_a_p))
+        self.assertEqual(univ.OctetString(hexValue='5cf8f127e6569d6d88b3'), spki_a_p)
+        self.assertEqual(
+            rfc3279.id_dsa_with_sha1, asn1Object['tbsCertificate']['signature']['algorithm'])
+        self.assertEqual(
+            rfc3279.id_dsa_with_sha1, asn1Object['signatureAlgorithm']['algorithm'])
+
+        sig_value, rest = der_decoder(asn1Object['signature'].asOctets(),
+                                      asn1Spec=rfc3279.Dss_Sig_Value())
+        self.assertFalse(rest)
+        self.assertTrue(sig_value.prettyPrint())
+        self.assertEqual(asn1Object['signature'].asOctets(), der_encoder(sig_value))
+        self.assertTrue(sig_value['r'].hasValue())
+        self.assertTrue(sig_value['s'].hasValue())
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.kea_cert_pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         spki_a = asn1Object['tbsCertificate']['subjectPublicKeyInfo']['algorithm']
-        assert spki_a['algorithm'] == rfc3279.id_keyExchangeAlgorithm
-        assert spki_a['parameters'] == univ.OctetString(hexValue='5cf8f127e6569d6d88b3')
 
-        assert asn1Object['tbsCertificate']['signature']['algorithm'] == rfc3279.id_dsa_with_sha1
-        assert asn1Object['signatureAlgorithm']['algorithm'] == rfc3279.id_dsa_with_sha1
+        self.assertEqual(rfc3279.id_keyExchangeAlgorithm, spki_a['algorithm'])
+        self.assertEqual(
+            univ.OctetString(hexValue='5cf8f127e6569d6d88b3'), spki_a['parameters'])
+
+        self.assertEqual(rfc3279.id_dsa_with_sha1,
+                         asn1Object['tbsCertificate']['signature']['algorithm'])
+        self.assertEqual(
+            rfc3279.id_dsa_with_sha1, asn1Object['signatureAlgorithm']['algorithm'])
 
 
 class DHCertificateTestCase(unittest.TestCase):
@@ -315,35 +339,44 @@ iPEBA+EDHjk=
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.dh_cert_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         spki_a = asn1Object['tbsCertificate']['subjectPublicKeyInfo']['algorithm']
-        assert spki_a['algorithm'] == rfc3279.dhpublicnumber
 
-        spki_a_p, rest = der_decode(spki_a['parameters'],
-            asn1Spec=rfc3279.DomainParameters())
-        assert not rest
-        assert spki_a_p.prettyPrint()
-        assert der_encode(spki_a_p) == spki_a['parameters']
+        self.assertEqual(rfc3279.dhpublicnumber, spki_a['algorithm'])
+
+        spki_a_p, rest = der_decoder(
+            spki_a['parameters'], asn1Spec=rfc3279.DomainParameters())
+
+        self.assertFalse(rest)
+        self.assertTrue(spki_a_p.prettyPrint())
+        self.assertEqual(spki_a['parameters'], der_encoder(spki_a_p))
+
         q_value = 65838278260281264030127352144753816831178774189428428256716126077244217603537
-        assert spki_a_p['q'] == q_value
+
+        self.assertEqual(q_value, spki_a_p['q'])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.dh_cert_pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate,
+                                       asn1Spec=self.asn1Spec,
+                                       decodeOpenTypes=True)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         spki_a = asn1Object['tbsCertificate']['subjectPublicKeyInfo']['algorithm']
-        assert spki_a['algorithm'] == rfc3279.dhpublicnumber
+
+        self.assertEqual(rfc3279.dhpublicnumber, spki_a['algorithm'])
+
         q_value = 65838278260281264030127352144753816831178774189428428256716126077244217603537
-        assert spki_a['parameters']['q'] == q_value
+
+        self.assertEqual(q_value, spki_a['parameters']['q'])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

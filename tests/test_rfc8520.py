@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5280
@@ -53,48 +53,59 @@ izaUuU1EEwgOMELjeFL62Ssvq8X+x6hZFCLygI7GNeitlblNhCXhFFurqMs=
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.mud_cert_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        extn_list = [ ]
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+
+        extn_list = []
         for extn in asn1Object['tbsCertificate']['extensions']:
             extn_list.append(extn['extnID'])
 
             if extn['extnID'] == rfc8520.id_pe_mudsigner:
-                mudsigner, rest = der_decode(extn['extnValue'], rfc8520.MUDsignerSyntax())
-                assert der_encode(mudsigner) == extn['extnValue']
+                mudsigner, rest = der_decoder(
+                    extn['extnValue'], rfc8520.MUDsignerSyntax())
+
+                self.assertEqual(extn['extnValue'], der_encoder(mudsigner))
 
                 c = rfc5280.X520countryName(value="CH")
-                assert mudsigner[0][0][0]['value'] == der_encode(c)
+
+                self.assertEqual(mudsigner[0][0][0]['value'], der_encoder(c))
+
                 e = rfc5280.EmailAddress(value="ascertia@ofcourseimright.com")
-                assert mudsigner[0][1][0]['value'] == der_encode(e)
+
+                self.assertEqual(mudsigner[0][1][0]['value'], der_encoder(e))
+
                 cn = rfc5280.X520CommonName()
                 cn['printableString'] = "Eliot Lear"
-                assert mudsigner[0][2][0]['value'] == der_encode(cn)
+
+                self.assertEqual(mudsigner[0][2][0]['value'], der_encoder(cn))
 
             if extn['extnID'] == rfc8520.id_pe_mud_url:
-                mudurl, rest = der_decode(extn['extnValue'], rfc8520.MUDURLSyntax())
-                assert der_encode(mudurl) == extn['extnValue']
+                mudurl, rest = der_decoder(
+                    extn['extnValue'], rfc8520.MUDURLSyntax())
 
-                assert mudurl[-5:] == ".json"
+                self.assertEqual(extn['extnValue'], der_encoder(mudurl))
+                self.assertEqual(".json", mudurl[-5:])
 
-        assert rfc8520.id_pe_mudsigner in extn_list
-        assert rfc8520.id_pe_mud_url in extn_list
+        self.assertIn(rfc8520.id_pe_mudsigner, extn_list)
+        self.assertIn(rfc8520.id_pe_mud_url, extn_list)
 
     def testExtensionsMap(self):
         substrate = pem.readBase64fromText(self.mud_cert_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
-                extnValue, rest = der_decode(extn['extnValue'],
+                extnValue, rest = der_decoder(
+                    extn['extnValue'],
                     asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-                assert der_encode(extnValue) == extn['extnValue']
+                self.assertEqual(extn['extnValue'], der_encoder(extnValue))
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

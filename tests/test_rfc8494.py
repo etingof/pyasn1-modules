@@ -7,8 +7,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc8494
@@ -31,15 +31,21 @@ EiIPVQPtvBuLBxjW5qx3TbXXo6vHJ1OhhLY=
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        assert asn1Object['compressionAlgorithm']['algorithmID-ShortForm'] == 0
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+
+        self.assertEqual(
+            0, asn1Object['compressionAlgorithm']['algorithmID-ShortForm'])
+
         cci = asn1Object['compressedContentInfo']
-        assert cci['unnamed']['contentType-ShortForm'] == 25
-        assert cci['compressedContent'].prettyPrint()[:12] == '0x789c6d8fd1'
+
+        self.assertEqual(
+            25, cci['unnamed']['contentType-ShortForm'])
+        self.assertEqual(
+            '0x789c6d8fd1', cci['compressedContent'].prettyPrint()[:12])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

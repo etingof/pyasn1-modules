@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5652
@@ -168,22 +168,24 @@ dZlmZDkyeXJLpkNjRAsG6V82raZd9g==
         oids = [ ]
         for pem_text in self.pem_text_list:
             substrate = pem.readBase64fromText(pem_text)
-            asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-            assert not rest
-            assert asn1Object.prettyPrint()
-            assert der_encode(asn1Object) == substrate
+            asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-            assert asn1Object['contentType'] == rfc5652.id_signedData
-            sd, rest = der_decode(asn1Object['content'], asn1Spec=rfc5652.SignedData())
-            assert not rest
-            assert sd.prettyPrint()
-            assert der_encode(sd) == asn1Object['content']
+            self.assertFalse(rest)
+            self.assertTrue(asn1Object.prettyPrint())
+            self.assertEqual(substrate, der_encoder(asn1Object))
+            self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
+
+            sd, rest = der_decoder(asn1Object['content'], asn1Spec=rfc5652.SignedData())
+
+            self.assertFalse(rest)
+            self.assertTrue(sd.prettyPrint())
+            self.assertEqual(asn1Object['content'], der_encoder(sd))
 
             oids.append(sd['encapContentInfo']['eContentType'])
 
-        assert rfc8358.id_ct_asciiTextWithCRLF in oids
-        assert rfc8358.id_ct_pdf in oids
-        assert rfc8358.id_ct_xml in oids
+        self.assertIn(rfc8358.id_ct_asciiTextWithCRLF, oids)
+        self.assertIn(rfc8358.id_ct_pdf, oids)
+        self.assertIn(rfc8358.id_ct_xml, oids)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

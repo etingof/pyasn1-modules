@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5280
@@ -38,27 +38,32 @@ EIbVbg2xql
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode (substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        assert asn1Object['contentType'] == rfc5652.id_ct_authData
-        ad, rest = der_decode (asn1Object['content'], asn1Spec=rfc5652.AuthenticatedData())
-        assert not rest
-        assert ad.prettyPrint()
-        assert der_encode(ad) == asn1Object['content']
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertEqual(rfc5652.id_ct_authData, asn1Object['contentType'])
 
-        assert ad['version'] == 0
-        assert ad['digestAlgorithm']['algorithm'] == rfc6210.id_alg_MD5_XOR_EXPERIMENT
+        ad, rest = der_decoder(
+            asn1Object['content'], asn1Spec=rfc5652.AuthenticatedData())
 
-        mac_alg_p, rest = der_decode (ad['digestAlgorithm']['parameters'],
+        self.assertFalse(rest)
+        self.assertTrue(ad.prettyPrint())
+        self.assertEqual(asn1Object['content'], der_encoder(ad))
+        self.assertEqual(0, ad['version'])
+        self.assertEqual(
+            rfc6210.id_alg_MD5_XOR_EXPERIMENT, ad['digestAlgorithm']['algorithm'])
+
+        mac_alg_p, rest = der_decoder(
+            ad['digestAlgorithm']['parameters'],
             asn1Spec=rfc5280.algorithmIdentifierMap[ad['digestAlgorithm']['algorithm']])
-        assert not rest
-        assert mac_alg_p.prettyPrint()
-        assert der_encode(mac_alg_p) == ad['digestAlgorithm']['parameters']
 
-        assert mac_alg_p.prettyPrint()[:10] == "0x01020304"
+        self.assertFalse(rest)
+        self.assertTrue(mac_alg_p.prettyPrint())
+        self.assertEqual(
+            ad['digestAlgorithm']['parameters'], der_encoder(mac_alg_p))
+        self.assertEqual("0x01020304", mac_alg_p.prettyPrint()[:10])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

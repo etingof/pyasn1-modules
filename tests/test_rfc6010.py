@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5280
@@ -24,19 +24,23 @@ class UnconstrainedCCCExtensionTestCase(unittest.TestCase):
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.unconstrained_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        assert asn1Object['extnID'] == rfc6010.id_pe_cmsContentConstraints
-        evalue, rest = der_decode(asn1Object['extnValue'],
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertEqual(
+            rfc6010.id_pe_cmsContentConstraints, asn1Object['extnID'])
+
+        evalue, rest = der_decoder(
+            asn1Object['extnValue'],
             asn1Spec=rfc6010.CMSContentConstraints())
-        assert not rest
-        assert evalue.prettyPrint()
-        assert der_encode(evalue) == asn1Object['extnValue']
 
-        assert evalue[0]['contentType'] == rfc6010.id_ct_anyContentType
+        self.assertFalse(rest)
+        self.assertTrue(evalue.prettyPrint())
+        self.assertEqual(asn1Object['extnValue'], der_encoder(evalue))
+        self.assertEqual(
+            rfc6010.id_ct_anyContentType, evalue[0]['contentType'])
 
 
 class ConstrainedCCCExtensionTestCase(unittest.TestCase):
@@ -52,21 +56,26 @@ KoZIhvcNAQkQDAsxEQwPa3RhLmV4YW1wbGUuY29tMA4GCSqGSIb3DQEHAQoBAQ==
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.constrained_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        assert asn1Object['extnID'] == rfc6010.id_pe_cmsContentConstraints
-        evalue, rest = der_decode(asn1Object['extnValue'],
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertEqual(
+            rfc6010.id_pe_cmsContentConstraints, asn1Object['extnID'])
+
+        evalue, rest = der_decoder(
+            asn1Object['extnValue'],
             asn1Spec=rfc6010.CMSContentConstraints())
-        assert not rest
-        assert evalue.prettyPrint()
-        assert der_encode(evalue) == asn1Object['extnValue']
+
+        self.assertFalse(rest)
+        self.assertTrue(evalue.prettyPrint())
+        self.assertEqual(asn1Object['extnValue'], der_encoder(evalue))
 
         constraint_count = 0
         attribute_count = 0
         cannot_count = 0
+
         for ccc in evalue:
             constraint_count += 1
             if ccc['canSource'] == 1:
@@ -74,14 +83,16 @@ KoZIhvcNAQkQDAsxEQwPa3RhLmV4YW1wbGUuY29tMA4GCSqGSIb3DQEHAQoBAQ==
             if ccc['attrConstraints'].hasValue():
                 for attr in ccc['attrConstraints']:
                     attribute_count += 1
-        assert constraint_count == 4
-        assert attribute_count == 3
-        assert cannot_count == 1
+
+        self.assertEqual(4, constraint_count)
+        self.assertEqual(3, attribute_count)
+        self.assertEqual(1, cannot_count)
 
     def testExtensionsMap(self):
         substrate = pem.readBase64fromText(self.constrained_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert asn1Object['extnID'] in rfc5280.certificateExtensionsMap.keys()
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertIn(asn1Object['extnID'], rfc5280.certificateExtensionsMap)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

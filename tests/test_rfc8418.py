@@ -24,12 +24,16 @@ class KeyAgreeAlgTestCase(unittest.TestCase):
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.key_agree_alg_id_pem_text)
-        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert asn1Object['algorithm'] == rfc8418.dhSinglePass_stdDH_hkdf_sha384_scheme
-        assert asn1Object['parameters'].isValue
-        assert der_encoder.encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder.decode(
+            substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(
+            rfc8418.dhSinglePass_stdDH_hkdf_sha384_scheme,
+            asn1Object['algorithm'])
+        self.assertTrue(asn1Object['parameters'].isValue)
+        self.assertEqual(substrate, der_encoder.encode(asn1Object))
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

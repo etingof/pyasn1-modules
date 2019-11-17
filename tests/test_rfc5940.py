@@ -7,8 +7,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc2560
@@ -67,55 +67,71 @@ ttTMEpl2prH8bbwo1g==
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
 
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
 
-        assert asn1Object['contentType'] == rfc5652.id_signedData
-        sd, rest = der_decode(asn1Object['content'],
-            asn1Spec=rfc5652.SignedData())
-        assert sd.prettyPrint()
+        sd, rest = der_decoder(
+            asn1Object['content'], asn1Spec=rfc5652.SignedData())
 
-        assert sd['encapContentInfo']['eContentType'] == rfc5652.id_data
-        assert sd['encapContentInfo']['eContent']
+        self.assertTrue(sd.prettyPrint())
+
+        self.assertEqual(
+            rfc5652.id_data, sd['encapContentInfo']['eContentType'])
+        self.assertTrue(sd['encapContentInfo']['eContent'])
+
         v2 = rfc5280.Version(value='v2')
-        assert sd['crls'][0]['crl']['tbsCertList']['version'] == v2
-        ocspr_oid = rfc5940.id_ri_ocsp_response
-        assert sd['crls'][1]['other']['otherRevInfoFormat'] == ocspr_oid
 
-        ocspr, rest = der_decode(sd['crls'][1]['other']['otherRevInfo'],
+        self.assertEqual(v2, sd['crls'][0]['crl']['tbsCertList']['version'])
+
+        ocspr_oid = rfc5940.id_ri_ocsp_response
+
+        self.assertEqual(ocspr_oid, sd['crls'][1]['other']['otherRevInfoFormat'])
+
+        ocspr, rest = der_decoder(
+            sd['crls'][1]['other']['otherRevInfo'],
             asn1Spec=rfc5940.OCSPResponse())
-        assert ocspr.prettyPrint()
+
+        self.assertTrue(ocspr.prettyPrint())
+
         success = rfc2560.OCSPResponseStatus(value='successful')
-        assert ocspr['responseStatus'] == success
+
+        self.assertEqual(success, ocspr['responseStatus'])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
 
-        assert asn1Object['contentType'] == rfc5652.id_signedData
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+
+        self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
+
         sd_eci = asn1Object['content']['encapContentInfo']
-        assert sd_eci['eContentType'] == rfc5652.id_data
-        assert sd_eci['eContent'].hasValue()
+
+        self.assertEqual(rfc5652.id_data, sd_eci['eContentType'])
+        self.assertTrue(sd_eci['eContent'].hasValue())
 
         for ri in asn1Object['content']['crls']:
             if ri.getName() == 'crl':
                 v2 = rfc5280.Version(value='v2')
-                assert ri['crl']['tbsCertList']['version'] == v2
+                self.assertEqual(v2, ri['crl']['tbsCertList']['version'])
+
             if ri.getName() == 'other':
                 ori = ri['other']
                 ocspr_oid = rfc5940.id_ri_ocsp_response
-                assert ori['otherRevInfoFormat'] == ocspr_oid
+
+                self.assertEqual(ocspr_oid, ori['otherRevInfoFormat'])
+
                 ocspr_status = ori['otherRevInfo']['responseStatus']
                 success = rfc2560.OCSPResponseStatus(value='successful')
-                assert ocspr_status == success
+
+                self.assertEqual(success, ocspr_status)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

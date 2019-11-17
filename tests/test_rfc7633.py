@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5280
@@ -49,26 +49,28 @@ AOQSxhs011emVxyBIXT0ZGbmBY8LFRh6eGIOCAJbkM5T
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        extn_list = [ ]
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+
+        extn_list = []
+
         for extn in asn1Object['tbsCertificate']['extensions']:
             extn_list.append(extn['extnID'])
             if extn['extnID'] == rfc7633.id_pe_tlsfeature:
                 s = extn['extnValue']
-                features, rest = der_decode(s,
-                    rfc5280.certificateExtensionsMap[extn['extnID']])
-                assert not rest
-                assert features.prettyPrint()
-                assert s == der_encode(features)
+                features, rest = der_decoder(
+                    s, rfc5280.certificateExtensionsMap[extn['extnID']])
 
-                assert len(features) == 1
-                assert features[0] == 5
+                self.assertFalse(rest)
+                self.assertTrue(features.prettyPrint())
+                self.assertEqual(s, der_encoder(features))
+                self.assertEqual(1, len(features))
+                self.assertEqual(5, features[0])
 
-        assert rfc7633.id_pe_tlsfeature in extn_list
+        self.assertIn(rfc7633.id_pe_tlsfeature, extn_list)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
