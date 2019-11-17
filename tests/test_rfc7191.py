@@ -7,20 +7,14 @@
 #
 
 import sys
+import unittest
 
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
 
-from pyasn1.type import univ
-
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5652
 from pyasn1_modules import rfc7191
-
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
 
 
 class ReceiptRequestTestCase(unittest.TestCase):
@@ -89,7 +83,6 @@ goRV+bq4fdgOOj25JFqa80xnXGtQqjm/7NSII5SbdJk+DT7KCkSbkElkbgQ=
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.message1_pem_text)
-        rfc5652.cmsAttributesMap.update(rfc7191.cmsAttributesMapUpdate)
         asn1Object, rest = der_decode (substrate,
                                        asn1Spec=self.asn1Spec,
                                        decodeOpenTypes=True)
@@ -165,8 +158,6 @@ bUcOYuCdivgxVuhlAgIxAPR9JavxziwCbVyBUWOAiKKYfglTgG3AwNmrKDj0NtXUQ9qDmGAc
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.message2_pem_text)
-        rfc5652.cmsContentTypesMap.update(rfc7191.cmsContentTypesMapUpdate)
-        rfc5652.cmsAttributesMap.update(rfc7191.cmsAttributesMapUpdate)
         asn1Object, rest = der_decode (substrate,
                                        asn1Spec=self.asn1Spec,
                                        decodeOpenTypes=True)
@@ -195,6 +186,7 @@ bUcOYuCdivgxVuhlAgIxAPR9JavxziwCbVyBUWOAiKKYfglTgG3AwNmrKDj0NtXUQ9qDmGAc
         package_id_pem_text = "J7icVjsWIlGdF4cceb+siG3f+D0="
         package_id = pem.readBase64fromText(package_id_pem_text)
         assert receipt['receiptOf']['pkgID'] == package_id
+
 
 class ErrorTestCase(unittest.TestCase):
     message3_pem_text = """\
@@ -254,8 +246,6 @@ iNF8uKtW/lk0AjA7z2q40N0lamXkSU7ECasiWOYV1X4cWGiQwMZDKknBPDqXqB6Es6p4J+qe
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.message3_pem_text)
-        rfc5652.cmsContentTypesMap.update(rfc7191.cmsContentTypesMapUpdate)
-        rfc5652.cmsAttributesMap.update(rfc7191.cmsAttributesMapUpdate)
         asn1Object, rest = der_decode (substrate,
                                        asn1Spec=self.asn1Spec,
                                        decodeOpenTypes=True)
@@ -290,7 +280,5 @@ iNF8uKtW/lk0AjA7z2q40N0lamXkSU7ECasiWOYV1X4cWGiQwMZDKknBPDqXqB6Es6p4J+qe
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
 if __name__ == '__main__':
-    import sys
-
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

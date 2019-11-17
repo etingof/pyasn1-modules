@@ -4,11 +4,18 @@
 # Copyright (c) 2017, Danielle Madeley <danielle@madeley.id.au>
 # License: http://snmplabs.com/pyasn1/license.html
 #
-# Derived from RFC 3279
+# Modified by Russ Housley to add maps for use with opentypes.
+#
+# Algorithms and Identifiers for Internet X.509 Certificates and CRLs
+#
+# Derived from RFC 3279:
+# https://www.rfc-editor.org/rfc/rfc3279.txt
 #
 from pyasn1.type import namedtype
 from pyasn1.type import namedval
 from pyasn1.type import univ
+
+from pyasn1_modules import rfc5280
 
 
 def _OID(*components):
@@ -231,3 +238,23 @@ prime239v1 = _OID(primeCurve, 4)
 prime239v2 = _OID(primeCurve, 5)
 prime239v3 = _OID(primeCurve, 6)
 prime256v1 = _OID(primeCurve, 7)
+
+
+# Map of Algorithm Identifier OIDs to Parameters added to the
+# ones in rfc5280.py.  Do not add OIDs with absent paramaters.
+
+_algorithmIdentifierMapUpdate = {
+    md2: univ.Null(""),
+    md5: univ.Null(""),
+    id_sha1: univ.Null(""),
+    id_dsa: Dss_Parms(),
+    rsaEncryption: univ.Null(""),
+    md2WithRSAEncryption: univ.Null(""),
+    md5WithRSAEncryption: univ.Null(""),
+    sha1WithRSAEncryption: univ.Null(""),
+    dhpublicnumber: DomainParameters(),
+    id_keyExchangeAlgorithm: KEA_Parms_Id(),
+    id_ecPublicKey: EcpkParameters(),
+}
+
+rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)

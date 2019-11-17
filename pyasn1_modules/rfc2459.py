@@ -1,6 +1,9 @@
 #
 # This file is part of pyasn1-modules software.
 #
+# Updated by Russ Housley to resolve the TODO regarding the Certificate
+#   Policies Certificate Extension.
+#
 # Copyright (c) 2005-2019, Ilya Etingof <etingof@gmail.com>
 # License: http://snmplabs.com/pyasn1/license.html
 #
@@ -1312,8 +1315,7 @@ _certificateExtensionsMapUpdate = {
     id_ce_subjectKeyIdentifier: SubjectKeyIdentifier(),
     id_ce_keyUsage: KeyUsage(),
     id_ce_privateKeyUsagePeriod: PrivateKeyUsagePeriod(),
-# TODO
-#    id_ce_certificatePolicies: PolicyInformation(),  # could be a sequence of concat'ed objects?
+    id_ce_certificatePolicies: CertificatePolicies(),
     id_ce_policyMappings: PolicyMappings(),
     id_ce_subjectAltName: SubjectAltName(),
     id_ce_issuerAltName: IssuerAltName(),

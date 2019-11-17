@@ -7,9 +7,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der import decoder as der_decoder
-from pyasn1.codec.der import encoder as der_encoder
-
+from pyasn1.codec.der.decoder import decode as der_decode
+from pyasn1.codec.der.encoder import encode as der_encode
 from pyasn1.type import univ
 
 from pyasn1_modules import pem
@@ -43,11 +42,11 @@ PhmcGcwTTYJBtYze4D1gCCAPRX5ron+jjBXu
 
         substrate = pem.readBase64fromText(self.pem_text)
 
-        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
 
         assert not rest
         assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
+        assert der_encode(asn1Object) == substrate
 
 
 class CertificateListTestCase(unittest.TestCase):
@@ -69,11 +68,11 @@ vjnIhxTFoCb5vA==
 
         substrate = pem.readBase64fromText(self.pem_text)
 
-        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
 
         assert not rest
         assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
+        assert der_encode(asn1Object) == substrate
 
 
 class CertificateOpenTypeTestCase(unittest.TestCase):
@@ -103,19 +102,25 @@ PhmcGcwTTYJBtYze4D1gCCAPRX5ron+jjBXu
 
         substrate = pem.readBase64fromText(self.pem_text)
 
-        algorithmIdentifierMapUpdate = {
+        openTypesMap = {
             univ.ObjectIdentifier('1.2.840.113549.1.1.1'): univ.Null(""),
             univ.ObjectIdentifier('1.2.840.113549.1.1.5'): univ.Null(""),
             univ.ObjectIdentifier('1.2.840.113549.1.1.11'): univ.Null(""),
         }
 
-        rfc5280.algorithmIdentifierMap.update(algorithmIdentifierMapUpdate)
-
-        asn1Object, rest = der_decoder.decode(substrate,
-            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+        asn1Object, rest = der_decode(substrate,
+            asn1Spec=self.asn1Spec,
+            openTypes=openTypesMap,
+            decodeOpenTypes=True)
         assert not rest
         assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
+        assert der_encode(asn1Object) == substrate
+
+        sig_alg = asn1Object['tbsCertificate']['signature']
+        assert sig_alg['parameters'] == univ.Null("")
+
+        spki_alg = asn1Object['tbsCertificate']['subjectPublicKeyInfo']['algorithm']
+        assert spki_alg['parameters'] == univ.Null("")
 
         for rdn in asn1Object['tbsCertificate']['subject']['rdnSequence']:
             for atv in rdn:
@@ -124,12 +129,6 @@ PhmcGcwTTYJBtYze4D1gCCAPRX5ron+jjBXu
                 else:
                     atv_ps = str(atv['value']['printableString'])
                     assert "valicert" in atv_ps.lower()
-
-        sig_alg = asn1Object['tbsCertificate']['signature']
-        assert sig_alg['parameters'] == univ.Null("")
-
-        spki_alg = asn1Object['tbsCertificate']['subjectPublicKeyInfo']['algorithm']
-        assert spki_alg['parameters'] == univ.Null("")
 
 
 class CertificateListOpenTypeTestCase(unittest.TestCase):
@@ -151,19 +150,22 @@ vjnIhxTFoCb5vA==
 
         substrate = pem.readBase64fromText(self.pem_text)
 
-        algorithmIdentifierMapUpdate = {
+        openTypesMap = {
             univ.ObjectIdentifier('1.2.840.113549.1.1.1'): univ.Null(""),
             univ.ObjectIdentifier('1.2.840.113549.1.1.5'): univ.Null(""),
             univ.ObjectIdentifier('1.2.840.113549.1.1.11'): univ.Null(""),
         }
 
-        rfc5280.algorithmIdentifierMap.update(algorithmIdentifierMapUpdate)
-
-        asn1Object, rest = der_decoder.decode(substrate,
-            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+        asn1Object, rest = der_decode(substrate,
+            asn1Spec=self.asn1Spec,
+            openTypes=openTypesMap,
+            decodeOpenTypes=True)
         assert not rest
         assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
+        assert der_encode(asn1Object) == substrate
+
+        sig_alg = asn1Object['tbsCertList']['signature']
+        assert sig_alg['parameters'] == univ.Null("")
 
         for rdn in asn1Object['tbsCertList']['issuer']['rdnSequence']:
             for atv in rdn:
@@ -174,29 +176,32 @@ vjnIhxTFoCb5vA==
                 else:
                     assert len(atv['value']['printableString']) > 9
 
+        crl_extn_count = 0
         for extn in asn1Object['tbsCertList']['crlExtensions']:
             if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
-                ev, rest = der_decoder.decode(extn['extnValue'],
+                ev, rest = der_decode(extn['extnValue'],
                     asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
                 assert not rest
                 assert ev.prettyPrint()
-                assert der_encoder.encode(ev) == extn['extnValue']
-
-        sig_alg = asn1Object['tbsCertList']['signature']
-        assert sig_alg['parameters'] == univ.Null("")
+                assert der_encode(ev) == extn['extnValue']
+                crl_extn_count += 1
+        assert crl_extn_count == 1
 
     def testExtensionsMap(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
         assert not rest
         assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
+        assert der_encode(asn1Object) == substrate
 
+        cert_extn_count = 0
         for extn in asn1Object['tbsCertList']['crlExtensions']:
             if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
-                extnValue, rest = der_decoder.decode(extn['extnValue'],
+                extnValue, rest = der_decode(extn['extnValue'],
                     asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-                assert der_encoder.encode(extnValue) == extn['extnValue']
+                assert der_encode(extnValue) == extn['extnValue']
+                cert_extn_count += 1
+        assert cert_extn_count == 1
 
 
 class ORAddressOpenTypeTestCase(unittest.TestCase):
@@ -209,14 +214,14 @@ FDASgAEBoQ0TC1N0ZXZlIEtpbGxl
         self.asn1Spec = rfc5280.ORAddress()
 
     def testDecodeOpenTypes(self):
-
         substrate = pem.readBase64fromText(self.oraddress_pem_text)
 
-        asn1Object, rest = der_decoder.decode(substrate,
-            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+        asn1Object, rest = der_decode(substrate,
+            asn1Spec=self.asn1Spec,
+            decodeOpenTypes=True)
         assert not rest
         assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
+        assert der_encode(asn1Object) == substrate
 
         ea0 = asn1Object['extension-attributes'][0]
         assert ea0['extension-attribute-type'] == rfc5280.common_name
@@ -226,7 +231,5 @@ FDASgAEBoQ0TC1N0ZXZlIEtpbGxl
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
 if __name__ == '__main__':
-    import sys
-
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

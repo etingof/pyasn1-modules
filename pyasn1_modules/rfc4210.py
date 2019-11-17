@@ -354,8 +354,12 @@ class RevRepContent(univ.Sequence):
                                              OPTIONAL
     """
     componentType = namedtype.NamedTypes(
-        namedtype.NamedType('status', PKIStatusInfo(
-            sizeSpec=constraint.ValueSizeConstraint(1, MAX))),
+        namedtype.NamedType(
+            'status', univ.SequenceOf(
+                componentType=PKIStatusInfo(),
+                sizeSpec=constraint.ValueSizeConstraint(1, MAX)
+            )
+        ),
         namedtype.OptionalNamedType(
             'revCerts', univ.SequenceOf(componentType=rfc2511.CertId()).subtype(
                 sizeSpec=constraint.ValueSizeConstraint(1, MAX),
@@ -739,11 +743,11 @@ class PKIHeader(univ.Sequence):
         namedtype.OptionalNamedType('generalInfo',
                                     univ.SequenceOf(
                                         componentType=InfoTypeAndValue().subtype(
-                                            sizeSpec=constraint.ValueSizeConstraint(1, MAX),
-                                            explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 8)
+                                            sizeSpec=constraint.ValueSizeConstraint(1, MAX)
                                         )
-                                    )
-                                    )
+                                    ).subtype(
+            explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 8))
+        )
     )
 
 

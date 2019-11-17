@@ -6,6 +6,8 @@
 # License: http://snmplabs.com/pyasn1/license.html
 #
 import sys
+import unittest
+
 
 doclines = """A collection of ASN.1-based protocols modules.
 
@@ -35,6 +37,7 @@ Programming Language :: Python :: 3.4
 Programming Language :: Python :: 3.5
 Programming Language :: Python :: 3.6
 Programming Language :: Python :: 3.7
+Programming Language :: Python :: 3.8
 Topic :: Communications
 Topic :: System :: Monitoring
 Topic :: System :: Networking :: Monitoring
@@ -64,7 +67,7 @@ try:
 
     params = {
         'zip_safe': True,
-        'install_requires': ['pyasn1>=0.4.6,<0.5.0']
+        'install_requires': ['pyasn1>=0.4.6,<0.6.0']
     }
 
 except ImportError:
@@ -76,7 +79,7 @@ except ImportError:
     from distutils.core import setup, Command
 
     params = {
-        'requires': ['pyasn1(>=0.4.6,<0.5.0)']
+        'requires': ['pyasn1(>=0.4.6,<0.6.0)']
     }
 
 params.update(
@@ -92,11 +95,8 @@ params.update(
      'python_requires': '>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
      'classifiers': [x for x in classifiers.split('\n') if x],
      'license': 'BSD-2-Clause',
-     'packages': ['pyasn1_modules']}
-)
-
-
-import unittest
+     'packages': ['pyasn1_modules'],
+     'python_requires': '>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*'})
 
 
 class PyTest(Command):

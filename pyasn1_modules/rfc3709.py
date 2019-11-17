@@ -21,6 +21,7 @@ from pyasn1.type import tag
 from pyasn1.type import univ
 
 from pyasn1_modules import rfc5280
+from pyasn1_modules import rfc6170
 
 MAX = float('inf')
 
@@ -162,6 +163,8 @@ id_logo_background = univ.ObjectIdentifier('1.3.6.1.5.5.7.20.2')
 
 id_logo_loyalty = univ.ObjectIdentifier('1.3.6.1.5.5.7.20.1')
 
+id_logo_certImage = rfc6170.id_logo_certImage
+
 
 class OtherLogotypeInfo(univ.Sequence):
     pass
@@ -194,9 +197,11 @@ LogotypeExtn.componentType = namedtype.NamedTypes(
 )
 
 
-# Map of Certificate Extension OIDs to Extensions
-# To be added to the ones that are in rfc5280.py
+# Map of Certificate Extension OIDs to Extensions added to the
+# ones that are in rfc5280.py
 
-certificateExtensionsMapUpdate = {
+_certificateExtensionsMapUpdate = {
     id_pe_logotype: LogotypeExtn(),
 }
+
+rfc5280.certificateExtensionsMap.update(_certificateExtensionsMapUpdate)

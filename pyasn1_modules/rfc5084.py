@@ -16,6 +16,8 @@ from pyasn1.type import constraint
 from pyasn1.type import namedtype
 from pyasn1.type import univ
 
+from pyasn1_modules import rfc5280
+
 
 def _OID(*components):
     output = []
@@ -78,3 +80,18 @@ id_aes192_GCM = _OID(aes, 26)
 id_aes256_CCM = _OID(aes, 47)
 
 id_aes256_GCM = _OID(aes, 46)
+
+
+# Map of Algorithm Identifier OIDs to Parameters is added to the
+# ones in rfc5280.py
+
+_algorithmIdentifierMapUpdate = {
+    id_aes128_CCM: CCMParameters(),
+    id_aes128_GCM: GCMParameters(),
+    id_aes192_CCM: CCMParameters(),
+    id_aes192_GCM: GCMParameters(),
+    id_aes256_CCM: CCMParameters(),
+    id_aes256_GCM: GCMParameters(),
+}
+
+rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)

@@ -16,6 +16,7 @@
 from pyasn1.type import univ, constraint, namedtype, namedval, tag
 
 from pyasn1_modules import rfc5280
+from pyasn1_modules import rfc5652
 
 
 MAX = float('inf')
@@ -49,7 +50,7 @@ class PrivateKey(univ.OctetString):
 
 
 class Attributes(univ.SetOf):
-    componentType = rfc5280.Attribute()
+    componentType = rfc5652.Attribute()
 
 
 class PublicKey(univ.BitString):
@@ -87,9 +88,11 @@ AsymmetricKeyPackage.componentType = OneAsymmetricKey()
 AsymmetricKeyPackage.sizeSpec=constraint.ValueSizeConstraint(1, MAX)
     
 
-# Map of Content Type OIDs to Content Types
-# To be added to the ones that are in rfc5652.py
+# Map of Content Type OIDs to Content Types is added to the
+# ones that are in rfc5652.py
 
-cmsContentTypesMapUpdate = {
+_cmsContentTypesMapUpdate = {
     id_ct_KP_aKeyPackage: AsymmetricKeyPackage(),
 }
+
+rfc5652.cmsContentTypesMap.update(_cmsContentTypesMapUpdate)

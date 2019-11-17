@@ -124,7 +124,5 @@ JA5RSwQoMDYTj2WrwtM/nsP12T39or4JRZhlLSM43IaTwEBtQw==
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
 if __name__ == '__main__':
-    import sys
-
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

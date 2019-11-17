@@ -5,16 +5,10 @@
 # License: http://snmplabs.com/pyasn1/license.html
 #
 import sys
+import unittest
 
 from pyasn1.compat.octets import ints2octs
-
 from pyasn1_modules import pem
-
-try:
-    import unittest2 as unittest
-
-except ImportError:
-    import unittest
 
 
 class PemTestCase(unittest.TestCase):
@@ -105,7 +99,5 @@ GGbx7DI=
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
 if __name__ == '__main__':
-    import sys
-
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

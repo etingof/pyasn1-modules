@@ -41,7 +41,8 @@ def _buildOid(*components):
     return univ.ObjectIdentifier(output)
 
 
-cmcControlAttributesMap = { }
+# Since CMS Attributes and CMC Controls both use 'attrType', one map is used 
+cmcControlAttributesMap = rfc5652.cmsAttributesMap
 
 
 class ChangeSubjectName(univ.Sequence):
@@ -615,10 +616,13 @@ _cmcControlAttributesMapUpdate = {
 cmcControlAttributesMap.update(_cmcControlAttributesMapUpdate)
 
 
-# Map of CMC Content Type OIDs to CMC Content Types
-# To be added to the ones that are in rfc5652.py
+# Map of CMC Content Type OIDs to CMC Content Types are added to
+# the ones that are in rfc5652.py
 
-cmsContentTypesMapUpdate = {
+_cmsContentTypesMapUpdate = {
     id_cct_PKIData: PKIData(),
     id_cct_PKIResponse: PKIResponse(),
 }
+
+rfc5652.cmsContentTypesMap.update(_cmsContentTypesMapUpdate)
+

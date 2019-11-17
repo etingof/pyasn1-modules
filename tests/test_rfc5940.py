@@ -5,22 +5,16 @@
 # License: http://snmplabs.com/pyasn1/license.html
 #
 import sys
+import unittest
 
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
-
-from pyasn1.type import univ
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc2560
 from pyasn1_modules import rfc5940
 from pyasn1_modules import rfc5652
 from pyasn1_modules import rfc5280
-
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
 
 
 class CRLandOCSPResponseTestCase(unittest.TestCase):
@@ -81,7 +75,7 @@ ttTMEpl2prH8bbwo1g==
 
         assert asn1Object['contentType'] == rfc5652.id_signedData
         sd, rest = der_decode(asn1Object['content'],
-                              asn1Spec=rfc5652.SignedData())
+            asn1Spec=rfc5652.SignedData())
         assert sd.prettyPrint()
 
         assert sd['encapContentInfo']['eContentType'] == rfc5652.id_data
@@ -92,18 +86,16 @@ ttTMEpl2prH8bbwo1g==
         assert sd['crls'][1]['other']['otherRevInfoFormat'] == ocspr_oid
 
         ocspr, rest = der_decode(sd['crls'][1]['other']['otherRevInfo'],
-                                 asn1Spec=rfc5940.OCSPResponse())
+            asn1Spec=rfc5940.OCSPResponse())
         assert ocspr.prettyPrint()
         success = rfc2560.OCSPResponseStatus(value='successful')
         assert ocspr['responseStatus'] == success
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
-
-        rfc5652.otherRevInfoFormatMap.update(rfc5940.otherRevInfoFormatMapUpdate)
         asn1Object, rest = der_decode(substrate,
-                                      asn1Spec=self.asn1Spec,
-                                      decodeOpenTypes=True)
+            asn1Spec=self.asn1Spec,
+            decodeOpenTypes=True)
         assert not rest
         assert asn1Object.prettyPrint()
         assert der_encode(asn1Object) == substrate
@@ -129,7 +121,5 @@ ttTMEpl2prH8bbwo1g==
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
 if __name__ == '__main__':
-    import sys
-
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

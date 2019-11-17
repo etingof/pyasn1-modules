@@ -5,23 +5,17 @@
 # Copyright (c) 2019, Vigil Security, LLC
 # License: http://snmplabs.com/pyasn1/license.html
 #
-
 import sys
+import unittest
 
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
-
 from pyasn1.compat.octets import str2octs
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc2634
 from pyasn1_modules import rfc4073
 from pyasn1_modules import rfc5652
-
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
 
 
 class ContentCollectionTestCase(unittest.TestCase):
@@ -83,8 +77,6 @@ buWO3egPDL8Kf7tBhzjIKLw=
     
             return asn1Object
 
-        rfc5652.cmsAttributesMap.update(rfc2634.ESSAttributeMap)
-        rfc5652.cmsContentTypesMap.update(rfc4073.cmsContentTypesMapUpdate)
         layers = rfc5652.cmsContentTypesMap
 
         getNextLayer = {
@@ -120,14 +112,10 @@ buWO3egPDL8Kf7tBhzjIKLw=
                 this_layer = getNextLayer[this_layer](asn1Object)
 
     def testOpenTypes(self):
-
         substrate = pem.readBase64fromText(self.pem_text)
-
-        rfc5652.cmsAttributesMap.update(rfc2634.ESSAttributeMap)
-        rfc5652.cmsContentTypesMap.update(rfc4073.cmsContentTypesMapUpdate)
         asn1Object, rest = der_decode(substrate,
-                                      asn1Spec=rfc5652.ContentInfo(),
-                                      decodeOpenTypes=True)
+            asn1Spec=rfc5652.ContentInfo(),
+            decodeOpenTypes=True)
         assert not rest
         assert asn1Object.prettyPrint()
         assert der_encode(asn1Object) == substrate
@@ -150,7 +138,5 @@ buWO3egPDL8Kf7tBhzjIKLw=
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
 if __name__ == '__main__':
-    import sys
-
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

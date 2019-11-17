@@ -1,8 +1,99 @@
 
-Revision 0.2.7, released XX-08-2019
+Revision 0.3.0, released XX-11-2019
 -----------------------------------
 
-No changes yet
+- Added support for Python 3.8.
+- Removed support for EOL Pythons 2.4, 2.5, 2.6, 3.2, 3.3 and 3.4.
+
+
+Revision 0.2.8, released 16-11-2019
+-----------------------------------
+
+- Improve test routines for modules that use certificate extensions
+- Improve test for RFC3709 with a real world certificate
+- Added RFC7633 providing TLS Features Certificate Extension
+- Added RFC7229 providing OIDs for Test Certificate Policies
+- Added tests for RFC3280, RFC3281, RFC3852, and RFC4211
+- Added RFC6960 providing Online Certificate Status Protocol (OCSP)
+- Added RFC6955 providing Diffie-Hellman Proof-of-Possession Algorithms
+- Updated the handling of maps for use with openType for RFC 3279
+- Added RFC6486 providing RPKI Manifests
+- Added RFC6487 providing Profile for X.509 PKIX Resource Certificates
+- Added RFC6170 providing Certificate Image in the Internet X.509 Public
+  Key Infrastructure, and import the object identifier into RFC3709.
+- Added RFC6187 providing Certificates for Secure Shell Authentication
+- Added RFC6482 providing RPKI Route Origin Authorizations (ROAs)
+- Added RFC6664 providing S/MIME Capabilities for Public Keys
+- Added RFC6120 providing Extensible Messaging and Presence Protocol
+  names in certificates
+- Added RFC4985 providing Subject Alternative Name for expression of
+  service names in certificates
+- Added RFC5924 providing Extended Key Usage for Session Initiation
+  Protocol (SIP) in X.509 certificates
+- Added RFC5916 providing Device Owner Attribute
+- Added RFC7508 providing Securing Header Fields with S/MIME
+- Update RFC8226 to use ComponentPresentConstraint() instead of the
+  previous work around
+- Add RFC2631 providing OtherInfo for Diffie-Hellman Key Agreement
+- Add RFC3114 providing test values for the S/MIME Security Label
+- Add RFC5755 providing Attribute Certificate Profile for Authorization
+- Add RFC5913 providing Clearance Attribute and Authority Clearance
+  Constraints Certificate Extension
+- Add RFC5917 providing Clearance Sponsor Attribute
+- Add RFC4043 providing Internet X.509 PKI Permanent Identifier
+- Add RFC7585 providing Network Access Identifier (NAI) Realm Name
+  for Certificates
+- Update RFC3770 to support openType for attributes and reported errata
+- Add RFC4334 providing Certificate Extensions and Attributes for
+  Authentication in PPP and Wireless LAN Networks
+
+Revision 0.2.7, released 09-10-2019
+-----------------------------------
+
+- Added maps for use with openType to RFC 3565
+- Added RFC2985 providing PKCS#9 Attributes
+- Added RFC3770 providing Certificate Extensions and Attributes for
+  Authentication in PPP and Wireless LAN Networks
+- Added RFC5914 providing Trust Anchor Format
+- Added RFC6010 providing CMS Content Constraints (CCC) Extension
+- Added RFC6031 providing CMS Symmetric Key Package Content Type
+- Added RFC6032 providing CMS Encrypted Key Package Content Type
+- Added RFC7030 providing Enrollment over Secure Transport (EST)
+- Added RFC7292 providing PKCS #12, which is the Personal Information
+  Exchange Syntax v1.1
+- Added RFC8018 providing PKCS #5, which is the Password-Based
+  Cryptography Specification, Version 2.1
+- Automatically update the maps for use with openType for RFC3709,
+  RFC6402, RFC7191, and RFC8226 when the module is imported
+- Added RFC6211 providing CMS Algorithm Identifier Protection Attribute
+- Added RFC8449 providing Certificate Extension for Hash Of Root Key
+- Updated RFC2459 and RFC5280 for TODO in the certificate extension map
+- Added RFC7906 providing NSA's CMS Key Management Attributes
+- Added RFC7894 providing EST Alternative Challenge Password Attributes
+- Updated the handling of maps for use with openType so that just doing
+  an import of the modules is enough in most situations; updates to
+  RFC 2634, RFC 3274, RFC 3779, RFC 4073, RFC 4108, RFC 5035, RFC 5083,
+  RFC 5084, RFC 5480, RFC 5940, RFC 5958, RFC 6019, and RFC 8520
+- Updated the handling of attribute maps for use with openType in
+  RFC 5958 to use the rfc5652.cmsAttributesMap
+- Added RFC5990 providing RSA-KEM Key Transport Algorithm in the CMS
+- Fixed malformed `rfc4210.RevRepContent` data structure layout
+- Added RFC5934 providing Trust Anchor Management Protocol (TAMP)
+- Added RFC6210 providing Experiment for Hash Functions with Parameters
+- Added RFC5751 providing S/MIME Version 3.2 Message Specification
+- Added RFC8494 providing Multicast Email (MULE) over ACP 142
+- Added RFC8398 providing Internationalized Email Addresses in
+  X.509 Certificates
+- Added RFC8419 providing Edwards-Curve Digital Signature Algorithm
+  (EdDSA) Signatures in the CMS
+- Added RFC8479 providing Storing Validation Parameters in PKCS#8
+- Added RFC8360 providing Resource Public Key Infrastructure (RPKI)
+  Validation Reconsidered
+- Added RFC8358 providing Digital Signatures on Internet-Draft Documents
+- Added RFC8209 providing BGPsec Router PKI Profile
+- Added RFC8017 providing PKCS #1 Version 2.2
+- Added RFC7914 providing scrypt Password-Based Key Derivation Function
+- Added RFC7773 providing Authentication Context Certificate Extension
 
 Revision 0.2.6, released 31-07-2019
 -----------------------------------

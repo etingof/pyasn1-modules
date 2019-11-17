@@ -5,8 +5,8 @@
 # Copyright (c) 2019, Vigil Security, LLC
 # License: http://snmplabs.com/pyasn1/license.html
 #
-
 import sys
+import unittest
 
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
@@ -14,11 +14,6 @@ from pyasn1.codec.der.encoder import encode as der_encode
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5652
 from pyasn1_modules import rfc5035
-
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
 
 
 class SignedMessageTestCase(unittest.TestCase):
@@ -76,8 +71,8 @@ T9yMtRLN5ZDU14y+Phzq9NKpSw/x5KyXoUKjCMc3Ru6dIW+CgcRQees+dhnvuD5U
             sat = sa['attrType']
             sav0 = sa['attrValues'][0]
 
-            if sat in rfc5035.ESSAttributeMap.keys():
-                sav, rest = der_decode(sav0, asn1Spec=rfc5035.ESSAttributeMap[sat])
+            if sat in rfc5652.cmsAttributesMap.keys():
+                sav, rest = der_decode(sav0, asn1Spec=rfc5652.cmsAttributesMap[sat])
                 assert not rest
                 assert sav.prettyPrint()
                 assert der_encode(sav) == sav0
@@ -138,16 +133,14 @@ vFIgX7eIkd8=
             sat = sa['attrType']
             sav0 = sa['attrValues'][0]
 
-            if sat in rfc5035.ESSAttributeMap.keys():
-                sav, rest = der_decode(sav0, asn1Spec=rfc5035.ESSAttributeMap[sat])
+            if sat in rfc5652.cmsAttributesMap.keys():
+                sav, rest = der_decode(sav0, asn1Spec=rfc5652.cmsAttributesMap[sat])
                 assert not rest
                 assert sav.prettyPrint()
                 assert der_encode(sav) == sav0
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.signed_receipt_pem_text)
-        rfc5652.cmsContentTypesMap.update(rfc5035.cmsContentTypesMapUpdate)
-        rfc5652.cmsAttributesMap.update(rfc5035.ESSAttributeMap)
         asn1Object, rest = der_decode(substrate,
             asn1Spec=self.asn1Spec, decodeOpenTypes=True)
         assert not rest
@@ -171,13 +164,11 @@ vFIgX7eIkd8=
         # automatically decode it 
         receipt, rest = der_decode(sd['encapContentInfo']['eContent'],
             asn1Spec=rfc5652.cmsContentTypesMap[sd['encapContentInfo']['eContentType']])
-        assert receipt['version'] == rfc5035.ESSVersion().subtype(value='v1')
+        assert receipt['version'] == 1
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
 if __name__ == '__main__':
-    import sys
-
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

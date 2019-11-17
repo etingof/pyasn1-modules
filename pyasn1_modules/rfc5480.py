@@ -18,6 +18,7 @@ from pyasn1.type import namedtype
 from pyasn1.type import univ
 
 from pyasn1_modules import rfc3279
+from pyasn1_modules import rfc5280
 
 
 # These structures are the same as RFC 3279.
@@ -170,7 +171,7 @@ sect571r1 = univ.ObjectIdentifier('1.3.132.0.39')
 # Map of Algorithm Identifier OIDs to Parameters
 # The algorithm is not included if the parameters MUST be absent
 
-algorithmIdentifierMapUpdate = {
+_algorithmIdentifierMapUpdate = {
     rsaEncryption: univ.Null(),
     md2WithRSAEncryption: univ.Null(),
     md5WithRSAEncryption: univ.Null(),
@@ -182,3 +183,8 @@ algorithmIdentifierMapUpdate = {
     id_ecDH: ECParameters(),
     id_ecMQV: ECParameters(),
 }
+
+
+# Add these Algorithm Identifier map entries to the ones in rfc5280.py
+
+rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)

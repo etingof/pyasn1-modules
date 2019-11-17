@@ -5,8 +5,8 @@
 # Copyright (c) 2019, Vigil Security, LLC
 # License: http://snmplabs.com/pyasn1/license.html
 #
-
 import sys
+import unittest
 
 from pyasn1.codec.der import decoder as der_decoder
 from pyasn1.codec.der import encoder as der_encoder
@@ -14,11 +14,6 @@ from pyasn1.codec.der import encoder as der_encoder
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5280
 from pyasn1_modules import rfc8226
-
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
 
 
 class JWTClaimConstraintsTestCase(unittest.TestCase):
@@ -77,7 +72,9 @@ yEFWA6G95b/HbtPMTjLpPKtrOjhofc4LyVCDYhFhKzpvHh1qeA==
         assert asn1Object.prettyPrint()
         assert der_encoder.encode(asn1Object) == substrate
 
+        extn_list = [ ]
         for extn in asn1Object['tbsCertificate']['extensions']:
+            extn_list.append(extn['extnID'])
             if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
                 extnValue, rest = der_decoder.decode(extn['extnValue'],
                     asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
@@ -86,11 +83,11 @@ yEFWA6G95b/HbtPMTjLpPKtrOjhofc4LyVCDYhFhKzpvHh1qeA==
                 if extn['extnID'] == rfc8226.id_pe_TNAuthList:
                     assert extnValue[0]['spc'] == 'fake'
 
+        assert rfc8226.id_pe_TNAuthList in extn_list
+
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
 if __name__ == '__main__':
-    import sys
-
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())
