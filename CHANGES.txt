@@ -3,8 +3,8 @@ Revision 0.3.0, released XX-11-2019
 -----------------------------------
 
 - Added support for Python 3.8.
-- Add RFC4334 providing Certificate Extensions and Attributes for
-  Authentication in PPP and Wireless LAN Networks
+- Add RFC3125 providing Electronic Signature Policies
+- Add RFC5126 providing CMS Advanced Electronic Signatures (CAdES)
 - Removed support for EOL Pythons 2.4, 2.5, 2.6, 3.2, 3.3 and 3.4.
 
 Revision 0.2.8, released 16-11-2019
@@ -47,8 +47,6 @@ Revision 0.2.8, released 16-11-2019
 - Update RFC3770 to support openType for attributes and reported errata
 - Add RFC4334 providing Certificate Extensions and Attributes for
   Authentication in PPP and Wireless LAN Networks
-- Add RFC3125 providing Electronic Signature Policies
-- Add RFC5126 providing CMS Advanced Electronic Signatures (CAdES)
 
 Revision 0.2.7, released 09-10-2019
 -----------------------------------
