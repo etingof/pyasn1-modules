@@ -3,8 +3,9 @@ Revision 0.3.0, released XX-11-2019
 -----------------------------------
 
 - Added support for Python 3.8.
+- Add RFC4334 providing Certificate Extensions and Attributes for
+  Authentication in PPP and Wireless LAN Networks
 - Removed support for EOL Pythons 2.4, 2.5, 2.6, 3.2, 3.3 and 3.4.
-
 
 Revision 0.2.8, released 16-11-2019
 -----------------------------------
@@ -44,8 +45,6 @@ Revision 0.2.8, released 16-11-2019
 - Add RFC7585 providing Network Access Identifier (NAI) Realm Name
   for Certificates
 - Update RFC3770 to support openType for attributes and reported errata
-- Add RFC4334 providing Certificate Extensions and Attributes for
-  Authentication in PPP and Wireless LAN Networks
 
 Revision 0.2.7, released 09-10-2019
 -----------------------------------
