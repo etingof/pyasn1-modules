@@ -44,7 +44,7 @@ l+AOeKdFgg==
         assert asn1Object.prettyPrint()
         assert der_encode(asn1Object) == substrate
 
-        count = 0
+        found_spid_oid = False
         for attr in asn1Object:
             if attr['attrType'] in rfc5652.cmsAttributesMap.keys():
                 av, rest = der_decode (attr['attrValues'][0],
@@ -52,9 +52,13 @@ l+AOeKdFgg==
                 assert not rest
                 assert av.prettyPrint()
                 assert der_encode(av) == attr['attrValues'][0]
-                count += 1
 
-        assert count == 6
+                if attr['attrType'] == rfc5126.id_aa_ets_sigPolicyId:
+                    spid_oid = rfc5126.SigPolicyId('1.3.6.1.4.1.22112.48.20')
+                    assert av['signaturePolicyId']['sigPolicyId'] == spid_oid
+                    found_spid_oid = True
+
+        assert found_spid_oid
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
