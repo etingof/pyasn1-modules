@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5280
@@ -27,45 +27,57 @@ YIZIAWUDBAIBAgEQMAsGCWCGSAFlAwQBBQ==
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        assert asn1Object['algorithm'] == rfc5990.id_rsa_kem
-        rsa_kem_p, rest = der_decode(asn1Object['parameters'],
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertEqual(rfc5990.id_rsa_kem, asn1Object['algorithm'])
+
+        rsa_kem_p, rest = der_decoder(
+            asn1Object['parameters'],
             asn1Spec=rfc5280.algorithmIdentifierMap[rfc5990.id_rsa_kem])
-        assert not rest
-        assert rsa_kem_p.prettyPrint()
-        assert der_encode(rsa_kem_p) == asn1Object['parameters']
 
-        assert rsa_kem_p['kem']['algorithm'] == rfc5990.id_kem_rsa
-        kem_rsa_p, rest = der_decode(rsa_kem_p['kem']['parameters'],
+        self.assertFalse(rest)
+        self.assertTrue(rsa_kem_p.prettyPrint())
+        self.assertEqual(asn1Object['parameters'], der_encoder(rsa_kem_p))
+        self.assertEqual(rfc5990.id_kem_rsa, rsa_kem_p['kem']['algorithm'])
+
+        kem_rsa_p, rest = der_decoder(
+            rsa_kem_p['kem']['parameters'],
             asn1Spec=rfc5280.algorithmIdentifierMap[rfc5990.id_kem_rsa])
-        assert not rest
-        assert kem_rsa_p.prettyPrint()
-        assert der_encode(kem_rsa_p) == rsa_kem_p['kem']['parameters']
 
-        assert kem_rsa_p['keyLength'] == 16
-        assert kem_rsa_p['keyDerivationFunction']['algorithm'] == rfc5990.id_kdf_kdf3
-        kdf_p, rest = der_decode(kem_rsa_p['keyDerivationFunction']['parameters'],
+        self.assertFalse(rest)
+        self.assertTrue(kem_rsa_p.prettyPrint())
+        self.assertEqual(
+            rsa_kem_p['kem']['parameters'], der_encoder(kem_rsa_p))
+        self.assertEqual(16, kem_rsa_p['keyLength'])
+        self.assertEqual(
+            rfc5990.id_kdf_kdf3, kem_rsa_p['keyDerivationFunction']['algorithm'])
+
+        kdf_p, rest = der_decoder(
+            kem_rsa_p['keyDerivationFunction']['parameters'],
             asn1Spec=rfc5280.algorithmIdentifierMap[rfc5990.id_kdf_kdf3])
-        assert not rest
-        assert kdf_p.prettyPrint()
-        assert der_encode(kdf_p) == kem_rsa_p['keyDerivationFunction']['parameters']
+
+        self.assertFalse(rest)
+        self.assertTrue(kdf_p.prettyPrint())
+        self.assertEqual(
+            kem_rsa_p['keyDerivationFunction']['parameters'],
+            der_encoder(kdf_p))
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
 
-        assert asn1Object['algorithm'] == rfc5990.id_rsa_kem
-        assert asn1Object['parameters']['kem']['algorithm'] == rfc5990.id_kem_rsa
-        assert asn1Object['parameters']['kem']['parameters']['keyLength'] == 16
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertEqual(rfc5990.id_rsa_kem, asn1Object['algorithm'])
+        self.assertEqual(
+            rfc5990.id_kem_rsa, asn1Object['parameters']['kem']['algorithm'])
+        self.assertEqual(
+            16, asn1Object['parameters']['kem']['parameters']['keyLength'])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

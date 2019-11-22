@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5083
@@ -25,10 +25,11 @@ class CCMParametersTestCase(unittest.TestCase):
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.ccm_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
 
 class GCMParametersTestCase(unittest.TestCase):
@@ -39,10 +40,11 @@ class GCMParametersTestCase(unittest.TestCase):
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.gcm_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
 
 class GCMOpenTypesTestCase(unittest.TestCase):
@@ -90,23 +92,27 @@ BX7T4w681pCD+dOiom75C3UdahrfoFkNsZ2hB88+qNsEEPb/xuGu8ZzSPZhakhl2NS0=
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.rfc8591_pem_pext)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        assert asn1Object['contentType'] == rfc5083.id_ct_authEnvelopedData
-        aed, rest = der_decode(asn1Object['content'],
-            asn1Spec=rfc5083.AuthEnvelopedData(),
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertEqual(
+            rfc5083.id_ct_authEnvelopedData, asn1Object['contentType'])
+
+        aed, rest = der_decoder(
+            asn1Object['content'], asn1Spec=rfc5083.AuthEnvelopedData(),
             decodeOpenTypes=True)
-        assert not rest
-        assert aed.prettyPrint()
-        assert der_encode(aed) == asn1Object['content']
 
-        assert aed['version'] == 0
+        self.assertFalse(rest)
+        self.assertTrue(aed.prettyPrint())
+        self.assertEqual(asn1Object['content'], der_encoder(aed))
+        self.assertEqual(0, aed['version'])
+
         cea = aed['authEncryptedContentInfo']['contentEncryptionAlgorithm']
-        assert cea['algorithm'] == rfc5084.id_aes128_GCM
-        assert cea['parameters']['aes-ICVlen'] == 16
+
+        self.assertEqual(rfc5084.id_aes128_GCM, cea['algorithm'])
+        self.assertEqual(16, cea['parameters']['aes-ICVlen'])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

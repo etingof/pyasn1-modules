@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1.type import univ
 
 from pyasn1_modules import pem
@@ -46,41 +46,52 @@ Xo9l9a+tyVybAsCoiClhYw==
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         spki_a = asn1Object['certificationRequestInfo']['subjectPublicKeyInfo']['algorithm']
-        assert spki_a['algorithm'] == rfc5480.dhpublicnumber
-        assert spki_a['algorithm'] in rfc5280.algorithmIdentifierMap.keys()
-        params, rest = der_decode(spki_a['parameters'], asn1Spec=rfc6955.DomainParameters())
-        assert not rest
-        assert params.prettyPrint()
-        assert der_encode(params) == spki_a['parameters']
-        assert params['validationParms']['pgenCounter'] == 55
+
+        self.assertEqual(rfc5480.dhpublicnumber, spki_a['algorithm'])
+        self.assertIn(spki_a['algorithm'], rfc5280.algorithmIdentifierMap)
+
+        params, rest = der_decoder(
+            spki_a['parameters'], asn1Spec=rfc6955.DomainParameters())
+
+        self.assertFalse(rest)
+        self.assertTrue(params.prettyPrint())
+        self.assertEqual(spki_a['parameters'], der_encoder(params))
+        self.assertEqual(55, params['validationParms']['pgenCounter'])
 
         sig_a = asn1Object['signatureAlgorithm']
-        assert sig_a['algorithm'] == rfc6955.id_dhPop_static_sha1_hmac_sha1
-        assert sig_a['algorithm'] in rfc5280.algorithmIdentifierMap.keys()
-        assert sig_a['parameters'] == der_encode(univ.Null(""))
+
+        self.assertEqual(
+            rfc6955.id_dhPop_static_sha1_hmac_sha1, sig_a['algorithm'])
+        self.assertIn(sig_a['algorithm'], rfc5280.algorithmIdentifierMap)
+        self.assertEqual(sig_a['parameters'], der_encoder(univ.Null("")))
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate,
-           asn1Spec=self.asn1Spec,
-           decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         spki_a = asn1Object['certificationRequestInfo']['subjectPublicKeyInfo']['algorithm']
-        assert spki_a['algorithm'] == rfc5480.dhpublicnumber
-        assert spki_a['parameters']['validationParms']['pgenCounter'] == 55
+
+        self.assertEqual(rfc5480.dhpublicnumber, spki_a['algorithm'])
+        self.assertEqual(
+            55, spki_a['parameters']['validationParms']['pgenCounter'])
 
         sig_a = asn1Object['signatureAlgorithm']
-        assert sig_a['algorithm'] == rfc6955.id_dhPop_static_sha1_hmac_sha1
-        assert sig_a['parameters'] == univ.Null("")
+
+        self.assertEqual(
+            rfc6955.id_dhPop_static_sha1_hmac_sha1, sig_a['algorithm'])
+        self.assertEqual(univ.Null(""), sig_a['parameters'])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

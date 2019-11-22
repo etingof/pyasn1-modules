@@ -50,46 +50,45 @@ V+vo2L72yerdbsP9xjqvhZrLKfsLZjYK4SdYYthi
 
         asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
 
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder.encode(asn1Object))
 
-        extn_list = [ ]
+        extn_list = []
         for extn in asn1Object['tbsCertificate']['extensions']:
             extn_list.append(extn['extnID'])
 
             if extn['extnID'] == rfc3779.id_pe_ipAddrBlocks:
                 s = extn['extnValue']
                 addr_blocks, rest = der_decoder.decode(s, rfc3779.IPAddrBlocks())
-                assert not rest
-                assert addr_blocks.prettyPrint()
-                assert der_encoder.encode(addr_blocks) == s
+                self.assertFalse(rest)
+                self.assertTrue(addr_blocks.prettyPrint())
+                self.assertEqual(s, der_encoder.encode(addr_blocks))
 
             if extn['extnID'] == rfc3779.id_pe_autonomousSysIds:
                 s = extn['extnValue']
                 as_ids, rest = der_decoder.decode(s, rfc3779.ASIdentifiers())
-                assert not rest
-                assert as_ids.prettyPrint()
-                assert der_encoder.encode(as_ids) == s
+                self.assertFalse(rest)
+                self.assertTrue(as_ids.prettyPrint())
+                self.assertEqual(s, der_encoder.encode(as_ids))
 
-        assert rfc3779.id_pe_ipAddrBlocks in extn_list
-        assert rfc3779.id_pe_autonomousSysIds in extn_list
-
+        self.assertIn(rfc3779.id_pe_ipAddrBlocks, extn_list)
+        self.assertIn(rfc3779.id_pe_autonomousSysIds, extn_list)
 
     def testExtensionsMap(self):
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder.encode(asn1Object))
 
         for extn in asn1Object['tbsCertificate']['extensions']:
-            if extn['extnID'] == rfc3779.id_pe_ipAddrBlocks or \
-               extn['extnID'] == rfc3779.id_pe_autonomousSysIds:
-
-                extnValue, rest = der_decoder.decode(extn['extnValue'],
+            if (extn['extnID'] == rfc3779.id_pe_ipAddrBlocks or
+                    extn['extnID'] == rfc3779.id_pe_autonomousSysIds):
+                extnValue, rest = der_decoder.decode(
+                    extn['extnValue'],
                     asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-                assert der_encoder.encode(extnValue) == extn['extnValue']
+                self.assertEqual(extn['extnValue'], der_encoder.encode(extnValue))
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

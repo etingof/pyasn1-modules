@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5280
@@ -34,50 +34,60 @@ iBGY/Dls7B1TsWeGObE0sS1MXEpuREuloZjcsNVcNXWPlLdZtkSH6uwWzR0PyG/Z
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         ea = asn1Object['encryptionAlgorithm']
-        assert ea['algorithm'] == rfc8018.id_PBES2
-        assert ea['algorithm'] in rfc5280.algorithmIdentifierMap.keys()
 
-        params, rest = der_decode(ea['parameters'],
+        self.assertEqual(rfc8018.id_PBES2, ea['algorithm'])
+        self.assertIn(ea['algorithm'], rfc5280.algorithmIdentifierMap)
+
+        params, rest = der_decoder(
+            ea['parameters'],
             asn1Spec=rfc5280.algorithmIdentifierMap[ea['algorithm']])
-        assert not rest
-        assert params.prettyPrint()
-        assert der_encode(params) == ea['parameters']
+
+        self.assertFalse(rest)
+        self.assertTrue(params.prettyPrint())
+        self.assertEqual(ea['parameters'], der_encoder(params))
 
         kdf = params['keyDerivationFunc']
-        assert kdf['algorithm'] == rfc7914.id_scrypt
-        assert kdf['algorithm'] in rfc5280.algorithmIdentifierMap.keys()
 
-        kdfp, rest = der_decode(kdf['parameters'],
+        self.assertEqual(rfc7914.id_scrypt, kdf['algorithm'])
+        self.assertIn(kdf['algorithm'], rfc5280.algorithmIdentifierMap)
+
+        kdfp, rest = der_decoder(
+            kdf['parameters'],
             asn1Spec=rfc5280.algorithmIdentifierMap[kdf['algorithm']])
-        assert not rest
-        assert kdfp.prettyPrint()
-        assert der_encode(kdfp) == kdf['parameters']
 
-        assert kdfp['costParameter'] == 1048576
+        self.assertFalse(rest)
+        self.assertTrue(kdfp.prettyPrint())
+        self.assertTrue(kdf['parameters'], der_encoder(kdfp))
+        self.assertEqual(1048576, kdfp['costParameter'])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         ea = asn1Object['encryptionAlgorithm']
-        assert ea['algorithm'] == rfc8018.id_PBES2
+
+        self.assertEqual(rfc8018.id_PBES2, ea['algorithm'])
 
         params = asn1Object['encryptionAlgorithm']['parameters']
-        assert params['keyDerivationFunc']['algorithm'] == rfc7914.id_scrypt
+
+        self.assertEqual(
+            rfc7914.id_scrypt, params['keyDerivationFunc']['algorithm'])
 
         kdfp = params['keyDerivationFunc']['parameters']
-        assert kdfp['costParameter'] == 1048576
+
+        self.assertEqual(1048576, kdfp['costParameter'])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

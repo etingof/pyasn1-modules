@@ -7,20 +7,14 @@
 #
 
 import sys
+import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc2985
 from pyasn1_modules import rfc3125
-
-
-try:
-    import unittest2 as unittest
-
-except ImportError:
-    import unittest
 
 
 class SignaturePolicyTestCase(unittest.TestCase):
@@ -91,17 +85,19 @@ BQQGAgIBADAABCAaWobQZ1EuANtF/NjfuaBXR0nR0fKnGJ7Z8t/mregtvQ==
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         svp = asn1Object['signPolicyInfo']['signatureValidationPolicy']
         sr = svp['commonRules']['signerAndVeriferRules']['signerRules']
         msa = sr['mandatedSignedAttr']
-        assert rfc2985.pkcs_9_at_contentType in msa
-        assert rfc2985.pkcs_9_at_messageDigest in msa
-        assert rfc2985.pkcs_9_at_signingTime in msa
+
+        self.assertIn(rfc2985.pkcs_9_at_contentType, msa)
+        self.assertIn(rfc2985.pkcs_9_at_messageDigest, msa)
+        self.assertIn(rfc2985.pkcs_9_at_signingTime, msa)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

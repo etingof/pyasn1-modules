@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1.compat.octets import str2octs
 
 from pyasn1_modules import pem
@@ -42,45 +42,51 @@ DAlVlhox680Jxy5J8Pkx
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.cert_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.cert_pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         sig_alg = asn1Object['tbsCertificate']['signature']
-        assert sig_alg['algorithm'] == rfc5480.ecdsa_with_SHA384
-        assert not sig_alg['parameters'].hasValue()
+
+        self.assertEqual(rfc5480.ecdsa_with_SHA384, sig_alg['algorithm'])
+        self.assertFalse(sig_alg['parameters'].hasValue())
     
         spki_alg = asn1Object['tbsCertificate']['subjectPublicKeyInfo']['algorithm']
-        assert spki_alg['algorithm'] == rfc5480.id_ecPublicKey
-        assert spki_alg['parameters']['namedCurve'] == rfc5480.secp384r1
 
-        extn_list = [ ]
+        self.assertEqual(rfc5480.id_ecPublicKey, spki_alg['algorithm'])
+        self.assertEqual(
+            rfc5480.secp384r1, spki_alg['parameters']['namedCurve'])
+
+        extn_list = []
         for extn in asn1Object['tbsCertificate']['extensions']:
             extn_list.append(extn['extnID'])
             if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
-                extnValue, rest = der_decode(extn['extnValue'],
+                extnValue, rest = der_decoder(
+                    extn['extnValue'],
                     asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-                assert der_encode(extnValue) == extn['extnValue']
+
+                self.assertEqual(extn['extnValue'], der_encoder(extnValue))
 
                 if extn['extnID'] == rfc3770.id_pe_wlanSSID:
-                    assert str2octs('Example') in extnValue
-            
-                if extn['extnID'] == rfc5280.id_ce_extKeyUsage:
-                     assert rfc3770.id_kp_eapOverLAN in extnValue
-                     assert rfc3770.id_kp_eapOverPPP in extnValue
+                    self.assertIn(str2octs('Example'), extnValue)
 
-        assert rfc3770.id_pe_wlanSSID in extn_list
-        assert rfc5280.id_ce_extKeyUsage in extn_list
+                if extn['extnID'] == rfc5280.id_ce_extKeyUsage:
+                    self.assertIn(rfc3770.id_kp_eapOverLAN, extnValue)
+                    self.assertIn(rfc3770.id_kp_eapOverPPP, extnValue)
+
+        self.assertIn(rfc3770.id_pe_wlanSSID, extn_list)
+        self.assertIn(rfc5280.id_ce_extKeyUsage, extn_list)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

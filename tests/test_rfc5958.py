@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1.type import univ
 
 from pyasn1_modules import pem
@@ -30,15 +30,19 @@ Z9w7lshQhqowtrbLDFw4rXAxZuE=
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.priv_key_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert asn1Object['privateKeyAlgorithm']['algorithm'] == rfc8410.id_Ed25519
-        assert asn1Object['privateKey'].isValue
-        assert asn1Object['privateKey'].prettyPrint()[0:10] == "0x0420d4ee"
-        assert asn1Object['publicKey'].isValue
-        assert asn1Object['publicKey'].prettyPrint()[0:10] == "1164575857"
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(
+            rfc8410.id_Ed25519, asn1Object['privateKeyAlgorithm']['algorithm'])
+        self.assertTrue(asn1Object['privateKey'].isValue)
+        self.assertEqual(
+            "0x0420d4ee", asn1Object['privateKey'].prettyPrint()[0:10])
+        self.assertTrue(asn1Object['publicKey'].isValue)
+        self.assertEqual(
+            "1164575857", asn1Object['publicKey'].prettyPrint()[0:10])
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
 
 class PrivateKeyOpenTypesTestCase(unittest.TestCase):
@@ -53,17 +57,24 @@ YWlyc4EhABm/RAlphM3+hUG6wWfcO5bIUIaqMLa2ywxcOK1wMWbh
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.asymmetric_key_pkg_pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
 
-        assert rfc5958.id_ct_KP_aKeyPackage in rfc5652.cmsContentTypesMap.keys()
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertIn(
+            rfc5958.id_ct_KP_aKeyPackage, rfc5652.cmsContentTypesMap)
+
         oneKey = asn1Object['content'][0]
-        assert oneKey['privateKeyAlgorithm']['algorithm'] == rfc8410.id_Ed25519
+
+        self.assertEqual(
+            rfc8410.id_Ed25519, oneKey['privateKeyAlgorithm']['algorithm'])
+
         pkcs_9_at_friendlyName = univ.ObjectIdentifier('1.2.840.113549.1.9.9.20')
-        assert oneKey['attributes'][0]['attrType'] == pkcs_9_at_friendlyName
+
+        self.assertEqual(
+            pkcs_9_at_friendlyName, oneKey['attributes'][0]['attrType'])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

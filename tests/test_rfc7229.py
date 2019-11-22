@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5280
@@ -53,19 +53,23 @@ PZs8K3IjUA5+U73pA8lpaTOPscLY22WL9pAGmyVUyEJ8lM7E+r4iDg==
         ]
 
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         count = 0
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
                 s = extn['extnValue']
-                ev, rest = der_decode(s, rfc5280.certificateExtensionsMap[extn['extnID']])
-                assert not rest
-                assert ev.prettyPrint()
-                assert s == der_encode(ev)
+                ev, rest = der_decoder(
+                    s, rfc5280.certificateExtensionsMap[extn['extnID']])
+
+                self.assertFalse(rest)
+                self.assertTrue(ev.prettyPrint())
+                self.assertEqual(s, der_encoder(ev))
 
                 if extn['extnID'] == rfc5280.id_ce_certificatePolicies:
                     for pol in ev:
@@ -79,7 +83,7 @@ PZs8K3IjUA5+U73pA8lpaTOPscLY22WL9pAGmyVUyEJ8lM7E+r4iDg==
                         if pmap['subjectDomainPolicy'] in test_oids:
                             count += 1
 
-        assert count == 6
+        self.assertEqual(6, count)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

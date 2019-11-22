@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1.type import univ
 
 from pyasn1_modules import pem
@@ -73,91 +73,108 @@ rqr03dPnboinBBSU7mxdpB5LTCvorCI8Tk5OMiUzjgICB9A=
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pfx_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        assert asn1Object['version'] == univ.Integer(3)
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertEqual(3, asn1Object['version'])
+
         oid = asn1Object['macData']['mac']['digestAlgorithm']['algorithm']
-        assert oid ==  univ.ObjectIdentifier('1.3.14.3.2.26')
+
+        self.assertEqual(univ.ObjectIdentifier('1.3.14.3.2.26'), oid)
+
         md_hex = asn1Object['macData']['mac']['digest'].prettyPrint()
-        assert md_hex == '0xa5608ffdf651d132b90701aeaaf4ddd3e76e88a7'
 
-        assert asn1Object['authSafe']['contentType'] == rfc5652.id_data
-        data, rest = der_decode(asn1Object['authSafe']['content'], 
-            asn1Spec=univ.OctetString())
-        assert not rest
+        self.assertEqual('0xa5608ffdf651d132b90701aeaaf4ddd3e76e88a7', md_hex)
+        self.assertEqual(
+            rfc5652.id_data, asn1Object['authSafe']['contentType'])
 
-        authsafe, rest = der_decode(data, asn1Spec=rfc7292.AuthenticatedSafe())
-        assert not rest
-        assert authsafe.prettyPrint()
-        assert der_encode(authsafe) == data
+        data, rest = der_decoder(
+            asn1Object['authSafe']['content'], asn1Spec=univ.OctetString())
+
+        self.assertFalse(rest)
+
+        authsafe, rest = der_decoder(data, asn1Spec=rfc7292.AuthenticatedSafe())
+
+        self.assertFalse(rest)
+        self.assertTrue(authsafe.prettyPrint())
+        self.assertEqual(data, der_encoder(authsafe))
 
         for ci in authsafe:
-            assert ci['contentType'] == rfc5652.id_data
-            data, rest = der_decode(ci['content'], asn1Spec=univ.OctetString())
-            assert not rest
+            self.assertEqual(rfc5652.id_data, ci['contentType'])
 
-            sc, rest = der_decode(data, asn1Spec=rfc7292.SafeContents())
-            assert not rest
-            assert sc.prettyPrint()
-            assert der_encode(sc) == data
+            data, rest = der_decoder(ci['content'], asn1Spec=univ.OctetString())
+
+            self.assertFalse(rest)
+
+            sc, rest = der_decoder(data, asn1Spec=rfc7292.SafeContents())
+
+            self.assertFalse(rest)
+            self.assertTrue(sc.prettyPrint())
+            self.assertEqual(data, der_encoder(sc))
 
             for sb in sc:
                 if sb['bagId'] in rfc7292.pkcs12BagTypeMap:
-                    bv, rest = der_decode(sb['bagValue'],
-                       asn1Spec=rfc7292.pkcs12BagTypeMap[sb['bagId']])
-                    assert not rest
-                    assert bv.prettyPrint()
-                    assert der_encode(bv) == sb['bagValue']
+                    bv, rest = der_decoder(
+                        sb['bagValue'],
+                        asn1Spec=rfc7292.pkcs12BagTypeMap[sb['bagId']])
+
+                    self.assertFalse(rest)
+                    self.assertTrue(bv.prettyPrint())
+                    self.assertEqual(sb['bagValue'], der_encoder(bv))
 
                     for attr in sb['bagAttributes']:
                         if attr['attrType'] in rfc5652.cmsAttributesMap:
-                            av, rest = der_decode(attr['attrValues'][0],
+                            av, rest = der_decoder(
+                                attr['attrValues'][0],
                                 asn1Spec=rfc5652.cmsAttributesMap[attr['attrType']])
-                            assert not rest
-                            assert av.prettyPrint()
-                            assert der_encode(av) == attr['attrValues'][0]
+                            self.assertFalse(rest)
+                            self.assertTrue(av.prettyPrint())
+                            self.assertEqual(
+                                attr['attrValues'][0], der_encoder(av))
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pfx_pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True
-        )
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         digest_alg = asn1Object['macData']['mac']['digestAlgorithm']
-        assert not digest_alg['parameters'].hasValue()
 
-        authsafe, rest = der_decode(asn1Object['authSafe']['content'],
+        self.assertFalse(digest_alg['parameters'].hasValue())
+
+        authsafe, rest = der_decoder(
+            asn1Object['authSafe']['content'],
             asn1Spec=rfc7292.AuthenticatedSafe(),
-            decodeOpenTypes=True
-        )
-        assert not rest
-        assert authsafe.prettyPrint()
-        assert der_encode(authsafe) == asn1Object['authSafe']['content']
+            decodeOpenTypes=True)
+
+        self.assertFalse(rest)
+        self.assertTrue(authsafe.prettyPrint())
+        self.assertEqual(
+            asn1Object['authSafe']['content'], der_encoder(authsafe))
 
         for ci in authsafe:
-            assert ci['contentType'] == rfc5652.id_data
-            sc, rest = der_decode(ci['content'],
-                asn1Spec=rfc7292.SafeContents(),
-                decodeOpenTypes=True
-            )
-            assert not rest
-            assert sc.prettyPrint()
-            assert der_encode(sc) == ci['content']
-    
+            self.assertEqual(rfc5652.id_data, ci['contentType'])
+            sc, rest = der_decoder(
+                ci['content'], asn1Spec=rfc7292.SafeContents(),
+                decodeOpenTypes=True)
+
+            self.assertFalse(rest)
+            self.assertTrue(sc.prettyPrint())
+            self.assertEqual(ci['content'], der_encoder(sc))
+
             for sb in sc:
                 if sb['bagId'] == rfc7292.id_pkcs8ShroudedKeyBag:
                     bv = sb['bagValue']
                     enc_alg = bv['encryptionAlgorithm']['algorithm']
-                    assert enc_alg == rfc7292.pbeWithSHAAnd3_KeyTripleDES_CBC
+                    self.assertEqual(
+                        rfc7292.pbeWithSHAAnd3_KeyTripleDES_CBC, enc_alg)
                     enc_alg_param = bv['encryptionAlgorithm']['parameters']
-                    assert enc_alg_param['iterations'] == 2000
+                    self.assertEqual(2000, enc_alg_param['iterations'])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

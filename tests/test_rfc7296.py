@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc7296
@@ -129,25 +129,29 @@ m9Y=
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.cert_bundle_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         cert_count = 0
         crl_count = 0
         unk_count = 0
+
         for item in asn1Object:
             if item.getName() == 'cert':
                 cert_count += 1
+
             elif item.getName() == 'crl':
                 crl_count += 1
+
             else:
                 unk_count += 1
 
-        assert cert_count == 3
-        assert crl_count == 2
-        assert unk_count == 0
+        self.assertEqual(3, cert_count)
+        self.assertEqual(2, crl_count)
+        self.assertEqual(0, unk_count)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

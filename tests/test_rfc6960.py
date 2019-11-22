@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1.type import univ
 
 from pyasn1_modules import pem
@@ -29,39 +29,43 @@ isWVpesQdXMCBDXe9M+iIzAhMB8GCSsGAQUFBzABAgQSBBBjdJOiIW9EKJGELNNf/rdA
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.ocsp_req_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        assert asn1Object['tbsRequest']['version'] == 0
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertEqual(0, asn1Object['tbsRequest']['version'])
 
         count = 0
         for extn in asn1Object['tbsRequest']['requestExtensions']:
-            assert extn['extnID'] in rfc5280.certificateExtensionsMap.keys()
-            ev, rest = der_decode(extn['extnValue'],
+            self.assertIn(extn['extnID'], rfc5280.certificateExtensionsMap)
+
+            ev, rest = der_decoder(
+                extn['extnValue'],
                 asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-            assert not rest
-            assert ev.prettyPrint()
-            assert der_encode(ev) == extn['extnValue']
+
+            self.assertFalse(rest)
+            self.assertTrue(ev.prettyPrint())
+            self.assertEqual(extn['extnValue'], der_encoder(ev))
+
             count += 1
 
-        assert count == 1
+        self.assertEqual(1, count)
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.ocsp_req_pem_text)
-        asn1Object, rest = der_decode(substrate,
-           asn1Spec=self.asn1Spec,
-           decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
 
-        assert asn1Object['tbsRequest']['version'] == 0
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertEqual(0, asn1Object['tbsRequest']['version'])
+
         for req in  asn1Object['tbsRequest']['requestList']:
             ha = req['reqCert']['hashAlgorithm']
-            assert ha['algorithm'] == rfc4055.id_sha1
-            assert ha['parameters'] == univ.Null("")
+            self.assertEqual(rfc4055.id_sha1, ha['algorithm'])
+            self.assertEqual(univ.Null(""), ha['parameters'])
 
 
 class OCSPResponseTestCase(unittest.TestCase):
@@ -95,62 +99,74 @@ HAESdf7nebz1wtqAOXE1jWF/y8g=
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.ocsp_resp_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        assert asn1Object['responseStatus'] == 0
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertEqual(0, asn1Object['responseStatus'])
+
         rb = asn1Object['responseBytes']
-        assert rb['responseType'] in rfc6960.ocspResponseMap.keys()
-        resp, rest = der_decode(rb['response'],
-                asn1Spec=rfc6960.ocspResponseMap[rb['responseType']])
-        assert not rest
-        assert resp.prettyPrint()
-        assert der_encode(resp) == rb['response']
 
-        resp['tbsResponseData']['version'] == 0
+        self.assertIn(rb['responseType'], rfc6960.ocspResponseMap)
+
+        resp, rest = der_decoder(
+            rb['response'], asn1Spec=rfc6960.ocspResponseMap[rb['responseType']])
+
+        self.assertFalse(rest)
+        self.assertTrue(resp.prettyPrint())
+        self.assertEqual(rb['response'], der_encoder(resp))
+        self.assertEqual(0, resp['tbsResponseData']['version'])
+
         count = 0
         for extn in resp['tbsResponseData']['responseExtensions']:
-            assert extn['extnID'] in rfc5280.certificateExtensionsMap.keys()
-            ev, rest = der_decode(extn['extnValue'],
+            self.assertIn(extn['extnID'], rfc5280.certificateExtensionsMap)
+
+            ev, rest = der_decoder(
+                extn['extnValue'],
                 asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-            assert not rest
-            assert ev.prettyPrint()
-            assert der_encode(ev) == extn['extnValue']
+
+            self.assertFalse(rest)
+            self.assertTrue(ev.prettyPrint())
+            self.assertEqual(extn['extnValue'], der_encoder(ev))
+
             count += 1
 
-        assert count == 1
+        self.assertEqual(1, count)
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.ocsp_resp_pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
 
-        assert asn1Object['responseStatus'] == 0
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertEqual(0, asn1Object['responseStatus'])
+
         rb = asn1Object['responseBytes']
-        assert rb['responseType'] in rfc6960.ocspResponseMap.keys()
-        resp, rest = der_decode(rb['response'],
-                asn1Spec=rfc6960.ocspResponseMap[rb['responseType']],
-                decodeOpenTypes=True)
-        assert not rest
-        assert resp.prettyPrint()
-        assert der_encode(resp) == rb['response']
 
-        resp['tbsResponseData']['version'] == 0
+        self.assertIn(rb['responseType'], rfc6960.ocspResponseMap)
+
+        resp, rest = der_decoder(
+            rb['response'],
+            asn1Spec=rfc6960.ocspResponseMap[rb['responseType']],
+            decodeOpenTypes=True)
+
+        self.assertFalse(rest)
+        self.assertTrue(resp.prettyPrint())
+        self.assertEqual(rb['response'], der_encoder(resp))
+        self.assertEqual(0, resp['tbsResponseData']['version'])
+
         for rdn in resp['tbsResponseData']['responderID']['byName']['rdnSequence']:
             for attr in rdn:
                 if attr['type'] == rfc5280.id_emailAddress:
-                    assert attr['value'] == 'info@snmplabs.com'
+                    self.assertEqual('info@snmplabs.com', attr['value'])
 
         for r in resp['tbsResponseData']['responses']:
             ha = r['certID']['hashAlgorithm']
-            assert ha['algorithm'] == rfc4055.id_sha1
-            assert ha['parameters'] == univ.Null("")
+            self.assertEqual(rfc4055.id_sha1, ha['algorithm'])
+            self.assertEqual(univ.Null(""), ha['parameters'])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

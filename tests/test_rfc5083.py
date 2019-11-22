@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5652
@@ -38,10 +38,10 @@ ur76ztut3sr4iIANmvLRbyFUf87+2bPvLQQMoOWSXMGE4BckY8RM
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
 
 class AuthEnvelopedDataOpenTypesTestCase(unittest.TestCase):
@@ -68,22 +68,24 @@ IDAeDBFXYXRzb24sIGNvbWUgaGVyZQYJKoZIhvcNAQcB
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
 
-        assert asn1Object['contentType'] in rfc5652.cmsContentTypesMap
-        assert asn1Object['contentType'] == rfc5083.id_ct_authEnvelopedData
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertIn(asn1Object['contentType'], rfc5652.cmsContentTypesMap)
+        self.assertEqual(rfc5083.id_ct_authEnvelopedData, asn1Object['contentType'])
+
         authenv = asn1Object['content']
-        assert authenv['version'] == 0
+
+        self.assertEqual(0, authenv['version'])
 
         for attr in authenv['unauthAttrs']:
-            assert attr['attrType'] in rfc5652.cmsAttributesMap
+            self.assertIn(attr['attrType'], rfc5652.cmsAttributesMap)
             if attr['attrType'] == rfc5035.id_aa_contentHint:
-                assert 'Watson' in attr['attrValues'][0]['contentDescription']
+                self.assertIn(
+                    'Watson', attr['attrValues'][0]['contentDescription'])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

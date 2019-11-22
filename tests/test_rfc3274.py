@@ -9,8 +9,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc3274
@@ -37,33 +37,41 @@ XQ7u2qbaKFtZ7V96NH8ApkUFkg==
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.compressed_data_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        assert asn1Object['contentType'] == rfc3274.id_ct_compressedData
-        cd, rest = der_decode(asn1Object['content'], asn1Spec=rfc3274.CompressedData())
-        assert not rest
-        assert cd.prettyPrint()
-        assert der_encode(cd) == asn1Object['content']
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertEqual(rfc3274.id_ct_compressedData, asn1Object['contentType'])
 
-        assert cd['compressionAlgorithm']['algorithm'] == rfc3274.id_alg_zlibCompress
-        assert cd['encapContentInfo']['eContentType'] == rfc5652.id_data
+        cd, rest = der_decoder(
+            asn1Object['content'], asn1Spec=rfc3274.CompressedData())
+
+        self.assertFalse(rest)
+        self.assertTrue(cd.prettyPrint())
+        self.assertEqual(asn1Object['content'], der_encoder(cd))
+
+        self.assertEqual(rfc3274.id_alg_zlibCompress,
+                         cd['compressionAlgorithm']['algorithm'])
+        self.assertEqual(rfc5652.id_data, cd['encapContentInfo']['eContentType'])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.compressed_data_pem_text)
-        asn1Object, rest = der_decode(substrate, 
-            asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate,
+                                       asn1Spec=self.asn1Spec,
+                                       decodeOpenTypes=True)
 
-        assert asn1Object['contentType'] == rfc3274.id_ct_compressedData
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertEqual(
+            rfc3274.id_ct_compressedData, asn1Object['contentType'])
+
         cd = asn1Object['content']
-        assert cd['compressionAlgorithm']['algorithm'] == rfc3274.id_alg_zlibCompress
-        assert cd['encapContentInfo']['eContentType'] == rfc5652.id_data
+
+        self.assertEqual(rfc3274.id_alg_zlibCompress,
+                         cd['compressionAlgorithm']['algorithm'])
+        self.assertEqual(rfc5652.id_data, cd['encapContentInfo']['eContentType'])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

@@ -7,8 +7,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1.type import univ
 
 from pyasn1_modules import pem
@@ -54,40 +54,51 @@ BCCK9DKMh7687DHjA7j1U37/y2qR2UcITZmjaYI7NvAUYg==
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         for attr in asn1Object['attributes']:
-            assert attr['attrType'] in rfc5652.cmsAttributesMap.keys()
-            if attr['attrType'] == rfc8479.id_attr_validation_parameters:
-                av, rest = der_decode(attr['attrValues'][0],
-                    asn1Spec=rfc5652.cmsAttributesMap[attr['attrType']])
-                assert not rest
-                assert av.prettyPrint()
-                assert der_encode(av) == attr['attrValues'][0]
+            self.assertIn(attr['attrType'], rfc5652.cmsAttributesMap)
 
-                assert av['hashAlg'] == rfc4055.id_sha384
-                seed = univ.OctetString(hexValue='8af4328c87bebcec31e303b8f5537effcb6a91d947084d99a369823b36f01462')
-                assert av['seed'] == seed
+            if attr['attrType'] == rfc8479.id_attr_validation_parameters:
+                av, rest = der_decoder(
+                    attr['attrValues'][0],
+                    asn1Spec=rfc5652.cmsAttributesMap[attr['attrType']])
+                self.assertFalse(rest)
+                self.assertTrue(av.prettyPrint())
+                self.assertEqual(attr['attrValues'][0], der_encoder(av))
+                self.assertEqual(rfc4055.id_sha384, av['hashAlg'])
+
+                seed = univ.OctetString(hexValue='8af4328c87bebcec31e303b8f55'
+                                                 '37effcb6a91d947084d99a36982'
+                                                 '3b36f01462')
+
+                self.assertEqual(seed, av['seed'])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         for attr in asn1Object['attributes']:
-            assert attr['attrType'] in rfc5652.cmsAttributesMap.keys()
+            self.assertIn(attr['attrType'], rfc5652.cmsAttributesMap)
             if attr['attrType'] == rfc8479.id_attr_validation_parameters:
                 av = attr['attrValues'][0]
-                assert av['hashAlg'] == rfc4055.id_sha384
-                seed = univ.OctetString(hexValue='8af4328c87bebcec31e303b8f5537effcb6a91d947084d99a369823b36f01462')
-                assert av['seed'] == seed
+
+                self.assertEqual(av['hashAlg'], rfc4055.id_sha384)
+
+                seed = univ.OctetString(hexValue='8af4328c87bebcec31e303b8f553'
+                                                 '7effcb6a91d947084d99a369823b'
+                                                 '36f01462')
+
+                self.assertEqual(seed, av['seed'])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

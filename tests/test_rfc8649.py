@@ -7,8 +7,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc4055
@@ -28,27 +28,29 @@ GANG
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.extn_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
-        
-        assert asn1Object['extnID'] == rfc8649.id_ce_hashOfRootKey
-        hashed_root_key, rest = der_decode(asn1Object['extnValue'],
-            rfc8649.HashedRootKey())
-        assert not rest
-        assert hashed_root_key.prettyPrint()
-        assert der_encode(hashed_root_key) == asn1Object['extnValue']
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        assert hashed_root_key['hashAlg']['algorithm'] == rfc4055.id_sha512
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertEqual(rfc8649.id_ce_hashOfRootKey, asn1Object['extnID'])
+
+        hashed_root_key, rest = der_decoder(
+            asn1Object['extnValue'], rfc8649.HashedRootKey())
+
+        self.assertFalse(rest)
+        self.assertTrue(hashed_root_key.prettyPrint())
+        self.assertEqual(asn1Object['extnValue'], der_encoder(hashed_root_key))
+        self.assertEqual(
+            rfc4055.id_sha512, hashed_root_key['hashAlg']['algorithm'])
 
     def testExtensionsMap(self):
         substrate = pem.readBase64fromText(self.extn_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        assert asn1Object['extnID'] == rfc8649.id_ce_hashOfRootKey
-        assert asn1Object['extnID'] in rfc5280.certificateExtensionsMap.keys()
+        self.assertFalse(rest)
+        self.assertEqual(rfc8649.id_ce_hashOfRootKey, asn1Object['extnID'])
+        self.assertIn(asn1Object['extnID'], rfc5280.certificateExtensionsMap)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

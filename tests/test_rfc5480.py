@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5280
@@ -45,28 +45,33 @@ Ea8/B6hPatJ0ES8q/HO3X8IVQwVs1n3aAr0im0/T+Xc=
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.digicert_ec_cert_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         algid = asn1Object['tbsCertificate']['subjectPublicKeyInfo']['algorithm']
-        assert algid['algorithm'] == rfc5480.id_ecPublicKey
-        param, rest = der_decode(algid['parameters'], asn1Spec=rfc5480.ECParameters())
-        assert param.prettyPrint()
-        assert param['namedCurve'] == rfc5480.secp384r1
+
+        self.assertEqual(rfc5480.id_ecPublicKey, algid['algorithm'])
+
+        param, rest = der_decoder(algid['parameters'], asn1Spec=rfc5480.ECParameters())
+
+        self.assertTrue(param.prettyPrint())
+        self.assertEqual(rfc5480.secp384r1, param['namedCurve'])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.digicert_ec_cert_pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate,
+                                       asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
     
         spki_alg = asn1Object['tbsCertificate']['subjectPublicKeyInfo']['algorithm']
-        assert spki_alg['algorithm'] == rfc5480.id_ecPublicKey
-        assert spki_alg['parameters']['namedCurve'] == rfc5480.secp384r1
+
+        self.assertEqual(rfc5480.id_ecPublicKey, spki_alg['algorithm'])
+        self.assertEqual(rfc5480.secp384r1, spki_alg['parameters']['namedCurve'])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5280
@@ -34,23 +34,27 @@ OCRdZCk1KI3uDDgp
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.cert_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        extn_list = [ ]
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+
+        extn_list = []
+
         for extn in asn1Object['tbsCertificate']['extensions']:
             extn_list.append(extn['extnID'])
             if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
-                extnValue, rest = der_decode(extn['extnValue'],
+                extnValue, rest = der_decoder(
+                    extn['extnValue'],
                     asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-                assert der_encode(extnValue) == extn['extnValue']
+
+                self.assertEqual(extn['extnValue'], der_encoder(extnValue))
 
                 if extn['extnID'] == rfc5280.id_ce_extKeyUsage:
-                     assert rfc8209.id_kp_bgpsec_router in extnValue
+                    self.assertIn(rfc8209.id_kp_bgpsec_router, extnValue)
 
-        assert rfc5280.id_ce_extKeyUsage in extn_list
+        self.assertIn(rfc5280.id_ce_extKeyUsage, extn_list)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

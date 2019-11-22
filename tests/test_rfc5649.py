@@ -23,11 +23,13 @@ class AESKeyWrapTestCase(unittest.TestCase):
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.kw_alg_id_pem_text)
-        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert asn1Object[0] == rfc5649.id_aes256_wrap
-        assert der_encoder.encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder.decode(
+            substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(rfc5649.id_aes256_wrap, asn1Object[0])
+        self.assertEqual(substrate, der_encoder.encode(asn1Object))
 
 
 class AESKeyWrapWithPadTestCase(unittest.TestCase):
@@ -38,11 +40,13 @@ class AESKeyWrapWithPadTestCase(unittest.TestCase):
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.kw_pad_alg_id_pem_text)
-        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert asn1Object[0] == rfc5649.id_aes256_wrap_pad
-        assert der_encoder.encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder.decode(
+            substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(rfc5649.id_aes256_wrap_pad, asn1Object[0])
+        self.assertEqual(substrate, der_encoder.encode(asn1Object))
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

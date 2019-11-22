@@ -7,8 +7,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5652
@@ -57,8 +57,7 @@ C9ijmXiajracUe+7eCluqgXRE8yRtnscWoA/9fVFz1lPwgEeNHLoaK7Sqew=
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.manifest_pem_text)
 
-        layers = { }
-        layers.update(rfc5652.cmsContentTypesMap)
+        layers = rfc5652.cmsContentTypesMap.copy()
 
         getNextLayer = {
             rfc5652.id_ct_contentInfo: lambda x: x['contentType'],
@@ -73,41 +72,47 @@ C9ijmXiajracUe+7eCluqgXRE8yRtnscWoA/9fVFz1lPwgEeNHLoaK7Sqew=
         }
 
         next_layer = rfc5652.id_ct_contentInfo
+
         while next_layer:
-            asn1Object, rest = der_decode(substrate, asn1Spec=layers[next_layer])
-            assert not rest
-            assert asn1Object.prettyPrint()
-            assert der_encode(asn1Object) == substrate
+            asn1Object, rest = der_decoder(substrate, asn1Spec=layers[next_layer])
+
+            self.assertFalse(rest)
+            self.assertTrue(asn1Object.prettyPrint())
+            self.assertEqual(substrate, der_encoder(asn1Object))
 
             substrate = getNextSubstrate[next_layer](asn1Object)
             next_layer = getNextLayer[next_layer](asn1Object)
 
-        assert asn1Object['version'] == 0
+        self.assertEqual(0, asn1Object['version'])
+
         for f in asn1Object['fileList']:
-            assert f['file'] == 'ZXSGBDBkL82TFGHuE4VOYtJP-E4.crl'
+            self.assertEqual('ZXSGBDBkL82TFGHuE4VOYtJP-E4.crl', f['file'])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.manifest_pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=rfc5652.ContentInfo(),
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=rfc5652.ContentInfo(), decodeOpenTypes=True)
 
-        oid =  asn1Object['content']['encapContentInfo']['eContentType']
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+
+        oid = asn1Object['content']['encapContentInfo']['eContentType']
         substrate = asn1Object['content']['encapContentInfo']['eContent']
-        assert oid in rfc5652.cmsContentTypesMap.keys()
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=rfc5652.cmsContentTypesMap[oid],
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
 
-        assert asn1Object['version'] == 0
+        self.assertIn(oid, rfc5652.cmsContentTypesMap)
+
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=rfc5652.cmsContentTypesMap[oid],
+            decodeOpenTypes=True)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertEqual(0, asn1Object['version'])
+
         for f in asn1Object['fileList']:
-            assert f['file'] == 'ZXSGBDBkL82TFGHuE4VOYtJP-E4.crl'
+            self.assertEqual('ZXSGBDBkL82TFGHuE4VOYtJP-E4.crl', f['file'])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

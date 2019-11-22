@@ -33,11 +33,12 @@ VWRpRKqYnOAIXQ==
 
         substrate = pem.readBase64fromText(self.pem_text)
 
-        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decoder.decode(
+            substrate, asn1Spec=self.asn1Spec)
 
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder.encode(asn1Object))
 
 
 class EncryptedPrivateKeyInfoInfoTestCase(unittest.TestCase):
@@ -59,11 +60,12 @@ dLsZjNQ=
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
 
-        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decoder.decode(
+            substrate, asn1Spec=self.asn1Spec)
 
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encoder.encode(asn1Object) == substrate
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder.encode(asn1Object))
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

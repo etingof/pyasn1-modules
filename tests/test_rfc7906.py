@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1.type import univ
 
 from pyasn1_modules import pem
@@ -122,39 +122,43 @@ toMsV8fLBpBjA5YGQvd3TAcSw1lNbWpArL+hje1dzQ7pxslnkklv3CTxAjBuVebz
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.attr_set_pem_text)
-        asn1Object, rest = der_decode (substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         for attr in asn1Object:
-            assert attr['type'] in rfc5652.cmsAttributesMap.keys()
-            av, rest = der_decode(attr['values'][0],
+            self.assertIn(attr['type'], rfc5652.cmsAttributesMap)
+
+            av, rest = der_decoder(
+                attr['values'][0],
                 asn1Spec=rfc5652.cmsAttributesMap[attr['type']])
-            assert not rest
-            assert av.prettyPrint()
-            assert der_encode(av) == attr['values'][0]
+
+            self.assertFalse(rest)
+            self.assertTrue(av.prettyPrint())
+            self.assertEqual(attr['values'][0], der_encoder(av))
 
             if attr['type'] == rfc7906.id_aa_KP_contentDecryptKeyID:
-                assert av == univ.OctetString(hexValue='7906')
+                self.assertEqual(univ.OctetString(hexValue='7906'), av)
 
     def testOpenTypes(self):
-        openTypesMap = { }
-        openTypesMap.update(rfc5280.certificateAttributesMap)
+        openTypesMap = rfc5280.certificateAttributesMap.copy()
         openTypesMap.update(rfc5652.cmsAttributesMap)
 
         substrate = pem.readBase64fromText(self.attr_set_pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec,
-            openTypes=openTypesMap,
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, openTypes=openTypesMap,
             decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         for attr in asn1Object:
             if attr['type'] == rfc7906.id_aa_KP_contentDecryptKeyID:
-                assert attr['values'][0] == univ.OctetString(hexValue='7906')
+                self.assertEqual(
+                    univ.OctetString(hexValue='7906'), attr['values'][0])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

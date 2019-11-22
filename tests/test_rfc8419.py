@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5280
@@ -24,12 +24,13 @@ class Ed25519TestCase(unittest.TestCase):
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.alg_id_1_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert asn1Object['algorithm'] == rfc8419.id_Ed25519
-        assert not asn1Object['parameters'].isValue
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(rfc8419.id_Ed25519, asn1Object['algorithm'])
+        self.assertFalse(asn1Object['parameters'].isValue)
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
 
 class Ed448TestCase(unittest.TestCase):
@@ -40,12 +41,14 @@ class Ed448TestCase(unittest.TestCase):
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.alg_id_2_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert asn1Object['algorithm'] == rfc8419.id_Ed448
-        assert not asn1Object['parameters'].isValue
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(rfc8419.id_Ed448, asn1Object['algorithm'])
+        self.assertFalse(asn1Object['parameters'].isValue)
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
 
 class SHA512TestCase(unittest.TestCase):
@@ -56,12 +59,14 @@ class SHA512TestCase(unittest.TestCase):
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.alg_id_3_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert asn1Object['algorithm'] == rfc8419.id_sha512
-        assert not asn1Object['parameters'].isValue
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(rfc8419.id_sha512, asn1Object['algorithm'])
+        self.assertFalse(asn1Object['parameters'].isValue)
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
 
 class SHAKE256TestCase(unittest.TestCase):
@@ -72,12 +77,13 @@ class SHAKE256TestCase(unittest.TestCase):
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.alg_id_4_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert asn1Object['algorithm'] == rfc8419.id_shake256
-        assert not asn1Object['parameters'].isValue
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(rfc8419.id_shake256, asn1Object['algorithm'])
+        self.assertFalse(asn1Object['parameters'].isValue)
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
 
 class SHAKE256LENTestCase(unittest.TestCase):
@@ -88,30 +94,33 @@ class SHAKE256LENTestCase(unittest.TestCase):
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.alg_id_5_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert asn1Object['algorithm'] == rfc8419.id_shake256_len
-        assert asn1Object['parameters'].isValue
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        param, rest = der_decode(asn1Object['parameters'],
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(rfc8419.id_shake256_len, asn1Object['algorithm'])
+        self.assertTrue(asn1Object['parameters'].isValue)
+        self.assertEqual(substrate, der_encoder(asn1Object))
+
+        param, rest = der_decoder(
+            asn1Object['parameters'],
             asn1Spec=rfc5280.algorithmIdentifierMap[asn1Object['algorithm']])
-        assert not rest
-        assert param.prettyPrint()
-        assert der_encode(param) == asn1Object['parameters']
-        assert param == 512
+
+        self.assertFalse(rest)
+        self.assertTrue(param.prettyPrint())
+        self.assertEqual(asn1Object['parameters'], der_encoder(param))
+        self.assertEqual(512, param)
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.alg_id_5_pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert asn1Object['algorithm'] == rfc8419.id_shake256_len
-        assert asn1Object['parameters'] == 512
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(rfc8419.id_shake256_len, asn1Object['algorithm'])
+        self.assertEqual(512, asn1Object['parameters'])
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

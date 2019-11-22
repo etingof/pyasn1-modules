@@ -7,8 +7,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1.type import char
 from pyasn1.type import univ
 
@@ -43,11 +43,11 @@ fi6h7i9VVAZpslaKFfkNg12gLbbsCB1q36l5VXjHY/qe0FIUa9ogRrOi
 
         substrate = pem.readBase64fromText(self.pem_text)
 
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
     def testOpenTypes(self):
         openTypesMap = {
@@ -57,27 +57,30 @@ fi6h7i9VVAZpslaKFfkNg12gLbbsCB1q36l5VXjHY/qe0FIUa9ogRrOi
         }
 
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=rfc2986.CertificationRequest(),
-            openTypes=openTypesMap,
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
+        asn1Object, rest = der_decoder(substrate,
+                                       asn1Spec=rfc2986.CertificationRequest(),
+                                       openTypes=openTypesMap,
+                                       decodeOpenTypes=True)
 
-        assert der_encode(asn1Object) == substrate
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         for rdn in asn1Object['certificationRequestInfo']['subject']['rdnSequence']:
             for atv in rdn:
                 if atv['type'] == rfc5280.id_at_countryName:
-                    assert atv['value'] == char.PrintableString('US')
+                    self.assertEqual(char.PrintableString('US'), atv['value'])
+
                 else:
-                    assert len(atv['value']['utf8String']) > 2
+                    self.assertGreater(len(atv['value']['utf8String']), 2)
 
         spki_alg = asn1Object['certificationRequestInfo']['subjectPKInfo']['algorithm']
-        assert spki_alg['parameters'] == univ.Null("")
+
+        self.assertEqual(univ.Null(""), spki_alg['parameters'])
 
         sig_alg = asn1Object['signatureAlgorithm']
-        assert sig_alg['parameters'] == univ.Null("")
+
+        self.assertEqual(univ.Null(""), sig_alg['parameters'])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

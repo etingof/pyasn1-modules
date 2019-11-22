@@ -5,21 +5,15 @@
 # License: http://snmplabs.com/pyasn1/license.html
 #
 import sys
+import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
-
-from pyasn1.type import univ
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc4055
 from pyasn1_modules import rfc5652
 from pyasn1_modules import rfc5126
-
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
 
 
 class SignedAttributesTestCase(unittest.TestCase):
@@ -39,58 +33,65 @@ l+AOeKdFgg==
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         found_spid_oid = False
+
         for attr in asn1Object:
             if attr['attrType'] in rfc5652.cmsAttributesMap.keys():
-                av, rest = der_decode (attr['attrValues'][0],
+                av, rest = der_decoder(
+                    attr['attrValues'][0],
                     asn1Spec=rfc5652.cmsAttributesMap[attr['attrType']])
-                assert not rest
-                assert av.prettyPrint()
-                assert der_encode(av) == attr['attrValues'][0]
+
+                self.assertFalse(rest)
+                self.assertTrue(av.prettyPrint())
+                self.assertEqual(attr['attrValues'][0], der_encoder(av))
 
                 if attr['attrType'] == rfc5126.id_aa_ets_sigPolicyId:
                     spid_oid = rfc5126.SigPolicyId('1.3.6.1.4.1.22112.48.20')
-                    assert av['signaturePolicyId']['sigPolicyId'] == spid_oid
+
+                    self.assertEqual(
+                        spid_oid, av['signaturePolicyId']['sigPolicyId'])
+
                     found_spid_oid = True
 
-        assert found_spid_oid
+        self.assertTrue(found_spid_oid)
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate,
-            asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
 
-        attr_type_list = [ ]
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+
+        attr_type_list = []
         spid_oid = rfc5126.SigPolicyId('1.3.6.1.4.1.22112.48.20')
 
         for attr in asn1Object:
             if attr['attrType'] == rfc5126.id_aa_ets_sigPolicyId:
                 spid = attr['attrValues'][0]['signaturePolicyId']
-                assert spid['sigPolicyId'] == spid_oid
+                self.assertEqual(spid_oid, spid['sigPolicyId'])
                 attr_type_list.append(rfc5126.id_aa_ets_sigPolicyId)
 
             if attr['attrType'] == rfc5126.id_aa_ets_signerLocation:
                 cn = attr['attrValues'][0]['countryName']
-                assert cn['printableString'] == 'US'
+                self.assertEqual('US', cn['printableString'])
                 attr_type_list.append(rfc5126.id_aa_ets_signerLocation)
 
             if attr['attrType'] == rfc5126.id_aa_signingCertificateV2:
                 ha = attr['attrValues'][0]['certs'][0]['hashAlgorithm']
-                assert ha['algorithm'] == rfc4055.id_sha256
+                self.assertEqual(rfc4055.id_sha256, ha['algorithm'])
                 attr_type_list.append(rfc5126.id_aa_signingCertificateV2)
 
-        assert rfc5126.id_aa_ets_sigPolicyId in attr_type_list
-        assert rfc5126.id_aa_ets_signerLocation in attr_type_list
-        assert rfc5126.id_aa_signingCertificateV2 in attr_type_list
+        self.assertIn(rfc5126.id_aa_ets_sigPolicyId, attr_type_list)
+        self.assertIn(rfc5126.id_aa_ets_signerLocation, attr_type_list)
+        self.assertIn(rfc5126.id_aa_signingCertificateV2, attr_type_list)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

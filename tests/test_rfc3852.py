@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1.type import univ
 
 from pyasn1_modules import pem
@@ -71,48 +71,54 @@ xicQmJP+VoMHo/ZpjFY9fYCjNZUArgKsEwK/s+p9yrVVeB1Nf8Mn
             univ.ObjectIdentifier('1.2.840.113549.1.1.11'),
         )
 
-        encoded_null = der_encode(univ.Null(""))
+        encoded_null = der_encoder(univ.Null(""))
 
         next_layer = rfc3852.id_ct_contentInfo
 
         count = 0
+
         while next_layer:
-            asn1Object, rest = der_decode(substrate, asn1Spec=layers[next_layer])
-            assert not rest
-            assert asn1Object.prettyPrint()
-            assert der_encode(asn1Object) == substrate
+            asn1Object, rest = der_decoder(substrate, asn1Spec=layers[next_layer])
+
+            self.assertFalse(rest)
+            self.assertTrue(asn1Object.prettyPrint())
+            self.assertEqual(substrate, der_encoder(asn1Object))
     
             if next_layer == rfc3852.id_signedData:
-               for d in asn1Object['digestAlgorithms']:
-                   assert d['algorithm'] in alg_oids
-                   assert d['parameters'] == encoded_null
-                   count += 1
+                for d in asn1Object['digestAlgorithms']:
+                    self.assertIn(d['algorithm'], alg_oids)
+                    self.assertEqual(encoded_null, d['parameters'])
+                    count += 1
 
-               for si in asn1Object['signerInfos']:
-                   assert si['digestAlgorithm']['algorithm'] in alg_oids
-                   assert si['digestAlgorithm']['parameters'] == encoded_null
-                   count += 1
+                for si in asn1Object['signerInfos']:
+                    self.assertIn(si['digestAlgorithm']['algorithm'], alg_oids)
+                    self.assertEqual(
+                        encoded_null, si['digestAlgorithm']['parameters'])
+                    count += 1
 
-                   assert si['signatureAlgorithm']['algorithm'] in alg_oids
-                   assert si['signatureAlgorithm']['parameters'] == encoded_null
-                   count += 1
+                    self.assertIn(si['signatureAlgorithm']['algorithm'], alg_oids)
+                    self.assertEqual(
+                        encoded_null, si['signatureAlgorithm']['parameters'])
+                    count += 1
 
             if next_layer == rfc6402.id_cct_PKIData:
                 for req in asn1Object['reqSequence']:
                     cr = req['tcr']['certificationRequest']
-                    assert cr['signatureAlgorithm']['algorithm'] in alg_oids
-                    assert cr['signatureAlgorithm']['parameters'] == encoded_null
+                    self.assertIn(cr['signatureAlgorithm']['algorithm'], alg_oids)
+                    self.assertEqual(
+                        encoded_null, cr['signatureAlgorithm']['parameters'])
                     count += 1
 
                     cri_spki = cr['certificationRequestInfo']['subjectPublicKeyInfo']
-                    assert cri_spki['algorithm']['algorithm'] in alg_oids
-                    assert cri_spki['algorithm']['parameters'] == encoded_null
+                    self.assertIn(cri_spki['algorithm']['algorithm'], alg_oids)
+                    self.assertEqual(
+                        encoded_null, cri_spki['algorithm']['parameters'])
                     count += 1
 
             substrate = getNextSubstrate[next_layer](asn1Object)
             next_layer = getNextLayer[next_layer](asn1Object)
 
-        assert count == 5
+        self.assertEqual(5, count)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

@@ -36,7 +36,7 @@ GGbx7DI=
 
         binary = pem.readBase64fromText(self.pem_text)
 
-        assert binary
+        self.assertTrue(binary)
 
         expected = [
             48, 130, 3, 1, 48, 130, 1, 233, 2, 1, 0, 48, 129, 153, 49, 11, 48,
@@ -93,7 +93,7 @@ GGbx7DI=
             24, 102, 241, 236, 50
         ]
 
-        assert ints2octs(expected) == binary
+        self.assertEqual(ints2octs(expected), binary)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

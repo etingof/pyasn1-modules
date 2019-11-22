@@ -7,8 +7,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5280
@@ -58,23 +58,25 @@ HDFd3u1ztO8WGjH/LOehoO30xsm52kbxZjc4SJWubgBgxTMIWyjPHbKqCF44NwYev/6eFcOC
         ]
 
         substrate = pem.readBase64fromText(self.rpki_cert_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         count = 0
+
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] == rfc5280.id_pe_subjectInfoAccess:
-                extnValue, rest = der_decode(extn['extnValue'],
-                    asn1Spec=rfc5280.SubjectInfoAccessSyntax())
+                extnValue, rest = der_decoder(
+                    extn['extnValue'], asn1Spec=rfc5280.SubjectInfoAccessSyntax())
                 for ad in extnValue:
                     if ad['accessMethod'] in access_methods:
                         uri = ad['accessLocation']['uniformResourceIdentifier']
-                        assert 'rpki.apnic.net' in uri
+                        self.assertIn('rpki.apnic.net', uri)
                         count += 1
 
-        assert count == 1
+        self.assertEqual(1, count)
 
 
 class CertificateWithSignedObjectTestCase(unittest.TestCase):
@@ -117,23 +119,24 @@ WYtY4rWNeHcfgNTz
         ]
 
         substrate = pem.readBase64fromText(self.rpki_cert_pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         count = 0
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] == rfc5280.id_pe_subjectInfoAccess:
-                extnValue, rest = der_decode(extn['extnValue'],
-                    asn1Spec=rfc5280.SubjectInfoAccessSyntax())
+                extnValue, rest = der_decoder(
+                    extn['extnValue'], asn1Spec=rfc5280.SubjectInfoAccessSyntax())
                 for ad in extnValue:
                     if ad['accessMethod'] in access_methods:
                         uri = ad['accessLocation']['uniformResourceIdentifier']
-                        assert 'ca.rg.net' in uri
+                        self.assertIn('ca.rg.net', uri)
                         count += 1
 
-        assert count == 1
+        self.assertEqual(1, count)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

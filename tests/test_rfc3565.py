@@ -25,10 +25,10 @@ class AESKeyWrapTestCase(unittest.TestCase):
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.kw_alg_id_pem_text)
         asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert asn1Object[0] == rfc3565.id_aes256_wrap
-        assert der_encoder.encode(asn1Object) == substrate
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(rfc3565.id_aes256_wrap, asn1Object[0])
+        self.assertEqual(substrate, der_encoder.encode(asn1Object))
 
 
 class AESCBCTestCase(unittest.TestCase):
@@ -40,23 +40,26 @@ class AESCBCTestCase(unittest.TestCase):
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.aes_alg_id_pem_text)
         asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert asn1Object[0] == rfc3565.id_aes256_CBC
-        assert asn1Object[1].isValue
-        assert der_encoder.encode(asn1Object) == substrate
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(rfc3565.id_aes256_CBC, asn1Object[0])
+        self.assertTrue(asn1Object[1].isValue)
+        self.assertEqual(substrate, der_encoder.encode(asn1Object))
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.aes_alg_id_pem_text)
         asn1Object, rest = der_decoder.decode(substrate,
-            asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert asn1Object[0] == rfc3565.id_aes256_CBC
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(rfc3565.id_aes256_CBC, asn1Object[0])
+
         aes_iv = univ.OctetString(hexValue='108996ba850e3f0339993bb5878a0e37')
-        assert asn1Object[1] == aes_iv
-        assert der_encoder.encode(asn1Object) == substrate
+
+        self.assertEqual(aes_iv, asn1Object[1])
+        self.assertEqual(substrate, der_encoder.encode(asn1Object))
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

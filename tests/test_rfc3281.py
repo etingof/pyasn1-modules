@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc3281
@@ -41,12 +41,12 @@ Q4eikPk4LQey
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        assert asn1Object['acinfo']['version'] == 1
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertEqual(1, asn1Object['acinfo']['version'])
 
         attributeMap = {
             rfc3281.id_at_role: rfc3281.RoleSyntax(),
@@ -57,16 +57,20 @@ Q4eikPk4LQey
         }
 
         count = 0
+
         for attr in asn1Object['acinfo']['attributes']:
-            assert attr['type'] in attributeMap
-            av, rest = der_decode(attr['values'][0],
-                asn1Spec=attributeMap[attr['type']])
-            assert not rest
-            assert av.prettyPrint()
-            assert der_encode(av) == attr['values'][0]
+            self.assertIn(attr['type'], attributeMap)
+
+            av, rest = der_decoder(
+                attr['values'][0], asn1Spec=attributeMap[attr['type']])
+
+            self.assertFalse(rest)
+            self.assertTrue(av.prettyPrint())
+            self.assertEqual(attr['values'][0], der_encoder(av))
+
             count += 1
 
-        assert count == 5
+        self.assertEqual(5, count)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

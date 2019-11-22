@@ -7,8 +7,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der.decoder import decode as der_decode
-from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_modules import pem
 from pyasn1_modules import rfc5652
@@ -24,28 +24,29 @@ class BinarySigningTimeTestCase(unittest.TestCase):
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
 
-        asn1Object, rest = der_decode(substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertEqual(rfc6019.id_aa_binarySigningTime, asn1Object['attrType'])
 
-        assert asn1Object['attrType'] == rfc6019.id_aa_binarySigningTime
-        bintime, rest = der_decode(asn1Object['attrValues'][0],
-                                   asn1Spec=rfc6019.BinaryTime())
-        assert bintime == 0x5cbf8654
+        bintime, rest = der_decoder(
+            asn1Object['attrValues'][0], asn1Spec=rfc6019.BinaryTime())
+
+        self.assertEqual(0x5cbf8654, bintime)
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decode(substrate,
-                                      asn1Spec=self.asn1Spec,
-                                      decodeOpenTypes=True)
-        assert not rest
-        assert asn1Object.prettyPrint()
-        assert der_encode(asn1Object) == substrate
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec,
+            decodeOpenTypes=True)
 
-        assert asn1Object['attrType'] in rfc5652.cmsAttributesMap.keys()
-        assert asn1Object['attrValues'][0] == 0x5cbf8654
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertIn(asn1Object['attrType'], rfc5652.cmsAttributesMap)
+        self.assertEqual(0x5cbf8654, asn1Object['attrValues'][0])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
