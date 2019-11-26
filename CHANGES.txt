@@ -12,6 +12,7 @@ Revision 0.3.0, released XX-11-2019
   provided
 - Add RFC8692 providing Algorithm Identifiers for RSASSA-PSS and
   ECDSA Using SHAKEs
+- Add RFC5753 providing CMS Elliptic Curve Cryptography Algorithms
 
 Revision 0.2.8, released 16-11-2019
 -----------------------------------
