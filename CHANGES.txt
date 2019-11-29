@@ -15,6 +15,7 @@ Revision 0.3.0, released XX-11-2019
 - Add RFC5753 providing CMS Elliptic Curve Cryptography Algorithms
 - Add RFC3820 providing Proxy Certificates
 - Add RFC3370 providing Cryptographic Message Syntax (CMS) Algorithms
+- Add RFC3537 providing HMAC Key Wrapping
 
 Revision 0.2.8, released 16-11-2019
 -----------------------------------
