@@ -2,6 +2,8 @@
 # This file is part of pyasn1-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to add WithComponentsConstraints to
+#   enforce the requirements that are indicated in comments.
 #
 # Copyright (c) 2019, Vigil Security, LLC
 # License: http://snmplabs.com/pyasn1/license.html
@@ -157,6 +159,12 @@ class SemanticsInformation(univ.Sequence):
             univ.ObjectIdentifier()),
         namedtype.OptionalNamedType('nameRegistrationAuthorities',
             NameRegistrationAuthorities())
+    )
+    subtypeSpec = constraint.ConstraintsUnion(
+        constraint.WithComponentsConstraint(
+            ('semanticsIndentifier', constraint.ComponentPresentConstraint())),
+        constraint.WithComponentsConstraint(
+            ('nameRegistrationAuthorities', constraint.ComponentPresentConstraint()))
     )
 
 
