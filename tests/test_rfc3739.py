@@ -10,6 +10,7 @@ import unittest
 from pyasn1.codec.der.decoder import decode as der_decoder
 from pyasn1.codec.der.encoder import encode as der_encoder
 
+from pyasn1.type import error
 from pyasn1.type import univ
 
 from pyasn1_modules import pem
@@ -110,6 +111,19 @@ Iwtui+Wql/HveMqbAtXkiv9GDXYZms3HBoIaCVuDaUf6
 
         self.assertEqual(2, count)
         self.assertTrue(found_qc_stmt_oid)
+
+class WithComponentsTestCase(unittest.TestCase):
+
+    def testDerCodec(self):
+
+        try:
+            si = rfc3739.SemanticsInformation()
+            substrate = der_encoder(si)
+            encode_without_error = True
+        except error.PyAsn1Error:
+            encode_without_error = False
+
+        self.assertFalse(encode_without_error)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
