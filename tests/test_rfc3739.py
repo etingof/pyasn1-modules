@@ -115,15 +115,8 @@ Iwtui+Wql/HveMqbAtXkiv9GDXYZms3HBoIaCVuDaUf6
 class WithComponentsTestCase(unittest.TestCase):
 
     def testDerCodec(self):
-
-        try:
-            si = rfc3739.SemanticsInformation()
-            substrate = der_encoder(si)
-            encode_without_error = True
-        except error.PyAsn1Error:
-            encode_without_error = False
-
-        self.assertFalse(encode_without_error)
+        si = rfc3739.SemanticsInformation()
+        self.assertRaises(error.PyAsn1Error, der_encoder, si)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
