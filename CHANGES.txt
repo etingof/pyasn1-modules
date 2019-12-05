@@ -18,6 +18,7 @@ Revision 0.3.0, released XX-11-2019
 - Add RFC3537 providing HMAC Key Wrapping
 - Add RFC3739 providing Qualified Certificates
 - Add RFC2876 providing KEA and SKIPJACK for CMS
+- Add RFC3058 providing IDEA Encryption Algorithm for CMS 
 
 Revision 0.2.8, released 16-11-2019
 -----------------------------------
