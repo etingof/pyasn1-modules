@@ -68,6 +68,7 @@ b0tcQW20auWmCNkXd52jQJ7PXR6kr5I=
 
         ed, rest = der_decoder(
             asn1Object['content'], asn1Spec=rfc5652.EnvelopedData())
+
         self.assertFalse(rest)
         self.assertTrue(ed.prettyPrint())
         self.assertEqual(asn1Object['content'], der_encoder(ed))
@@ -80,17 +81,19 @@ b0tcQW20auWmCNkXd52jQJ7PXR6kr5I=
         self.assertEqual(rfc3058.id_IDEA_CBC, cea['algorithm'])
         param, rest = der_decoder(
             cea['parameters'], asn1Spec=rfc3058.IDEA_CBCPar())
+
         self.assertFalse(rest)
         self.assertTrue(param.prettyPrint())
         self.assertEqual(cea['parameters'], der_encoder(param))
 
         iv = univ.OctetString(hexValue='424f4755535f4956')
-        self.assertEqual(param['iv'], iv)
+        self.assertEqual(iv, param['iv'])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.env_data_pem_text)
         asn1Object, rest = der_decoder(
             substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
@@ -105,7 +108,7 @@ b0tcQW20auWmCNkXd52jQJ7PXR6kr5I=
         self.assertEqual(rfc3058.id_IDEA_CBC, cea['algorithm'])
 
         iv = univ.OctetString(hexValue='424f4755535f4956')
-        self.assertEqual(cea['parameters']['iv'], iv)
+        self.assertEqual(iv, cea['parameters']['iv'])
 
 class SMIMECapabilitiesTestCase(unittest.TestCase):
     smime_capabilities_pem_text = "MB4wDQYLKwYBBAGBPAcBAQIwDQYLKwYBBAGBPAcBAQY="
@@ -126,8 +129,8 @@ class SMIMECapabilitiesTestCase(unittest.TestCase):
             self.assertFalse(cap['parameters'].hasValue())
             alg_oid_list.append(cap['capabilityID'])
 
-        self.assertTrue(rfc3058.id_IDEA_CBC in alg_oid_list)
-        self.assertTrue(rfc3058.id_alg_CMSIDEAwrap in alg_oid_list)
+        self.assertIn(rfc3058.id_IDEA_CBC, alg_oid_list)
+        self.assertIn(rfc3058.id_alg_CMSIDEAwrap, alg_oid_list)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
