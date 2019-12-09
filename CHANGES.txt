@@ -21,6 +21,12 @@ Revision 0.3.0, released XX-11-2019
 - Add RFC3058 providing IDEA Encryption Algorithm for CMS 
 - Add RFC3657 providing Camellia Encryption Algorithm for CMS 
 - Add RFC4010 providing SEED Encryption Algorithm for CMS 
+- Add RFC4357 providing Additional Cryptographic Algorithms for Use with
+  GOST 28147-89, GOST R 34.10-94, GOST R 34.10-2001, and GOST R 34.11-94
+- Add RFC4490 providing GOST 28147-89, GOST R 34.11-94, GOST R 34.10-94,
+  and GOST R 34.10-2001 Algorithms for CMS 
+- Add RFC4491 providing GOST R 34.10-94, GOST R 34.10-2001, and
+  GOST R 34.11-94 Algorithms for certificates and CRLs
 
 Revision 0.2.8, released 16-11-2019
 -----------------------------------
