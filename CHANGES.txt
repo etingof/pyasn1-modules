@@ -28,6 +28,8 @@ Revision 0.3.0, released XX-11-2019
 - Add RFC4491 providing GOST R 34.10-94, GOST R 34.10-2001, and
   GOST R 34.11-94 Algorithms for certificates and CRLs
 - Add RFC8696 providing using Pre-Shared Key (PSK) in the CMS
+- Add RFC5639 providing identifiers for the Brainpool curves in
+  Elliptic Curve Cryptography
 
 Revision 0.2.8, released 16-11-2019
 -----------------------------------
