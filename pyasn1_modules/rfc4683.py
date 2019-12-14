@@ -13,7 +13,9 @@
 # https://www.rfc-editor.org/errata/eid1047
 #
 
-from pyasn1.type import univ, char, namedtype, namedval, tag, constraint, useful
+from pyasn1.type import char
+from pyasn1.type import namedtype
+from pyasn1.type import univ
 
 from pyasn1_modules import rfc5280
 
