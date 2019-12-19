@@ -34,6 +34,7 @@ Revision 0.3.0, released XX-11-2019
 - Add RFC4683 providing Subject Identification Method (SIM)
 - Add RFC4476 providing Attribute Certificate Policies Extension
 - Add RFC5636 providing Traceable Anonymous Certificate
+- Add RFC5752 providing Multiple Signatures attribute for CMS
 
 Revision 0.2.8, released 16-11-2019
 -----------------------------------
