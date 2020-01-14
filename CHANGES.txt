@@ -36,6 +36,7 @@ Revision 0.3.0, released XX-11-2019
 - Add RFC5636 providing Traceable Anonymous Certificate
 - Add RFC5752 providing Multiple Signatures attribute for CMS
 - Add RFC5275 providing CMS Symmetric Key Management and Distribution
+- Add RFC8702 providing SHAKE One-way Hash Functions in the CMS
 
 Revision 0.2.8, released 16-11-2019
 -----------------------------------
