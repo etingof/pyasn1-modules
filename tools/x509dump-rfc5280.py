@@ -4,7 +4,7 @@
 # This file is part of pyasn1-modules software.
 #
 # Created by Stanisław Pitucha with asn1ate tool.
-# Copyright (c) 2005-2019, Ilya Etingof <etingof@gmail.com>
+# Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: http://snmplabs.com/pyasn1/license.html
 #
 # Read ASN.1/PEM X.509 certificates on stdin, parse each into plain text,

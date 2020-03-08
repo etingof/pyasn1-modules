@@ -25,5 +25,5 @@ or post your question [on Stack Overflow](https://stackoverflow.com/questions/as
  
 New modules contributions are welcome via GitHub pull requests.
 
-Copyright (c) 2005-2019, [Ilya Etingof](mailto:etingof@gmail.com).
+Copyright (c) 2005-2020, [Ilya Etingof](mailto:etingof@gmail.com).
 All rights reserved.
