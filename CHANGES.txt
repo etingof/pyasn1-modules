@@ -3,6 +3,7 @@ Revision 0.3.0, released XX-03-2020
 -----------------------------------
 
 - Added support for Python 3.8.
+- Added tox runner with a handful of basic jobs
 - Add RFC3125 providing Electronic Signature Policies
 - Add RFC5126 providing CMS Advanced Electronic Signatures (CAdES)
 - Removed support for EOL Pythons 2.4, 2.5, 2.6, 3.2, 3.3 and 3.4.
