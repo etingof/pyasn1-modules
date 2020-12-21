@@ -7,6 +7,12 @@ ASN.1 modules for Python
 [![Coverage Status](https://img.shields.io/codecov/c/github/etingof/pyasn1-modules.svg)](https://codecov.io/github/etingof/pyasn1-modules/)
 [![GitHub license](https://img.shields.io/badge/license-BSD-blue.svg)](https://raw.githubusercontent.com/etingof/pyasn1-modules/master/LICENSE.txt)
 
+Why this fork?
+--------------
+[Original project](https://github.com/etingof/snmpsim-data) by [Ilya Etingof](https://github.com/etingof) seems not to be continued anymore.
+Because of that, we try to maintain / enhance SNMP simulation data.
+
+
 The `pyasn1-modules` package contains a collection of
 [ASN.1](https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-X.208-198811-W!!PDF-E&type=items)
 data structures expressed as Python classes based on [pyasn1](https://github.com/etingof/pyasn1)
@@ -24,6 +30,8 @@ If something does not work as expected,
 or post your question [on Stack Overflow](https://stackoverflow.com/questions/ask)
  
 New modules contributions are welcome via GitHub pull requests.
+
+If you want to contact us, please mail to the [Thola Team](mailto:snmplabs@thola.io)
 
 Copyright (c) 2005-2020, [Ilya Etingof](mailto:etingof@gmail.com).
 All rights reserved.
