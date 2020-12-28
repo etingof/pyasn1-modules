@@ -6,10 +6,10 @@
 # Copyright (c) 2020, Vigil Security, LLC
 # License: http://snmplabs.com/pyasn1/license.html
 #
-# ACME TLS ALPN Challenge Extension
+# Simple Certificate Enrolment Protocol
 #
 # ASN.1 source from:
-# https://www.rfc-editor.org/rfc/rfc8737.txt
+# https://www.rfc-editor.org/rfc/rfc8894.txt
 #
 
 from pyasn1.type import univ
