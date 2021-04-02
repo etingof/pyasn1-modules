@@ -1646,7 +1646,7 @@ _certificateExtensionsMap = {
     id_ce_extKeyUsage: ExtKeyUsageSyntax(),
     id_ce_cRLDistributionPoints: CRLDistributionPoints(),
     id_pe_authorityInfoAccess: AuthorityInfoAccessSyntax(),
-    id_ce_cRLNumber: univ.Integer(),
+    id_ce_cRLNumber: CRLNumber(),
     id_ce_deltaCRLIndicator: BaseCRLNumber(),
     id_ce_issuingDistributionPoint: IssuingDistributionPoint(),
     id_ce_cRLReasons: CRLReason(),
