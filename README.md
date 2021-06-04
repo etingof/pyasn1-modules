@@ -23,6 +23,6 @@ If something does not work as expected,
  
 Additional module contributions are welcome via GitHub pull requests.
 
-Copyright (c) 2005-2020, [Ilya Etingof](mailto:etingof@gmail.com).
+Copyright (c) 2005-2020, [Ilya Etingof](mailto:etingof@gmail.com).<br/>
 Copyright (c) 2021, Vigil Security, LLC [Russ Housley](mailto:housley@vigilsec.com)
 All rights reserved.
