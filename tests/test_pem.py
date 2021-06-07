@@ -1,14 +1,15 @@
 #
-# This file is part of pyasn1-modules software.
+# This file is part of pyasn1-alt-modules software.
 #
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
-# License: http://snmplabs.com/pyasn1/license.html
+# Copyright (c) 2021, Vigil Security, LLC
+# License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 import sys
 import unittest
 
 from pyasn1.compat.octets import ints2octs
-from pyasn1_modules import pem
+from pyasn1_alt_modules import pem
 
 
 class PemTestCase(unittest.TestCase):

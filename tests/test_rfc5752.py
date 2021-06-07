@@ -1,8 +1,8 @@
 #
-# This file is part of pyasn1-modules software.
+# This file is part of pyasn1-alt-modules software.
 #
-# Copyright (c) 2019, Vigil Security, LLC
-# License: http://snmplabs.com/pyasn1/license.html
+# Copyright (c) 2019-2021, Vigil Security, LLC
+# License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 import sys
 import unittest
@@ -10,10 +10,10 @@ import unittest
 from pyasn1.codec.der.decoder import decode as der_decoder
 from pyasn1.codec.der.encoder import encode as der_encoder
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc4055
-from pyasn1_modules import rfc5652
-from pyasn1_modules import rfc5752
+from pyasn1_alt_modules import pem
+from pyasn1_alt_modules import rfc4055
+from pyasn1_alt_modules import rfc5652
+from pyasn1_alt_modules import rfc5752
 
 
 class MultipleSignaturesTestCase(unittest.TestCase):

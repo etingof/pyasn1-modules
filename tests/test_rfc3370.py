@@ -1,9 +1,9 @@
 #
-# This file is part of pyasn1-modules software.
+# This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley
-# Copyright (c) 2019, Vigil Security, LLC
-# License: http://snmplabs.com/pyasn1/license.html
+# Copyright (c) 2019-2021, Vigil Security, LLC
+# License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 
 import sys
@@ -14,11 +14,11 @@ from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1.type import univ
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc3370
-from pyasn1_modules import rfc5280
-from pyasn1_modules import rfc5652
-from pyasn1_modules import rfc5751
+from pyasn1_alt_modules import pem
+from pyasn1_alt_modules import rfc3370
+from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import rfc5652
+from pyasn1_alt_modules import rfc5751
 
 
 class EnvelopedDataTestCase(unittest.TestCase):

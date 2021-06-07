@@ -1,9 +1,9 @@
 #
-# This file is part of pyasn1-modules software.
+# This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley
-# Copyright (c) 2019, Vigil Security, LLC
-# License: http://snmplabs.com/pyasn1/license.html
+# Copyright (c) 2019-2021, Vigil Security, LLC
+# License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 import sys
 import unittest
@@ -12,9 +12,9 @@ from pyasn1.codec.der import decoder as der_decoder
 from pyasn1.codec.der import encoder as der_encoder
 from pyasn1.type import univ
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc5280
-from pyasn1_modules import rfc4055
+from pyasn1_alt_modules import pem
+from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import rfc4055
 
 
 class PSSDefautTestCase(unittest.TestCase):
