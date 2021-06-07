@@ -3,17 +3,18 @@
 # This file is part of pyasn1-modules software.
 #
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
-# License: http://snmplabs.com/pyasn1/license.html
+# Copyright (c) 2021, Vigil Security, LLC
+# License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 import sys
 import unittest
 
 
-doclines = """A collection of ASN.1-based protocols modules.
+doclines = """A alternate collection of ASN.1-based protocols modules.
 
    A collection of ASN.1 modules expressed in form of pyasn1 classes.
-   Includes protocols PDUs definition (SNMP, LDAP etc.) and various
-   data structures (X.509, PKCS etc.).
+   Includes protocols PDUs definition (SNMP, LDAP, OCSP, and so on) as 
+   various data structures (X.509, PKCS, and so on).
 """
 
 doclines = [x.strip() for x in doclines.split('\n') if x]
@@ -86,15 +87,15 @@ params.update(
      'version': open('pyasn1_modules/__init__.py').read().split('\'')[1],
      'description': doclines[0],
      'long_description': ' '.join(doclines[1:]),
-     'maintainer': 'Ilya Etingof <etingof@gmail.com>',
-     'author': 'Ilya Etingof',
-     'author_email': 'etingof@gmail.com',
-     'url': 'https://github.com/etingof/pyasn1-modules',
+     'maintainer': 'Russ Housley <housley@vigilsec.com>',
+     'author': 'Russ Housley',
+     'author_email': 'housley@vigilsec.com',
+     'url': 'https://github.com/russhousley/pyasn1-alt-modules',
      'platforms': ['any'],
      'python_requires': '>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
      'classifiers': [x for x in classifiers.split('\n') if x],
      'license': 'BSD-2-Clause',
-     'packages': ['pyasn1_modules'],
+     'packages': ['pyasn1_alt_modules'],
      'python_requires': '>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*'})
 
 
