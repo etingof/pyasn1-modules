@@ -11,6 +11,13 @@ The `pyasn1-alt-modules` package contains a collection of
 data structures expressed as Python classes based on [pyasn1](https://github.com/etingof/pyasn1)
 data model.
 
+It seems that [pyasn1-modules](https://github.com/etingof/pyasn1-modules) is no
+longer being maintained.  As a result, the `pyasn1-alt-modules` package was
+created to share new module developments.  Previous modules are included in
+the `pyasn1-alt-modules` package so that both do not need to be installed.
+
+However, the tools directory of the `pyasn1-modules` package in not included.
+
 If ASN.1 module you need is not present in this collection, try using
 [Asn1ate](https://github.com/kimgr/asn1ate) tool that compiles (some)
 ASN.1 modules into pyasn1 code.

@@ -1,4 +1,3 @@
 include *.txt *.md
-recursive-include tools *.py
 recursive-include tests *.py
 prune doc/build
