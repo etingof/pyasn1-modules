@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# This file is part of pyasn1-modules software.
+# This file is part of pyasn1-alt-modules software.
 #
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # Copyright (c) 2021, Vigil Security, LLC
@@ -67,7 +67,7 @@ try:
 
     params = {
         'zip_safe': True,
-        'install_requires': ['pyasn1>=0.4.6,<0.6.0']
+        'install_requires': ['pyasn1>=0.4.7']
     }
 
 except ImportError:
@@ -79,12 +79,12 @@ except ImportError:
     from distutils.core import setup, Command
 
     params = {
-        'requires': ['pyasn1(>=0.4.6,<0.6.0)']
+        'requires': ['pyasn1>=0.4.7']
     }
 
 params.update(
-    {'name': 'pyasn1-modules',
-     'version': open('pyasn1_modules/__init__.py').read().split('\'')[1],
+    {'name': 'pyasn1-alt-modules',
+     'version': open('pyasn1_alt_modules/__init__.py').read().split('\'')[1],
      'description': doclines[0],
      'long_description': ' '.join(doclines[1:]),
      'maintainer': 'Russ Housley <housley@vigilsec.com>',
@@ -92,12 +92,10 @@ params.update(
      'author_email': 'housley@vigilsec.com',
      'url': 'https://github.com/russhousley/pyasn1-alt-modules',
      'platforms': ['any'],
-     'python_requires': '>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
      'classifiers': [x for x in classifiers.split('\n') if x],
      'license': 'BSD-2-Clause',
      'packages': ['pyasn1_alt_modules'],
      'python_requires': '>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*'})
-
 
 class PyTest(Command):
     user_options = []

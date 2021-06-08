@@ -1,11 +1,10 @@
-Revision 1.0.0, released XX-06-2021
+Revision 0.3.0, released 08-06-2021
 -----------------------------------
-- Fork from pyasn1-modules to create pyasn1-alt-modules.
-- Added support for Python 3.8.
+- Added support for Python 3.8
 - Added tox runner with a handful of basic jobs
 - Add RFC3125 providing Electronic Signature Policies
 - Add RFC5126 providing CMS Advanced Electronic Signatures (CAdES)
-- Removed support for EOL Pythons 2.4, 2.5, 2.6, 3.2, 3.3 and 3.4.
+- Removed support for EOL Pythons 2.4, 2.5, 2.6, 3.2, 3.3 and 3.4
 - Improve test routines for RFC5126
 - Add RFC4387 providing Certificate Store Access via HTTP
 - Changed assertion in unit tests from Python built-in to `unittest`
@@ -38,26 +37,11 @@ Revision 1.0.0, released XX-06-2021
 - Add RFC5275 providing CMS Symmetric Key Management and Distribution
 - Add RFC8702 providing SHAKE One-way Hash Functions in the CMS
 - Add RFC8708 providing HSS/LMS Hash-based Signature Algorithm for CMS
-- Advance copyright statement to year 2020
 - Add RFC8769 providing CBOR and CBOR Sequence content types for CMS
 - Improve the test routine for RFC4055
-- Add RFC4056 providing RSASSA-PSS Signature Algorithm in CMS
-- Add RFC4262 providing S/MIME Capabilities Certificate Extension
-- Add RFC6066 providing PkiPath for the pkix-pkipath media type
-- Add RFC6492 providing a protocol for provisioning RPKI certificates
-- Add RFC6962 providing Certificate Transparency
-- Add RFC4059 providing Warranty Certificate Extension
-- Add RFC4998 providing Evidence Record Syntax (ERS)
-- Add RFC5544 providing the TimeStampedData Content Type
-- Add RFC5055 providing Server-Based Certificate Validation Protocol (SCVP)
-- Add RFC5276 providing SCVP updates to convey Long-Term Evidence Records
-- Modified RFC4055 to include PKCS#1 v1.5 algorithm identifiers
-- Add RFC7693 providing the BLAKE2 Cryptographic Hash and MAC
-- Add RFC7836 providing  Cryptographic Algorithms for GOST R 34.10-2012
-  and GOST R 34.11-2012
-- Modified RFC4357 to include the new parameter set in RFC7836
-- Add RFC8994 providing ACP Node Name in X.509 Certificates
-- Add RFC8995 providing the masa-url certificate extension used by BRSKI
+- Fork from pyasn1-modules to create pyasn1-alt-modules
+- Advance copyright statement to year 2021
+- Update pointer to license file
 
 Revision 0.2.8, released 16-11-2019
 -----------------------------------
