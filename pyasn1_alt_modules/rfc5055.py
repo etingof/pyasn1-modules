@@ -1,10 +1,10 @@
 #
-# This file is part of pyasn1-modules software.
+# This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with some help from asn1ate v.0.6.0
 #
 # Copyright (c) 2021, Vigil Security, LLC
-# License: http://snmplabs.com/pyasn1/license.html
+# License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 # Server-Based Certificate Validation Protocol (SCVP)
 #
@@ -22,10 +22,10 @@ from pyasn1.type import tag
 from pyasn1.type import useful
 from pyasn1.type import univ
 
-from pyasn1_modules import rfc5280
-from pyasn1_modules import rfc5652
-from pyasn1_modules import rfc6960
-from pyasn1_modules import rfc3281
+from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import rfc5652
+from pyasn1_alt_modules import rfc6960
+from pyasn1_alt_modules import rfc3281
 
 MAX = float('inf')
 

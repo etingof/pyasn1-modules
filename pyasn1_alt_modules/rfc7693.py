@@ -1,5 +1,5 @@
 #
-# This file is part of pyasn1-modules software.
+# This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley.
 #

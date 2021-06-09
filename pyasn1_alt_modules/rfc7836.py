@@ -1,10 +1,10 @@
 #
-# This file is part of pyasn1-modules software.
+# This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with some assistance from asn1ate v.0.6.0.
 #
 # Copyright (c) 2021, Vigil Security, LLC
-# License: http://snmplabs.com/pyasn1/license.html
+# License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 # Cryptographic Algorithms for GOST R 34.10-2012 and GOST R 34.11-2012
 #

@@ -1,10 +1,10 @@
 #
-# This file is part of pyasn1-modules software.
+# This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley.
 #
 # Copyright (c) 2021, Vigil Security, LLC
-# License: http://snmplabs.com/pyasn1/license.html
+# License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 # RSASSA-PSS Signature Algorithm in CMS
 #
@@ -12,7 +12,7 @@
 # https://www.rfc-editor.org/rfc/rfc4056.txt
 #
 
-from pyasn1_modules import rfc4055
+from pyasn1_alt_modules import rfc4055
 
 
 # Imports from RFC 4055
