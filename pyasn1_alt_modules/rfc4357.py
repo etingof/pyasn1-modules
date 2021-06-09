@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to allow gost_28147_param_Z from RFC 7836.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -11,6 +12,7 @@
 #
 # ASN.1 source from:
 # https://www.rfc-editor.org/rfc/rfc4357.txt
+# https://www.rfc-editor.org/rfc/rfc7863.txt
 # https://www.rfc-editor.org/errata/eid5927
 # https://www.rfc-editor.org/errata/eid5928
 #
@@ -22,7 +24,7 @@ from pyasn1.type import tag
 from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5280
-
+from pyasn1_alt_modules import rfc7836
 
 # Import from RFC 5280
 
@@ -205,7 +207,8 @@ Gost28147_89_ParamSet.subtypeSpec = constraint.SingleValueConstraint(
     id_Gost28147_89_CryptoPro_D_ParamSet,
     id_Gost28147_89_CryptoPro_Oscar_1_1_ParamSet,
     id_Gost28147_89_CryptoPro_Oscar_1_0_ParamSet,
-    id_Gost28147_89_CryptoPro_RIC_1_ParamSet
+    id_Gost28147_89_CryptoPro_RIC_1_ParamSet,
+    rfc7836.id_tc26_gost_28147_param_Z
 )
 
 
