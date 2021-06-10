@@ -1,0 +1,178 @@
+#
+# This file is part of pyasn1-alt-modules software.
+#
+# Created by Russ Housley
+# Copyright (c) 2019-2021, Vigil Security, LLC
+# License: http://vigilsec.com/pyasn1-alt-modules-license.txt
+#
+import sys
+import unittest
+
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
+
+from pyasn1_alt_modules import pem
+from pyasn1_alt_modules import rfc5652
+from pyasn1_alt_modules import rfc4998
+from pyasn1_alt_modules import rfc3161
+
+
+class EvidenceRecordTestCase(unittest.TestCase):
+    pem_text = """\
+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
+atzoZalyJph1ctVeTwQ+Zg9wQHWeqd2eCpluHZJFEU+Mc2n31KJQ0odk9nMSj4B1fwLd8d+u
+xtKQnWE/q1dSAhg5t537qqMJeM3Bt8mm0KZ4kB4iTBISIJNX57zAuxuel3WUd4WSkL5wiy7J
+5RPeZTQFD3b6U1aGbufjvF0G3NQ7+Vh17rRyeJVjHx/ahjRM2DYMaJuYjetrgvScBkncdqCp
+aKbnmRRxgZq5RQnlNqCCBU8wggVLMIIFRzCCA3ugAwIBAgIBAzBBBgkqhkiG9w0BAQowNKAP
+MA0GCWCGSAFlAwQCAQUAoRwwGgYJKoZIhvcNAQEIMA0GCWCGSAFlAwQCAQUAogMCASAwVTEL
+MAkGA1UEBhMCREUxJTAjBgNVBAoMHGV4Y2VldCBTZWN1cmUgU29sdXRpb25zIEdtYkgxHzAd
+BgNVBAMMFmV4Y2VldCB0cnVzdGNlbnRlciBDQTIwHhcNMTYwODAxMDg0NzIxWhcNMjEwNzMx
+MDg0NzIwWjBXMQswCQYDVQQGEwJERTElMCMGA1UECgwcZXhjZWV0IFNlY3VyZSBTb2x1dGlv
+bnMgR21iSDEhMB8GA1UEAwwYZXhjZWV0IHRydXN0Y2VudGVyIE9DU1AyMIIBIjANBgkqhkiG
+9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzpu5OOahFDTqJ+JxuP9Txfa2v/gmIET/TuOO0gR0POCp
+58/dewjoz1q0j6kONSnvWDnwyNE5Jt8eTgH1BFrsWerb6NqSl1TQDxHoghRbYlhfr6dIRJwa
+B3HVlqQZthz1GZUUuuZ8BjV6pfj7LOrnt7iNJ9qGApuMu5iIblRUFQWa+6ThgBFvBrefYkag
+0NHdUoW9IYawOZClxTtqlTNJSVj0KOf0ZMvxs9+F7mNxJI5WsgHFpN5jGjz3lbfSs5YOs4DH
+P+6hDQIfRMSW7L0UoRyqsTle+IqxI8TTAmisVXHwgz06qK2+zU5EUaw6WfDTCBuvqWmlkJd3
+O0M34pxdOwIDAQABo4IBNjCCATIwHQYDVR0OBBYEFCeBGHbe8HBYfLKomVl+ofgVAV69MH0G
+A1UdIwR2MHSAFKOwJoIc8UJ50BqsKd18BZcP3t2RoVmkVzBVMQswCQYDVQQGEwJERTElMCMG
+A1UECgwcZXhjZWV0IFNlY3VyZSBTb2x1dGlvbnMgR21iSDEfMB0GA1UEAwwWZXhjZWV0IHRy
+dXN0Y2VudGVyIENBMoIBATA5BggrBgEFBQcBAQQtMCswKQYIKwYBBQUHMAGGHWh0dHA6Ly9v
+Y3NwLmV4Y2VldC5jbG91ZC9vY3NwMA4GA1UdDwEB/wQEAwIGwDATBgNVHSAEDDAKMAgGBgQA
+j3oBAjAMBgNVHRMBAf8EAjAAMBMGA1UdJQQMMAoGCCsGAQUFBwMJMA8GCSsGAQUFBzABBQQC
+BQAwQQYJKoZIhvcNAQEKMDSgDzANBglghkgBZQMEAgEFAKEcMBoGCSqGSIb3DQEBCDANBglg
+hkgBZQMEAgEFAKIDAgEgA4IBgQBq9qZSBMOakjTX09Fzf8PZg67CHxhHrKdW58wGTUFruFuc
+E6a1WkphH1fw228nKmKMftYGrv9THXVS5JMdsqrpwlV6K8orGlagMXPwTUPljpkBLPS69Lni
+GlK4nmDDnXbOenjn1zi4AL/HYPZJQhAiI+R4Wyjm0lDu8cIJ7pHa6C+uYb97lJ3JW1f8QdMh
+vmpWu+9TBSd76jpGQn8tJCkAuGzrtZbLwusChOWHFePApf/gSVd9ola/o0PTaLTiL2tZ6Uyh
+qPMcVPcKzfABD8Keo4kLAVCP3BZ4ocMk0SbyUi6MgdIPMOn2kzBFGzWpNjfQShncwKxJi6FJ
+cRlSIcXVHKRs8oMztBzkDrR6MWUZ9CXvgKBOKd6j7GKy8+si2F8rYY/MW3RCHy0RTCV/k3Xe
+rCj7XFWRVPyhiGztzV1sJCE6EkL6DNiqAMONf09AnnRiDqmkEZTK1btdTBukAO0GMCCkjq18
+DsW4xzB6PK1fovtlIslHGsbTsDdjtxD2M1AxggKBMIICfQIBATBaMFUxCzAJBgNVBAYTAkRF
+MSUwIwYDVQQKDBxleGNlZXQgU2VjdXJlIFNvbHV0aW9ucyBHbWJIMR8wHQYDVQQDDBZleGNl
+ZXQgdHJ1c3RjZW50ZXIgQ0EyAgEGMA0GCWCGSAFlAwQCAQUAoIH5MBoGCSqGSIb3DQEJAzEN
+BgsqhkiG9w0BCRABBDAcBgkqhkiG9w0BCQUxDxcNMTcwMjEwMTQwNzUyWjAvBgkqhkiG9w0B
+CQQxIgQgdaOD3WhTw4UMCFANVyL/iv/v3AqnWgXHUWUnRh1aN9EwgYsGCyqGSIb3DQEJEAIM
+MXwwejB4MHYEFD4muVWMf9NnPp5FOcaWTuF3QZFRMF4wWaRXMFUxCzAJBgNVBAYTAkRFMSUw
+IwYDVQQKDBxleGNlZXQgU2VjdXJlIFNvbHV0aW9ucyBHbWJIMR8wHQYDVQQDDBZleGNlZXQg
+dHJ1c3RjZW50ZXIgQ0EyAgEGMA0GCSqGSIb3DQEBCwUABIIBAFgzchL6/R8GFML5NHvV+dIQ
+yFIAR3Q940vhvgu1/gAky0PZ7EgqWAHXGAyh26XXHllYTb92soQ1nGG4YRvHDTsYeqWl/lfp
+50JDviD8re6/cGJH2btTfHS29Yn6vFzSe5QtBPALbsl9e5zglNUrXtRPjK0qVqsXsiCTNCcu
+sxDO4gj/ze8hP8g8GgvbVjIZ4jJK74uE5XyKaUL2LVCxbPfdqsP50vhs6RWkA4Zo7lR1vEvC
+35duXo/EGkv5xnz+dIDTyPN5WB5suJvo/j7oM53kc6pzECxbBKC5RcXy/jhD9WvOM7aKuZFw
+uCAPQRFiQJ9Z529/FPoE2H5DiqwCxME=
+"""
+
+    def setUp(self):
+        self.asn1Spec = rfc4998.EvidenceRecord()
+
+    def testDerCodec(self):
+        substrate = pem.readBase64fromText(self.pem_text)
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+
+        self.assertEqual(1, asn1Object['version'])
+        ts = asn1Object['archiveTimeStampSequence'][0][0]['timeStamp']
+        self.assertEqual(rfc5652.id_signedData, ts['contentType'])
+
+        sd, rest = der_decoder(ts['content'], asn1Spec=rfc5652.SignedData())
+        self.assertFalse(rest)
+        self.assertTrue(sd.prettyPrint())
+        self.assertEqual(ts['content'], der_encoder(sd))
+
+        self.assertEqual(3, sd['version'])
+        ect = sd['encapContentInfo']['eContentType']
+        self.assertEqual(rfc3161.id_ct_TSTInfo, ect)
+
+    def testOpenTypes(self):
+        substrate = pem.readBase64fromText(self.pem_text)
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+
+        self.assertEqual(1, asn1Object['version'])
+        ts = asn1Object['archiveTimeStampSequence'][0][0]['timeStamp']
+        self.assertEqual(rfc5652.id_signedData, ts['contentType'])
+
+        sd = ts['content']
+        self.assertEqual(3, sd['version'])
+        ect = sd['encapContentInfo']['eContentType']
+        self.assertEqual(rfc3161.id_ct_TSTInfo, ect)
+
+
+suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
+
+if __name__ == '__main__':
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    sys.exit(not result.wasSuccessful())

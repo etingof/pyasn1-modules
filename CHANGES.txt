@@ -1,3 +1,24 @@
+Revision 0.3.1, released XX-XX-2021
+-----------------------------------
+- Add RFC4056 providing RSASSA-PSS Signature Algorithm in CMS
+- Add RFC4059 providing Warranty Certificate Extension
+- Add RFC4262 providing S/MIME Capabilities Certificate Extension
+- Add RFC4998 providing Evidence Record Syntax (ERS)
+- Add RFC5055 providing Server-Based Certificate Validation Protocol (SCVP)
+- Add RFC5276 providing SCVP updates to convey Long-Term Evidence Records
+- Add RFC5544 providing the TimeStampedData Content Type
+- Add RFC6066 providing PkiPath for the pkix-pkipath media type
+- Add RFC6492 providing a protocol for provisioning RPKI certificates
+- Add RFC6962 providing Certificate Transparency
+- Add RFC7693 providing BLAKE2 Cryptographic Hash and MAC
+- Add RFC7836 providing algorithms identifiers and parameters for
+  GOST R 34.10-2012 and GOST R 34.11-2012
+- Modified RFC4357 to support the new parameter set in RFC7836
+- Add RFC8994 providing ACP Node Name in X.509 Certificates
+- Add RFC8995 providing the masa-url certificate extension used by BRSKI
+- Add RFC9044 providing algorithm identifiers for AES-GMAC
+- Modified RFC4055 to include the PKCS#1 v1.5 algorithm identifiers
+
 Revision 0.3.0, released 08-06-2021
 -----------------------------------
 - Added support for Python 3.8
