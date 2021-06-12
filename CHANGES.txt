@@ -18,6 +18,19 @@ Revision 0.3.1, released XX-XX-2021
 - Add RFC8995 providing the masa-url certificate extension used by BRSKI
 - Add RFC9044 providing algorithm identifiers for AES-GMAC
 - Modified RFC4055 to include the PKCS#1 v1.5 algorithm identifiers
+- Add RFC2040 providing identifiers for RC5
+- Add RFC2528 providing identifiers for the Key Exchange Algorithm (KEA)
+- Add RFC3217 providing identifiers for Triple-DES and RC2 Key Wrapping 
+- Add RFC3874 providing identifiers for SHA-224
+- Add RFC4231 providing identifiers for HMAC-SHA-224, HMAC-SHA-256,
+  HMAC-SHA-384, and HMAC-SHA-512
+- Add RFC6484 providing the RPKI Certificate Policy identifier
+- Add RFC6493 providing the RPKI Ghostbusters Record
+- Add RFC6494 providing the extended key usage identifiers for use with
+  SEcure Neighbor Discovery (SEND) certificate profile
+- Add RFC8737 providing the ACME TLS ALPN Challenge Certificate Extension
+- Add RFC8951 providing Enrollment over Secure Transport (EST) clarifications
+- Add a simple test for the RFC6170 module
 
 Revision 0.3.0, released 08-06-2021
 -----------------------------------
