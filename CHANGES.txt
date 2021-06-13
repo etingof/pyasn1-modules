@@ -1,4 +1,4 @@
-Revision 0.3.1, released XX-XX-2021
+Revision 0.3.1, released 13-06-2021
 -----------------------------------
 - Add RFC4056 providing RSASSA-PSS Signature Algorithm in CMS
 - Add RFC4059 providing Warranty Certificate Extension

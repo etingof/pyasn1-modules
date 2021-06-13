@@ -87,6 +87,7 @@ params.update(
      'version': open('pyasn1_alt_modules/__init__.py').read().split('\'')[1],
      'description': doclines[0],
      'long_description': ' '.join(doclines[1:]),
+     'long_description_content_type': 'text/plain',
      'maintainer': 'Russ Housley <housley@vigilsec.com>',
      'author': 'Russ Housley',
      'author_email': 'housley@vigilsec.com',
