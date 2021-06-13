@@ -32,6 +32,8 @@ Revision 0.3.1, released XX-XX-2021
 - Add RFC8951 providing Enrollment over Secure Transport (EST) clarifications
 - Add a simple test for the RFC6170 module
 - Add RFC 8894 providing  Simple Certificate Enrolment Protocol (SCEP)
+- Modified RFC5990 to update the S/MIME Capabilities map
+- Improve test routines for RFC6664
 
 Revision 0.3.0, released 08-06-2021
 -----------------------------------

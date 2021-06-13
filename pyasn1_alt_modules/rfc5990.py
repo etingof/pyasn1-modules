@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to update the S/MIME Capabilities map.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -17,17 +18,9 @@ from pyasn1.type import namedtype
 from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import rfc5751
 
 MAX = float('inf')
-
-def _OID(*components):
-    output = []
-    for x in tuple(components):
-        if isinstance(x, univ.ObjectIdentifier):
-            output.extend(list(x))
-        else:
-            output.append(int(x))
-    return univ.ObjectIdentifier(output)
 
 
 # Imports from RFC 5280
@@ -43,15 +36,15 @@ class NullParms(univ.Null):
 
 # Object identifier arcs
 
-is18033_2 = _OID(1, 0, 18033, 2)
+is18033_2 = univ.ObjectIdentifier((1, 0, 18033, 2))
 
-nistAlgorithm = _OID(2, 16, 840, 1, 101, 3, 4)
+nistAlgorithm = univ.ObjectIdentifier((2, 16, 840, 1, 101, 3, 4))
 
-pkcs_1 = _OID(1, 2, 840, 113549, 1, 1)
+pkcs_1 = univ.ObjectIdentifier((1, 2, 840, 113549, 1, 1))
 
-x9_44 = _OID(1, 3, 133, 16, 840, 9, 44)
+x9_44 = univ.ObjectIdentifier((1, 3, 133, 16, 840, 9, 44))
 
-x9_44_components = _OID(x9_44, 1)
+x9_44_components = x9_44 + (1,)
 
 
 # Types for algorithm identifiers
@@ -80,7 +73,7 @@ class X9_SymmetricKeyWrappingScheme(AlgorithmIdentifier):
 
 # RSA-KEM Key Transport Algorithm
 
-id_rsa_kem = _OID(1, 2, 840, 113549, 1, 9, 16, 3, 14)
+id_rsa_kem = univ.ObjectIdentifier((1, 2, 840, 113549, 1, 9, 16, 3, 14))
 
 
 class GenericHybridParameters(univ.Sequence):
@@ -99,7 +92,7 @@ rsa_kem['parameters'] = GenericHybridParameters()
 
 # KEM-RSA Key Encapsulation Mechanism
 
-id_kem_rsa = _OID(is18033_2, 2, 4)
+id_kem_rsa = is18033_2 + (2, 4)
 
 
 class KeyLength(univ.Integer):
@@ -124,9 +117,9 @@ kem_rsa['parameters'] = RsaKemParameters()
 
 # Key Derivation Functions
 
-id_kdf_kdf2 = _OID(x9_44_components, 1)
+id_kdf_kdf2 = x9_44_components + (1,)
 
-id_kdf_kdf3 = _OID(x9_44_components, 2)
+id_kdf_kdf3 = x9_44_components + (2,)
 
 
 kdf2 = AlgorithmIdentifier()
@@ -140,15 +133,15 @@ kdf3['parameters'] = KDF3_HashFunction()
 
 # Hash Functions
 
-id_sha1 = _OID(1, 3, 14, 3, 2, 26)
+id_sha1 = univ.ObjectIdentifier((1, 3, 14, 3, 2, 26))
 
-id_sha224 = _OID(2, 16, 840, 1, 101, 3, 4, 2, 4)
+id_sha224 = univ.ObjectIdentifier((2, 16, 840, 1, 101, 3, 4, 2, 4))
 
-id_sha256 = _OID(2, 16, 840, 1, 101, 3, 4, 2, 1)
+id_sha256 = univ.ObjectIdentifier((2, 16, 840, 1, 101, 3, 4, 2, 1))
 
-id_sha384 = _OID(2, 16, 840, 1, 101, 3, 4, 2, 2)
+id_sha384 = univ.ObjectIdentifier((2, 16, 840, 1, 101, 3, 4, 2, 2))
 
-id_sha512 = _OID(2, 16, 840, 1, 101, 3, 4, 2, 3)
+id_sha512 = univ.ObjectIdentifier((2, 16, 840, 1, 101, 3, 4, 2, 3))
 
 
 sha1 = AlgorithmIdentifier()
@@ -174,19 +167,19 @@ sha512['parameters'] = univ.Null("")
 
 # Symmetric Key-Wrapping Schemes
 
-id_aes128_Wrap = _OID(nistAlgorithm, 1, 5)
+id_aes128_Wrap = nistAlgorithm + (1, 5)
 
-id_aes192_Wrap = _OID(nistAlgorithm, 1, 25)
+id_aes192_Wrap = nistAlgorithm + (1, 25)
 
-id_aes256_Wrap = _OID(nistAlgorithm, 1, 45)
+id_aes256_Wrap = nistAlgorithm + (1, 45)
 
-id_alg_CMS3DESwrap = _OID(1, 2, 840, 113549, 1, 9, 16, 3, 6)
+id_alg_CMS3DESwrap = univ.ObjectIdentifier((1, 2, 840, 113549, 1, 9, 16, 3, 6))
 
-id_camellia128_Wrap = _OID(1, 2, 392, 200011, 61, 1, 1, 3, 2)
+id_camellia128_Wrap = univ.ObjectIdentifier((1, 2, 392, 200011, 61, 1, 1, 3, 2))
 
-id_camellia192_Wrap = _OID(1, 2, 392, 200011, 61, 1, 1, 3, 3)
+id_camellia192_Wrap = univ.ObjectIdentifier((1, 2, 392, 200011, 61, 1, 1, 3, 3))
 
-id_camellia256_Wrap = _OID(1, 2, 392, 200011, 61, 1, 1, 3, 4)
+id_camellia256_Wrap = univ.ObjectIdentifier((1, 2, 392, 200011, 61, 1, 1, 3, 4))
 
 
 aes128_Wrap = AlgorithmIdentifier()
@@ -235,3 +228,8 @@ _algorithmIdentifierMapUpdate = {
 }
 
 rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+
+
+# Update the S/MIME Capabilities map in rfc5751.py.
+
+rfc5751.smimeCapabilityMap.update(_algorithmIdentifierMapUpdate)

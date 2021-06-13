@@ -7,6 +7,8 @@
 import sys
 import unittest
 
+from pyasn1.type import univ
+
 from pyasn1.codec.der.decoder import decode as der_decoder
 from pyasn1.codec.der.encoder import encode as der_encoder
 
@@ -43,18 +45,29 @@ PQMBBwYFK4EEACIGBSuBBAAjMBoGCSqGSIb3DQEBCDANBglghkgBZQMEAgEFAA==
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
+        expectedCaps = [
+            rfc6664.rsaEncryption,
+            rfc6664.id_RSAES_OAEP,
+            rfc6664.id_RSASSA_PSS,
+            rfc6664.id_dsa,
+            rfc6664.dhpublicnumber,
+            rfc6664.id_ecPublicKey,
+            rfc6664.id_ecMQV,
+        ]
+
         count = 0
         for cap in asn1Object:
-            if cap['capabilityID'] in rfc5751.smimeCapabilityMap.keys():
+            if cap['capabilityID'] in expectedCaps:
+                self.assertIn(cap['capabilityID'], rfc5751.smimeCapabilityMap)
                 substrate = cap['parameters']
-                cap_p, rest = der_decoder(
-                    substrate, asn1Spec=rfc5751.smimeCapabilityMap[cap['capabilityID']])
+                cap_p, rest = der_decoder(substrate,
+                    asn1Spec=rfc5751.smimeCapabilityMap[cap['capabilityID']])
                 self.assertFalse(rest)
                 self.assertTrue(cap_p.prettyPrint())
                 self.assertEqual(substrate, der_encoder(cap_p))
                 count += 1
 
-        self.assertEqual(8, count)
+        self.assertEqual(len(expectedCaps), count)
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.smime_capabilities_pem_text)
