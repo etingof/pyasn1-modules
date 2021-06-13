@@ -31,6 +31,7 @@ Revision 0.3.1, released XX-XX-2021
 - Add RFC8737 providing the ACME TLS ALPN Challenge Certificate Extension
 - Add RFC8951 providing Enrollment over Secure Transport (EST) clarifications
 - Add a simple test for the RFC6170 module
+- Add RFC 8894 providing  Simple Certificate Enrolment Protocol (SCEP)
 
 Revision 0.3.0, released 08-06-2021
 -----------------------------------
