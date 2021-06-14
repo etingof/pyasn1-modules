@@ -5,6 +5,7 @@
 # Created by Stanisław Pitucha with asn1ate tool.
 # Updated by Russ Housley for ORAddress Extension Attribute opentype support.
 # Updated by Russ Housley for AlgorithmIdentifier opentype support.
+# Updated by Russ Housley for https://github.com/etingof/pyasn1-modules/pull/139.
 #
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # Copyright (c) 2021, Vigil Security, LLC
@@ -1647,7 +1648,7 @@ _certificateExtensionsMap = {
     id_ce_extKeyUsage: ExtKeyUsageSyntax(),
     id_ce_cRLDistributionPoints: CRLDistributionPoints(),
     id_pe_authorityInfoAccess: AuthorityInfoAccessSyntax(),
-    id_ce_cRLNumber: univ.Integer(),
+    id_ce_cRLNumber: CRLNumber(),
     id_ce_deltaCRLIndicator: BaseCRLNumber(),
     id_ce_issuingDistributionPoint: IssuingDistributionPoint(),
     id_ce_cRLReasons: CRLReason(),
