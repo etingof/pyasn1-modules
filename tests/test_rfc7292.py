@@ -15,6 +15,7 @@ from pyasn1.type import univ
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc7292
+from pyasn1_alt_modules import opentypemap
 
 
 class PKCS12TestCase(unittest.TestCase):
@@ -72,6 +73,9 @@ rqr03dPnboinBBSU7mxdpB5LTCvorCI8Tk5OMiUzjgICB9A=
         self.asn1Spec = rfc7292.PFX()
 
     def testDerCodec(self):
+        cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+        pkcs12BagTypeMap = opentypemap.get('pkcs12BagTypeMap')
+
         substrate = pem.readBase64fromText(self.pfx_pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
@@ -115,20 +119,17 @@ rqr03dPnboinBBSU7mxdpB5LTCvorCI8Tk5OMiUzjgICB9A=
             self.assertEqual(data, der_encoder(sc))
 
             for sb in sc:
-                if sb['bagId'] in rfc7292.pkcs12BagTypeMap:
-                    bv, rest = der_decoder(
-                        sb['bagValue'],
-                        asn1Spec=rfc7292.pkcs12BagTypeMap[sb['bagId']])
-
+                if sb['bagId'] in pkcs12BagTypeMap:
+                    bv, rest = der_decoder(sb['bagValue'],
+                        asn1Spec=pkcs12BagTypeMap[sb['bagId']])
                     self.assertFalse(rest)
                     self.assertTrue(bv.prettyPrint())
                     self.assertEqual(sb['bagValue'], der_encoder(bv))
 
                     for attr in sb['bagAttributes']:
-                        if attr['attrType'] in rfc5652.cmsAttributesMap:
-                            av, rest = der_decoder(
-                                attr['attrValues'][0],
-                                asn1Spec=rfc5652.cmsAttributesMap[attr['attrType']])
+                        if attr['attrType'] in cmsAttributesMap:
+                            av, rest = der_decoder(attr['attrValues'][0],
+                                asn1Spec=cmsAttributesMap[attr['attrType']])
                             self.assertFalse(rest)
                             self.assertTrue(av.prettyPrint())
                             self.assertEqual(
@@ -136,9 +137,8 @@ rqr03dPnboinBBSU7mxdpB5LTCvorCI8Tk5OMiUzjgICB9A=
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pfx_pem_text)
-        asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
-
+        asn1Object, rest = der_decoder(substrate,
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
@@ -147,11 +147,8 @@ rqr03dPnboinBBSU7mxdpB5LTCvorCI8Tk5OMiUzjgICB9A=
 
         self.assertFalse(digest_alg['parameters'].hasValue())
 
-        authsafe, rest = der_decoder(
-            asn1Object['authSafe']['content'],
-            asn1Spec=rfc7292.AuthenticatedSafe(),
-            decodeOpenTypes=True)
-
+        authsafe, rest = der_decoder(asn1Object['authSafe']['content'],
+            asn1Spec=rfc7292.AuthenticatedSafe(), decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(authsafe.prettyPrint())
         self.assertEqual(
@@ -159,10 +156,8 @@ rqr03dPnboinBBSU7mxdpB5LTCvorCI8Tk5OMiUzjgICB9A=
 
         for ci in authsafe:
             self.assertEqual(rfc5652.id_data, ci['contentType'])
-            sc, rest = der_decoder(
-                ci['content'], asn1Spec=rfc7292.SafeContents(),
-                decodeOpenTypes=True)
-
+            sc, rest = der_decoder(ci['content'],
+                asn1Spec=rfc7292.SafeContents(), decodeOpenTypes=True)
             self.assertFalse(rest)
             self.assertTrue(sc.prettyPrint())
             self.assertEqual(ci['content'], der_encoder(sc))
