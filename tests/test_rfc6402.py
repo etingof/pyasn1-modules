@@ -17,6 +17,7 @@ from pyasn1.type import univ
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc6402
+from pyasn1_alt_modules import opentypemap
 
 
 class BackwardCompatibilityTestCase(unittest.TestCase):
@@ -44,7 +45,7 @@ xicQmJP+VoMHo/ZpjFY9fYCjNZUArgKsEwK/s+p9yrVVeB1Nf8Mn
 
     def testDerCodec(self):
         layers = { }
-        layers.update(rfc5652.cmsContentTypesMap)
+        layers.update(opentypemap.get('cmsContentTypesMap'))
 
         getNextLayer = {
             rfc5652.id_ct_contentInfo: lambda x: x['contentType'],
@@ -102,8 +103,7 @@ xicQmJP+VoMHo/ZpjFY9fYCjNZUArgKsEwK/s+p9yrVVeB1Nf8Mn
             univ.ObjectIdentifier('1.2.840.113549.1.1.11'): univ.Null(""),
         }
 
-        openTypeMap.update(rfc5652.cmsAttributesMap)
-        openTypeMap.update(rfc6402.cmcControlAttributesMap)
+        openTypeMap.update(opentypemap.get('cmsAttributesMap'))
 
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(

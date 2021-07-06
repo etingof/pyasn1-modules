@@ -15,7 +15,7 @@ from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc2634
-
+from pyasn1_alt_modules import opentypemap
 
 class SignedMessageTestCase(unittest.TestCase):
     signed_message_pem_text = """\
@@ -67,14 +67,16 @@ mNTr0mjYeUWRe/15IsWNx+kuFcLDr71DFHvMFY5M3sdfMA==
         self.assertFalse(rest)
         self.assertTrue(sd.prettyPrint())
         self.assertEqual(asn1Object['content'], der_encoder(sd))
-       
+
+        cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+
         for sa in sd['signerInfos'][0]['signedAttrs']:
             sat = sa['attrType']
             sav0 = sa['attrValues'][0]
 
-            if sat in rfc5652.cmsAttributesMap.keys():
+            if sat in cmsAttributesMap.keys():
                 sav, rest = der_decoder(
-                    sav0, asn1Spec=rfc5652.cmsAttributesMap[sat])
+                    sav0, asn1Spec=cmsAttributesMap[sat])
                 self.assertFalse(rest)
                 self.assertTrue(sav.prettyPrint())
                 self.assertEqual(sav0, der_encoder(sav))
@@ -124,9 +126,7 @@ lropBdPJ6jIXiZQgCwxbGTCwCMQClaQ9K+L5LTeuW50ZKSIbmBZQ5dxjtnK3OlS
         self.assertEqual(asn1Object['contentType'], rfc5652.id_signedData)
 
         sd, rest = der_decoder(asn1Object['content'], asn1Spec=rfc5652.SignedData())
-
         self.assertFalse(rest)
-
         self.assertTrue(sd.prettyPrint())
         self.assertEqual(asn1Object['content'], der_encoder(sd))
         self.assertEqual(sd['encapContentInfo']['eContentType'],
@@ -134,7 +134,6 @@ lropBdPJ6jIXiZQgCwxbGTCwCMQClaQ9K+L5LTeuW50ZKSIbmBZQ5dxjtnK3OlS
 
         receipt, rest = der_decoder(sd['encapContentInfo']['eContent'],
                                    asn1Spec=rfc2634.Receipt())
-
         self.assertFalse(rest)
         self.assertTrue(receipt.prettyPrint())
         self.assertEqual(sd['encapContentInfo']['eContent'], der_encoder(receipt))
@@ -144,8 +143,10 @@ lropBdPJ6jIXiZQgCwxbGTCwCMQClaQ9K+L5LTeuW50ZKSIbmBZQ5dxjtnK3OlS
             sat = sa['attrType']
             sav0 = sa['attrValues'][0]
 
-            if sat in rfc5652.cmsAttributesMap.keys():
-                sav, rest = der_decoder(sav0, asn1Spec=rfc5652.cmsAttributesMap[sat])
+            cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+
+            if sat in cmsAttributesMap.keys():
+                sav, rest = der_decoder(sav0, asn1Spec=cmsAttributesMap[sat])
 
                 self.assertFalse(rest)
                 self.assertTrue(sav.prettyPrint())
@@ -160,26 +161,26 @@ lropBdPJ6jIXiZQgCwxbGTCwCMQClaQ9K+L5LTeuW50ZKSIbmBZQ5dxjtnK3OlS
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertIn(asn1Object['contentType'], rfc5652.cmsContentTypesMap.keys())
+
+        cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+        cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
+        self.assertIn(asn1Object['contentType'], cmsContentTypesMap)
         self.assertEqual(asn1Object['contentType'], rfc5652.id_signedData)
 
         sd = asn1Object['content']
-
         self.assertEqual(sd['version'], rfc5652.CMSVersion().subtype(value='v3'))
-        self.assertIn(sd['encapContentInfo']['eContentType'], rfc5652.cmsContentTypesMap)
+        self.assertIn(sd['encapContentInfo']['eContentType'], cmsContentTypesMap)
         self.assertEqual(sd['encapContentInfo']['eContentType'], rfc2634.id_ct_receipt)
 
         for sa in sd['signerInfos'][0]['signedAttrs']:
-
-            self.assertIn(sa['attrType'], rfc5652.cmsAttributesMap)
-
+            self.assertIn(sa['attrType'], cmsAttributesMap)
             if sa['attrType'] == rfc2634.id_aa_msgSigDigest:
                 sa['attrValues'][0].prettyPrint()[:10] == '0x167378'
 
         # Since receipt is inside an OCTET STRING, decodeOpenTypes=True cannot
         # automatically decode it 
         receipt, rest = der_decoder(sd['encapContentInfo']['eContent'],
-            asn1Spec=rfc5652.cmsContentTypesMap[sd['encapContentInfo']['eContentType']])
+            asn1Spec=cmsContentTypesMap[sd['encapContentInfo']['eContentType']])
 
         self.assertEqual(receipt['version'], rfc2634.ESSVersion().subtype(value='v1'))
 

@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -16,10 +17,14 @@ from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc3279
 from pyasn1_alt_modules import rfc5280
-from pyasn1_alt_modules import rfc5751
 from pyasn1_alt_modules import rfc5753
 from pyasn1_alt_modules import rfc5990
 from pyasn1_alt_modules import rfc8018
+from pyasn1_alt_modules import opentypemap
+
+algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
+
+smimeCapabilityMap = opentypemap.get('smimeCapabilityMap')
 
 
 # Imports from RFC 5280
@@ -123,7 +128,7 @@ class Dss_Pub_Key(univ.Integer):
     pass
 
 
-# Update the Algorithm Identifier map in rfc5280.py.
+# Update the Algorithm Identifiers Map and S/MIME Capability Map
 
 _algorithmIdentifierMapUpdate = {
     hMAC_SHA1: univ.Null(""),
@@ -132,15 +137,6 @@ _algorithmIdentifierMapUpdate = {
     id_alg_SSDH: KeyWrapAlgorithm(),
 }
 
-rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
 
-
-# Update the S/MIME Capabilities map in rfc5751.py.
-
-_smimeCapabilityMapUpdate = {
-    id_alg_CMSRC2wrap: RC2wrapParameter(),
-    id_alg_ESDH: KeyWrapAlgorithm(),
-    id_alg_SSDH: KeyWrapAlgorithm(),
-}
-
-rfc5751.smimeCapabilityMap.update(_smimeCapabilityMapUpdate)
+smimeCapabilityMap.update(_algorithmIdentifierMapUpdate)

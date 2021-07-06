@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with some assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -17,7 +18,9 @@ from pyasn1.type import constraint
 from pyasn1.type import namedtype
 from pyasn1.type import univ
 
-from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
+
+certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
 
 MAX = float('inf')
 
@@ -42,11 +45,10 @@ class AuthenticationContexts(univ.SequenceOf):
     subtypeSpec=constraint.ValueSizeConstraint(1, MAX)
 
 
-# Map of Certificate Extension OIDs to Extensions added to the
-# ones that are in rfc5280.py
+# Update the Certificate Extensions Map
 
 _certificateExtensionsMapUpdate = {
     id_ce_authContext: AuthenticationContexts(),
 }
 
-rfc5280.certificateExtensionsMap.update(_certificateExtensionsMapUpdate)
+certificateExtensionsMap.update(_certificateExtensionsMapUpdate)

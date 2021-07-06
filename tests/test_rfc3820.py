@@ -15,6 +15,7 @@ from pyasn1.type import univ
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc3820
+from pyasn1_alt_modules import opentypemap
 
 
 class ProxyCertificateTestCase(unittest.TestCase):
@@ -54,18 +55,21 @@ FOuri/fKBe0=
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
+        self.assertIn(rfc3820.id_pe_proxyCertInfo, certificateExtensionsMap)
+
         found_ppl = False
         for extn in asn1Object['tbsCertificate']['extensions']:
            if extn['extnID'] == rfc3820.id_pe_proxyCertInfo:
-               self.assertTrue(rfc3820.id_pe_proxyCertInfo in rfc5280.certificateExtensionsMap.keys())
-               pci, rest = der_decoder(
-                   extn['extnValue'],
-                   asn1Spec=rfc5280.certificateExtensionsMap[rfc3820.id_pe_proxyCertInfo])
+               pci, rest = der_decoder(extn['extnValue'],
+                   asn1Spec=certificateExtensionsMap[rfc3820.id_pe_proxyCertInfo])
                self.assertFalse(rest)
                self.assertTrue(pci.prettyPrint())
                self.assertEqual(extn['extnValue'], der_encoder(pci))
 
-               self.assertEqual(rfc3820.id_ppl_inheritAll, pci['proxyPolicy']['policyLanguage'])
+               self.assertEqual(
+                   rfc3820.id_ppl_inheritAll,
+                   pci['proxyPolicy']['policyLanguage'])
                found_ppl = True
 
         self.assertTrue(found_ppl)

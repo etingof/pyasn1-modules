@@ -2,6 +2,7 @@
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
 # Modified by Russ Housley to add maps for opentypes.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -18,7 +19,9 @@ from pyasn1.type import namedtype
 from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc3279
-from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
+
+algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
 
 
 # These structures are the same as RFC 3279.
@@ -168,8 +171,8 @@ sect571k1 = univ.ObjectIdentifier('1.3.132.0.38')
 sect571r1 = univ.ObjectIdentifier('1.3.132.0.39')
 
 
-# Map of Algorithm Identifier OIDs to Parameters
-# The algorithm is not included if the parameters MUST be absent
+# Update the Algorithm Identifiers Map; however, the algorithm is not
+# included if the parameters MUST be absent
 
 _algorithmIdentifierMapUpdate = {
     rsaEncryption: univ.Null(),
@@ -184,7 +187,4 @@ _algorithmIdentifierMapUpdate = {
     id_ecMQV: ECParameters(),
 }
 
-
-# Add these Algorithm Identifier map entries to the ones in rfc5280.py
-
-rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)

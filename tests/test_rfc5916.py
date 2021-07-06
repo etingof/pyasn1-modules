@@ -15,6 +15,7 @@ from pyasn1.type import univ
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5916
+from pyasn1_alt_modules import opentypemap
 
 
 class DeviceCertTestCase(unittest.TestCase):
@@ -42,28 +43,27 @@ pogu5Q9Vp28CMQC5YVF8dShC1tk9YImRftiVl8C6pbj//1K/+MwmR6nRk/WU+hKl
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.cert_pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         found_dev_owner = False
-        der_dev_own_oid = der_encoder(univ.ObjectIdentifier('1.3.6.1.4.1.22112.48.24'))
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
+        dev_own_oid = univ.ObjectIdentifier('1.3.6.1.4.1.22112.48.24')
 
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] == rfc5280.id_ce_subjectDirectoryAttributes:
-                self.assertIn(extn['extnID'], rfc5280.certificateExtensionsMap)
-                ev, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-
+                self.assertIn(extn['extnID'], certificateExtensionsMap)
+                ev, rest = der_decoder(extn['extnValue'],
+                    asn1Spec=certificateExtensionsMap[extn['extnID']])
                 self.assertFalse(rest)
                 self.assertTrue(ev.prettyPrint())
                 self.assertEqual(extn['extnValue'], der_encoder(ev))
 
                 for attr in ev:
                     if attr['type'] == rfc5916.id_deviceOwner:
-                        self.assertEqual(der_dev_own_oid, attr['values'][0])
+                        self.assertEqual(
+                            der_encoder(dev_own_oid), attr['values'][0])
                         found_dev_owner = True
 
         self.assertTrue(found_dev_owner)
@@ -71,23 +71,21 @@ pogu5Q9Vp28CMQC5YVF8dShC1tk9YImRftiVl8C6pbj//1K/+MwmR6nRk/WU+hKl
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.cert_pem_text)
         asn1Object, rest = der_decoder(substrate,
-                                       asn1Spec=self.asn1Spec,
-                                       decodeOpenTypes=True)
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         found_dev_owner = False
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
         dev_own_oid = univ.ObjectIdentifier('1.3.6.1.4.1.22112.48.24')
 
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] == rfc5280.id_ce_subjectDirectoryAttributes:
-                self.assertIn(extn['extnID'], rfc5280.certificateExtensionsMap)
-                ev, rest = der_decoder(
-                    extn['extnValue'],
-                   asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']],
+                self.assertIn(extn['extnID'], certificateExtensionsMap)
+                ev, rest = der_decoder(extn['extnValue'],
+                   asn1Spec=certificateExtensionsMap[extn['extnID']],
                    decodeOpenTypes=True)
-
                 self.assertFalse(rest)
                 self.assertTrue(ev.prettyPrint())
                 self.assertEqual(extn['extnValue'], der_encoder(ev))

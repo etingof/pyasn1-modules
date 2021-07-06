@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -24,10 +25,13 @@ from pyasn1_alt_modules import rfc3161
 from pyasn1_alt_modules import rfc4998
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5652
+from pyasn1_alt_modules import opentypemap
+
+otherEvidenceMap = opentypemap.get('otherEvidenceMap')
+
+cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
 
 MAX = float('inf')
-
-otherEvidenceMap = { }
 
 
 # Imports from RFC 5652
@@ -114,10 +118,10 @@ class TimeStampedData(univ.Sequence):
 id_ct_timestampedData = univ.ObjectIdentifier('1.2.840.113549.1.9.16.1.31')
 
 
-# Update the CMS Content Type Map in rfc5652.py
+# Update the CMS Content Types Map
 
 _cmsContentTypesMapUpdate = {
     id_ct_timestampedData: TimeStampedData(),
 }
 
-rfc5652.cmsContentTypesMap.update(_cmsContentTypesMapUpdate)
+cmsContentTypesMap.update(_cmsContentTypesMapUpdate)

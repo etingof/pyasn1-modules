@@ -4,6 +4,7 @@
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
 # Modified by Russ Housley to add WithComponentsConstraints to
 #   enforce the requirements that are indicated in comments.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -23,13 +24,15 @@ from pyasn1.type import univ
 from pyasn1.type import useful
 
 from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
+
+certificateAttributesMap = opentypemap.get('certificateAttributesMap')
+
+certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
+
+qcStatementsMap = opentypemap.get('qcStatementsMap')
 
 MAX = float('inf')
-
-
-# Initialize the qcStatement map
-
-qcStatementMap = { }
 
 
 # Imports from RFC 5280
@@ -145,7 +148,7 @@ class QCStatement(univ.Sequence):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('statementId', univ.ObjectIdentifier()),
         namedtype.OptionalNamedType('statementInfo', univ.Any(),
-            openType=opentype.OpenType('statementId', qcStatementMap))
+            openType=opentype.OpenType('statementId', qcStatementsMap))
     )
 
 
@@ -177,19 +180,17 @@ id_qcs_pkixQCSyntax_v1 = id_qcs + (1, )
 id_qcs_pkixQCSyntax_v2 = id_qcs + (2, )
 
 
-# Map of Certificate Extension OIDs to Extensions
-# To be added to the ones that are in rfc5280.py
+# Update the Certificate Extensions Map
 
-_certificateExtensionsMap = {
+_certificateExtensionsMapUpdate = {
      id_pe_biometricInfo: BiometricSyntax(),
      id_pe_qcStatements: QCStatements(),
 }
 
-rfc5280.certificateExtensionsMap.update(_certificateExtensionsMap)
+certificateExtensionsMap.update(_certificateExtensionsMapUpdate)
 
 
-# Map of AttributeType OIDs to AttributeValue added to the
-# ones that are in rfc5280.py
+# Update the Certificate Attribute Map
 
 _certificateAttributesMapUpdate = {
     id_pda_dateOfBirth: DateOfBirth(),
@@ -199,5 +200,5 @@ _certificateAttributesMapUpdate = {
     id_pda_countryOfResidence: CountryOfResidence(),
 }
 
-rfc5280.certificateAttributesMap.update(_certificateAttributesMapUpdate)
+certificateAttributesMap.update(_certificateAttributesMapUpdate)
 

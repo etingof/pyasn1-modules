@@ -6,6 +6,7 @@
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 # Modified by Russ Housley to add maps for use with opentypes.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Algorithms and Identifiers for Internet X.509 Certificates and CRLs
 #
@@ -17,6 +18,9 @@ from pyasn1.type import namedval
 from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
+
+algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
 
 
 def _OID(*components):
@@ -241,8 +245,7 @@ prime239v3 = _OID(primeCurve, 6)
 prime256v1 = _OID(primeCurve, 7)
 
 
-# Map of Algorithm Identifier OIDs to Parameters added to the
-# ones in rfc5280.py.  Do not add OIDs with absent paramaters.
+# Update the Algorithm Identifiers Map
 
 _algorithmIdentifierMapUpdate = {
     md2: univ.Null(""),
@@ -258,4 +261,4 @@ _algorithmIdentifierMapUpdate = {
     id_ecPublicKey: EcpkParameters(),
 }
 
-rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)

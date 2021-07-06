@@ -3,6 +3,7 @@
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
 # Modified by Russ Housley to add a map for use with opentypes.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -23,6 +24,11 @@ from pyasn1.type import useful
 
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
+
+cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+
+cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
 
 MAX = float('inf')
 
@@ -323,7 +329,7 @@ _cmsAttributesMapUpdate = {
     id_aa_receiptRequest: ReceiptRequest(),
 }
 
-rfc5652.cmsAttributesMap.update(_cmsAttributesMapUpdate)
+cmsAttributesMap.update(_cmsAttributesMapUpdate)
 
 
 # Map of Content Type OIDs to Content Types is added to the
@@ -333,4 +339,4 @@ _cmsContentTypesMapUpdate = {
     id_ct_receipt: Receipt(),
 }
 
-rfc5652.cmsContentTypesMap.update(_cmsContentTypesMapUpdate)
+cmsContentTypesMap.update(_cmsContentTypesMapUpdate)

@@ -18,6 +18,7 @@ from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc6211
 from pyasn1_alt_modules import rfc8702
+from pyasn1_alt_modules import opentypemap
 
 
 class AlgorithmIdentifierTestCase(unittest.TestCase):
@@ -98,10 +99,9 @@ DQEJNDEmMCQwCwYJYIZIAWUDBAILohUGCWCGSAFlAwQCEzAIBAZweWFzbjEEIBxm
         self.assertEqual(
             rfc8702.id_KMACWithSHAKE128, ad_mac['algorithm'])
 
-        kmac128_p, rest = der_decoder(
-            ad_mac['parameters'],
-            asn1Spec=rfc5280.algorithmIdentifierMap[ad_mac['algorithm']])
-
+        algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
+        kmac128_p, rest = der_decoder(ad_mac['parameters'],
+            asn1Spec=algorithmIdentifierMap[ad_mac['algorithm']])
         self.assertFalse(rest)
         self.assertTrue(kmac128_p.prettyPrint())
         self.assertEqual(ad_mac['parameters'], der_encoder(kmac128_p))
@@ -112,20 +112,16 @@ DQEJNDEmMCQwCwYJYIZIAWUDBAILohUGCWCGSAFlAwQCEzAIBAZweWFzbjEEIBxm
         found_kmac128_params = False
         for attr in ad['authAttrs']:
             if attr['attrType'] == rfc6211.id_aa_cmsAlgorithmProtect:
-                av, rest = der_decoder(
-                    attr['attrValues'][0],
+                av, rest = der_decoder(attr['attrValues'][0],
                     asn1Spec=rfc6211.CMSAlgorithmProtection())
-
                 self.assertFalse(rest)
                 self.assertTrue(av.prettyPrint())
                 self.assertEqual(attr['attrValues'][0], der_encoder(av))
         
                 self.assertEqual(
                     rfc8702.id_shake128, av['digestAlgorithm']['algorithm'])
-
                 self.assertEqual(
                     rfc8702.id_KMACWithSHAKE128, av['macAlgorithm']['algorithm'])
-
                 found_kmac128_params = True
 
         self.assertTrue(found_kmac128_params)

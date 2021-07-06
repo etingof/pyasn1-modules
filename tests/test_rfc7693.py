@@ -16,6 +16,7 @@ from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5751
 from pyasn1_alt_modules import rfc7693
+from pyasn1_alt_modules import opentypemap
 
 
 class SMIMECapabilitiesTestCase(unittest.TestCase):
@@ -41,17 +42,16 @@ AgUAMA0GCWCGSAFlAwQCAwUA
 
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         count = 0
+        algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
         for cap in asn1Object:
             if cap['capabilityID'] in blake_oids:
                 count += 1
-                self.assertIn(cap['capabilityID'],
-                    rfc5280.algorithmIdentifierMap)
+                self.assertIn(cap['capabilityID'], algorithmIdentifierMap)
 
         self.assertEqual(len(blake_oids), count)
 

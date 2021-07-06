@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -12,9 +13,11 @@
 # https://www.rfc-editor.org/rfc/rfc6492.txt
 #
 
-from pyasn1_alt_modules import rfc5652
-
 from pyasn1.type import univ
+
+from pyasn1_alt_modules import opentypemap
+
+cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
 
 
 # Content Type for Provisioning Resource Certificates
@@ -29,10 +32,10 @@ class RPKIXMLProtocolObject(univ.OctetString):
     pass
 
 
-# Update the CMS Content Type Map in rfc5652.py
+# Update the CMS Content Types Map
 
 _cmsContentTypesMapUpdate = {
     id_ct_xml: RPKIXMLProtocolObject(),
 }
 
-rfc5652.cmsContentTypesMap.update(_cmsContentTypesMapUpdate)
+cmsContentTypesMap.update(_cmsContentTypesMapUpdate)

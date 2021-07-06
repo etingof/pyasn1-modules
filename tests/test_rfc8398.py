@@ -13,6 +13,7 @@ from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc8398
+from pyasn1_alt_modules import opentypemap
 
 
 class EAITestCase(unittest.TestCase):
@@ -22,40 +23,38 @@ class EAITestCase(unittest.TestCase):
         self.asn1Spec = rfc5280.GeneralName()
 
     def testDerCodec(self):
+        otherNamesMap = opentypemap.get('otherNamesMap')
+
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertIn(asn1Object['otherName']['type-id'],
-                      rfc5280.anotherNameMap)
+
+        self.assertIn(asn1Object['otherName']['type-id'], otherNamesMap)
         self.assertEqual(rfc8398.id_on_SmtpUTF8Mailbox,
                          asn1Object['otherName']['type-id'])
 
-        eai, rest = der_decoder(
-            asn1Object['otherName']['value'],
-            asn1Spec=rfc5280.anotherNameMap[asn1Object['otherName']['type-id']])
-
+        eai, rest = der_decoder(asn1Object['otherName']['value'],
+            asn1Spec=otherNamesMap[asn1Object['otherName']['type-id']])
         self.assertFalse(rest)
         self.assertTrue(eai.prettyPrint())
         self.assertEqual(asn1Object['otherName']['value'], der_encoder(eai))
+
         self.assertEqual(u'\u8001', eai[0])
         self.assertEqual(u'\u5E2B', eai[1])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
-
+        asn1Object, rest = der_decoder(substrate,
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        self.assertEqual(
-            rfc8398.id_on_SmtpUTF8Mailbox, asn1Object['otherName']['type-id'])
+        self.assertEqual(rfc8398.id_on_SmtpUTF8Mailbox,
+                         asn1Object['otherName']['type-id'])
         self.assertEqual(u'\u8001', asn1Object['otherName']['value'][0])
-
         self.assertEqual(u'\u5E2B', asn1Object['otherName']['value'][1])
 
 

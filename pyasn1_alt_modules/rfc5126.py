@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -26,19 +27,19 @@ from pyasn1_alt_modules import rfc5035
 from pyasn1_alt_modules import rfc5755
 from pyasn1_alt_modules import rfc6960
 from pyasn1_alt_modules import rfc3161
+from pyasn1_alt_modules import opentypemap
+
+cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+
+commitmentQualifierMap = opentypemap.get('commitmentQualifierMap')
+
+sigQualifiersMap = opentypemap.get('sigQualifiersMap')
+
+otherRevRefMap = opentypemap.get('otherRevRefMap')
+
+otherRevValMap = opentypemap.get('otherRevValMap')
 
 MAX = float('inf')
-
-
-# Maps for OpenTypes
-
-commitmentQualifierMap = { }
-
-sigQualifiersMap = { }
-
-otherRevRefMap = { }
-
-otherRevValMap = { }
 
 
 # Imports from RFC 5652
@@ -553,7 +554,7 @@ _sigQualifiersMapUpdate = {
 sigQualifiersMap.update(_sigQualifiersMapUpdate)
 
 
-# Update the CMS Attribute Map in rfc5652.py
+# Update the CMS Attribute Map
 
 _cmsAttributesMapUpdate = {
     id_aa_ets_otherSigCert: OtherSigningCertificate(),
@@ -574,4 +575,4 @@ _cmsAttributesMapUpdate = {
     id_aa_ets_attrRevocationRefs: AttributeRevocationRefs(),
 }
 
-rfc5652.cmsAttributesMap.update(_cmsAttributesMapUpdate)
+cmsAttributesMap.update(_cmsAttributesMapUpdate)

@@ -16,6 +16,9 @@ from pyasn1.type import namedtype
 from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
+
+certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
 
 
 id_ce_hashOfRootKey = univ.ObjectIdentifier('1.3.6.1.4.1.51483.2.1')
@@ -30,11 +33,10 @@ HashedRootKey.componentType = namedtype.NamedTypes(
 )
 
 
-# Map of Certificate Extension OIDs to Extensions added to the
-# ones that are in rfc5280.py
+# Update the Certificate Extensions Map
 
 _certificateExtensionsMapUpdate = {
     id_ce_hashOfRootKey: HashedRootKey(),	
 }
 
-rfc5280.certificateExtensionsMap.update(_certificateExtensionsMapUpdate)
+certificateExtensionsMap.update(_certificateExtensionsMapUpdate)

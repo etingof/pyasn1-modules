@@ -15,6 +15,7 @@ from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc5544
+from pyasn1_alt_modules import opentypemap
 
 
 class TimeStampedDataTestCase(unittest.TestCase):
@@ -160,7 +161,7 @@ ipxGiUWhSeuOeOdhx31qRNOQ+s8QsTfUxWJsXXhSKDqCMbqudPFOX2uezWOM5HiG
 
     def testDerCodec(self):
         layers = { }
-        layers.update(rfc5652.cmsContentTypesMap)
+        layers.update(opentypemap.get('cmsContentTypesMap'))
         self.assertIn(rfc5544.id_ct_timestampedData, layers)
 
         getNextLayer = {

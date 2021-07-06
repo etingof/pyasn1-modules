@@ -19,6 +19,7 @@ from pyasn1_alt_modules import rfc3370
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc5751
+from pyasn1_alt_modules import opentypemap
 
 
 class EnvelopedDataTestCase(unittest.TestCase):
@@ -100,7 +101,8 @@ wwqly11MDVPAb0tcQW20auWmCNkXd52jQJ7PXR6kr5I=
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertTrue(asn1Object['contentType'] in rfc5652.cmsContentTypesMap.keys())
+        cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
+        self.assertTrue(asn1Object['contentType'] in cmsContentTypesMap)
 
         ri0 = asn1Object['content']['recipientInfos'][0]
         kwa = ri0['kekri']['keyEncryptionAlgorithm']
@@ -176,30 +178,31 @@ BwIBOg==
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
+        algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
+        smimeCapabilityMap = opentypemap.get('smimeCapabilityMap')
+
         found_wrap_alg_param = False
         for cap in asn1Object:
-            if cap['capabilityID'] in rfc5751.smimeCapabilityMap.keys():
+            if cap['capabilityID'] in smimeCapabilityMap:
                 if cap['parameters'].hasValue():
-                    param, rest = der_decoder(
-                        cap['parameters'],
-                        asn1Spec=rfc5751.smimeCapabilityMap[cap['capabilityID']])
+                    param, rest = der_decoder(cap['parameters'],
+                        asn1Spec=smimeCapabilityMap[cap['capabilityID']])
                     self.assertFalse(rest)
-                    self.assertTrue(param.prettyPrint())
+                    if param != univ.Null(''):
+                        self.assertTrue(param.prettyPrint())
                     self.assertEqual(cap['parameters'], der_encoder(param))
 
                     if cap['capabilityID'] == rfc3370.id_alg_ESDH:
-                        kwa, rest = der_decoder(
-                            cap['parameters'],
-                            asn1Spec=rfc5751.smimeCapabilityMap[cap['capabilityID']])
+                        kwa, rest = der_decoder(cap['parameters'],
+                            asn1Spec=smimeCapabilityMap[cap['capabilityID']])
                         self.assertFalse(rest)
                         self.assertTrue(kwa.prettyPrint())
                         self.assertEqual(cap['parameters'], der_encoder(kwa))
 
-                        self.assertTrue(kwa['algorithm'] in rfc5280.algorithmIdentifierMap.keys())
+                        self.assertTrue(kwa['algorithm'] in algorithmIdentifierMap)
                         self.assertEqual(rfc3370.id_alg_CMSRC2wrap, kwa['algorithm'])
-                        kwa_p, rest = der_decoder(
-                            kwa['parameters'],
-                            asn1Spec=rfc5280.algorithmIdentifierMap[kwa['algorithm']])
+                        kwa_p, rest = der_decoder(kwa['parameters'],
+                            asn1Spec=algorithmIdentifierMap[kwa['algorithm']])
                         self.assertFalse(rest)
                         self.assertTrue(kwa_p.prettyPrint())
                         self.assertEqual(kwa['parameters'], der_encoder(kwa_p))

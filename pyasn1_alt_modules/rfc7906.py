@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -27,6 +28,9 @@ from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc6010
 from pyasn1_alt_modules import rfc6019
 from pyasn1_alt_modules import rfc7191
+from pyasn1_alt_modules import opentypemap
+
+cmsAttributesMap = opentypemap.get('cmsAttributesMap')
 
 MAX = float('inf')
 
@@ -698,8 +702,7 @@ id_privacyMarkTooLong = univ.ObjectIdentifier('2.16.840.1.101.2.1.22.2')
 id_unrecognizedSecurityPolicy = univ.ObjectIdentifier('2.16.840.1.101.2.1.22.3')
 
 
-# Map of Attribute Type OIDs to Attributes added to the
-# ones that are in rfc5652.py
+# Update the CMS Attributes Map
 
 _cmsAttributesMapUpdate = {
     id_aa_contentHint: ContentHints(),
@@ -733,4 +736,4 @@ _cmsAttributesMapUpdate = {
     id_aa_KP_crlPointers: GeneralNames(),
 }
 
-rfc5652.cmsAttributesMap.update(_cmsAttributesMapUpdate)
+cmsAttributesMap.update(_cmsAttributesMapUpdate)

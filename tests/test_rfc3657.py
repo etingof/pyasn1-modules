@@ -16,6 +16,7 @@ from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc3657
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc5751
+from pyasn1_alt_modules import opentypemap
 
 
 class EnvelopedDataTestCase(unittest.TestCase):
@@ -65,7 +66,6 @@ bbRq5aYI2Rd3naNAns9dHqSvkg==
 
         ed, rest = der_decoder(
             asn1Object['content'], asn1Spec=rfc5652.EnvelopedData())
-
         self.assertFalse(rest)
         self.assertTrue(ed.prettyPrint())
         self.assertEqual(asn1Object['content'], der_encoder(ed))
@@ -77,7 +77,6 @@ bbRq5aYI2Rd3naNAns9dHqSvkg==
         self.assertEqual(rfc3657.id_camellia128_cbc, cea['algorithm'])
         param, rest = der_decoder(
             cea['parameters'], asn1Spec=rfc3657.Camellia_IV())
-
         self.assertFalse(rest)
         self.assertTrue(param.prettyPrint())
         self.assertEqual(cea['parameters'], der_encoder(param))
@@ -89,11 +88,11 @@ bbRq5aYI2Rd3naNAns9dHqSvkg==
         substrate = pem.readBase64fromText(self.env_data_pem_text)
         asn1Object, rest = der_decoder(
             substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertTrue(asn1Object['contentType'] in rfc5652.cmsContentTypesMap.keys())
+        cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
+        self.assertIn(asn1Object['contentType'], cmsContentTypesMap)
 
         kekri = asn1Object['content']['recipientInfos'][0]['kekri']
         kwa = kekri['keyEncryptionAlgorithm']
@@ -145,15 +144,15 @@ Sz0BAQMEBQA=
         substrate = pem.readBase64fromText(self.smime_capabilities_pem_text)
         asn1Object, rest = der_decoder(
             substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
  
+        smimeCapabilityMap = opentypemap.get('smimeCapabilityMap')
         param = rfc3657.CamelliaSMimeCapability("")
         count = 0
         for cap in asn1Object:
-            self.assertTrue(cap['capabilityID'] in rfc5751.smimeCapabilityMap.keys())
+            self.assertIn(cap['capabilityID'], smimeCapabilityMap)
             self.assertEqual(cap['parameters'], param)
             count += 1
 

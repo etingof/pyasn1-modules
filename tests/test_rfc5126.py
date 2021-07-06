@@ -14,6 +14,7 @@ from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc4055
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc5126
+from pyasn1_alt_modules import opentypemap
 
 
 class SignedAttributesTestCase(unittest.TestCase):
@@ -39,14 +40,13 @@ l+AOeKdFgg==
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
+        cmsAttributesMap = opentypemap.get('cmsAttributesMap')
         found_spid_oid = False
 
         for attr in asn1Object:
-            if attr['attrType'] in rfc5652.cmsAttributesMap.keys():
-                av, rest = der_decoder(
-                    attr['attrValues'][0],
-                    asn1Spec=rfc5652.cmsAttributesMap[attr['attrType']])
-
+            if attr['attrType'] in cmsAttributesMap:
+                av, rest = der_decoder(attr['attrValues'][0],
+                    asn1Spec=cmsAttributesMap[attr['attrType']])
                 self.assertFalse(rest)
                 self.assertTrue(av.prettyPrint())
                 self.assertEqual(attr['attrValues'][0], der_encoder(av))

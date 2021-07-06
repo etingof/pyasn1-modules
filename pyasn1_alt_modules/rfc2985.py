@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Updated by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -25,6 +26,13 @@ from pyasn1_alt_modules import rfc7292
 from pyasn1_alt_modules import rfc5958
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
+
+certificateAttributesMap = opentypemap.get('certificateAttributesMap')
+
+cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+
+MAX = float('inf')
 
 
 def _OID(*components):
@@ -36,9 +44,6 @@ def _OID(*components):
             output.append(int(x))
 
     return univ.ObjectIdentifier(output)
-
-
-MAX = float('inf')
 
 
 # Imports from RFC 5280
@@ -117,7 +122,7 @@ SingleAttribute.componentType = namedtype.NamedTypes(
     namedtype.NamedType('type', AttributeType()),
     namedtype.NamedType('values',
         AttributeValues().subtype(sizeSpec=constraint.ValueSizeConstraint(1, 1)),
-        openType=opentype.OpenType('type', rfc5280.certificateAttributesMap)
+        openType=opentype.OpenType('type', certificateAttributesMap)
     )
 )
 
@@ -135,7 +140,7 @@ CMSSingleAttribute.componentType = namedtype.NamedTypes(
     namedtype.NamedType('attrType', AttributeType()),
     namedtype.NamedType('attrValues',
         AttributeValues().subtype(sizeSpec=constraint.ValueSizeConstraint(1, 1)),
-        openType=opentype.OpenType('attrType', rfc5652.cmsAttributesMap)
+        openType=opentype.OpenType('attrType', cmsAttributesMap)
     )
 )
 
@@ -560,7 +565,7 @@ _certificateAttributesMapUpdate = {
     pkcs_9_at_extendedCertificateAttributes: AttributeSet(),
 }
 
-rfc5280.certificateAttributesMap.update(_certificateAttributesMapUpdate)
+certificateAttributesMap.update(_certificateAttributesMapUpdate)
 
 
 # CMS Attribute Map
@@ -585,4 +590,4 @@ _cmsAttributesMapUpdate = {
     # pkcs_9_at_smimeCapabilities: SMIMECapabilities(),
 }
 
-rfc5652.cmsAttributesMap.update(_cmsAttributesMapUpdate)
+cmsAttributesMap.update(_cmsAttributesMapUpdate)

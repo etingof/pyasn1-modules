@@ -15,6 +15,7 @@ from pyasn1.compat.octets import str2octs
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc6120
+from pyasn1_alt_modules import opentypemap
 
 
 class XMPPCertificateTestCase(unittest.TestCase):
@@ -43,12 +44,12 @@ nOzhcMpnHs2U/eN0lHl/JNgnbftl6Dvnt59xdA==
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.xmpp_server_cert_pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         count = 0
+        otherNamesMap = opentypemap.get('otherNamesMap')
 
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] == rfc5280.id_ce_subjectAltName:
@@ -63,16 +64,13 @@ nOzhcMpnHs2U/eN0lHl/JNgnbftl6Dvnt59xdA==
                     if gn['otherName'].hasValue():
                         gn_on = gn['otherName']
                         if gn_on['type-id'] == rfc6120.id_on_xmppAddr:
-                            self.assertIn(gn_on['type-id'], rfc5280.anotherNameMap)
-
-                            spec = rfc5280.anotherNameMap[gn['otherName']['type-id']]
-                            on, rest = der_decoder(gn_on['value'], asn1Spec=spec)
-
+                            self.assertIn(gn_on['type-id'], otherNamesMap)
+                            on, rest = der_decoder(gn_on['value'],
+                                asn1Spec=otherNamesMap[gn['otherName']['type-id']])
                             self.assertFalse(rest)
                             self.assertTrue(on.prettyPrint())
                             self.assertEqual(gn_on['value'], der_encoder(on))
                             self.assertEqual('im.example.com', on)
-
                             count += 1
 
         self.assertEqual(1, count)
@@ -80,8 +78,7 @@ nOzhcMpnHs2U/eN0lHl/JNgnbftl6Dvnt59xdA==
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.xmpp_server_cert_pem_text)
         asn1Object, rest = der_decoder(substrate,
-                                       asn1Spec=self.asn1Spec,
-                                       decodeOpenTypes=True)
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
@@ -90,10 +87,9 @@ nOzhcMpnHs2U/eN0lHl/JNgnbftl6Dvnt59xdA==
 
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] == rfc5280.id_ce_subjectAltName:
-                extnValue, rest = der_decoder(
-                    extn['extnValue'], asn1Spec=rfc5280.SubjectAltName(),
+                extnValue, rest = der_decoder(extn['extnValue'],
+                    asn1Spec=rfc5280.SubjectAltName(),
                     decodeOpenTypes=True)
-
                 self.assertFalse(rest)
                 self.assertTrue(extnValue.prettyPrint())
                 self.assertEqual(extn['extnValue'], der_encoder(extnValue))

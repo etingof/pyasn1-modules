@@ -14,6 +14,7 @@ from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5917
+from pyasn1_alt_modules import opentypemap
 
 
 class ClearanceSponsorTestCase(unittest.TestCase):
@@ -47,7 +48,6 @@ FFMC7GjGtCeLtXYqWfBnRdK26dOaHLB2
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.cert_pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
@@ -57,16 +57,13 @@ FFMC7GjGtCeLtXYqWfBnRdK26dOaHLB2
         encoded_cs = der_encoder(cs)
 
         clearance_sponsor_found = False
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
 
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] == rfc5280.id_ce_subjectDirectoryAttributes:
-
-                self.assertIn(extn['extnID'], rfc5280.certificateExtensionsMap)
-
-                ev, rest = der_decoder(
-                    extn['extnValue'],
+                self.assertIn(extn['extnID'], certificateExtensionsMap)
+                ev, rest = der_decoder(extn['extnValue'],
                     asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-
                 self.assertFalse(rest)
                 self.assertTrue(ev.prettyPrint())
                 self.assertEqual(extn['extnValue'], der_encoder(ev))
@@ -80,24 +77,21 @@ FFMC7GjGtCeLtXYqWfBnRdK26dOaHLB2
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.cert_pem_text)
-        asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
-
+        asn1Object, rest = der_decoder(substrate,
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         clearance_sponsor_found = False
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
 
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] == rfc5280.id_ce_subjectDirectoryAttributes:
-                self.assertIn(extn['extnID'], rfc5280.certificateExtensionsMap)
-
-                ev, rest = der_decoder(
-                    extn['extnValue'],
+                self.assertIn(extn['extnID'], certificateExtensionsMap)
+                ev, rest = der_decoder(extn['extnValue'],
                     asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']],
                     decodeOpenTypes=True)
-
                 self.assertFalse(rest)
                 self.assertTrue(ev.prettyPrint())
                 self.assertEqual(extn['extnValue'], der_encoder(ev))
@@ -105,9 +99,7 @@ FFMC7GjGtCeLtXYqWfBnRdK26dOaHLB2
                 for attr in ev:
                     if attr['type'] == rfc5917.id_clearanceSponsor:
                         hrd = u'Human Resources Department'
-
                         self.assertEqual(hrd, attr['values'][0]['utf8String'])
-
                         clearance_sponsor_found = True
 
         self.assertTrue(clearance_sponsor_found)

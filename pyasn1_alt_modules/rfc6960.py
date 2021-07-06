@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -12,10 +13,19 @@
 # https://www.rfc-editor.org/rfc/rfc6960.txt
 #
 
-from pyasn1.type import univ, char, namedtype, namedval, tag, constraint, useful
+from pyasn1.type import char
+from pyasn1.type import namedtype
+from pyasn1.type import tag
+from pyasn1.type import univ
+from pyasn1.type import useful
 
 from pyasn1_alt_modules import rfc2560
 from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
+
+certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
+
+ocspResponseMap = opentypemap.get('ocspResponseMap')
 
 MAX = float('inf')
 
@@ -196,15 +206,16 @@ class PreferredSignatureAlgorithms(univ.SequenceOf):
 
 
 
-# Response Type OID to Response Map
+# Update the OCSP Response Map
 
-ocspResponseMap = {
+_ocspResponseMapUpdate = {
     id_pkix_ocsp_basic: BasicOCSPResponse(),
 }
 
+ocspResponseMap.update(_ocspResponseMapUpdate)
 
-# Map of Extension OIDs to Extensions added to the ones
-# that are in rfc5280.py
+
+# Update the Certificate Extension Extensions Map
 
 _certificateExtensionsMapUpdate = {
     # Certificate Extension
@@ -220,4 +231,4 @@ _certificateExtensionsMapUpdate = {
     id_pkix_ocsp_extended_revoke: univ.Null(""),
 }
 
-rfc5280.certificateExtensionsMap.update(_certificateExtensionsMapUpdate)
+certificateExtensionsMap.update(_certificateExtensionsMapUpdate)

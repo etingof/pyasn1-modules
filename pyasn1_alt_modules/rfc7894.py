@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -20,6 +21,14 @@ from pyasn1.type import univ
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc6402
 from pyasn1_alt_modules import rfc7191
+from pyasn1_alt_modules import opentypemap
+
+
+# Since CMS Attributes and CMC Controls both use 'attrType', one map is used
+
+cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+
+cmcControlAttributesMap = cmsAttributesMap
 
 
 # SingleAttribute is the same as Attribute in RFC 5652, except that the
@@ -80,8 +89,7 @@ estIdentityLinking['attrType'] = id_aa_estIdentityLinking
 estIdentityLinking['attrValues'][0] = DirectoryString()
 
 
-# Map of Attribute Type OIDs to Attributes added to the
-# ones that are in rfc6402.py
+# Update the CMC Control Attributes Map (a.k.a. CMS Attributes Map)
 
 _cmcControlAttributesMapUpdate = {
     id_aa_otpChallenge: DirectoryString(),
@@ -89,4 +97,4 @@ _cmcControlAttributesMapUpdate = {
     id_aa_estIdentityLinking: DirectoryString(),
 }
 
-rfc6402.cmcControlAttributesMap.update(_cmcControlAttributesMapUpdate)
+cmcControlAttributesMap.update(_cmcControlAttributesMapUpdate)

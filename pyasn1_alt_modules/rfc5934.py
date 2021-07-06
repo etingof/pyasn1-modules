@@ -1,6 +1,8 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to include the opentypemap manager and
+#    remove the _OID routine.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -10,24 +12,26 @@
 # ASN.1 source from:
 # https://www.rfc-editor.org/rfc/rfc5934.txt
 
-from pyasn1.type import univ, char, namedtype, namedval, tag, constraint, useful
+from pyasn1.type import char
+from pyasn1.type import constraint
+from pyasn1.type import namedtype
+from pyasn1.type import namedval
+from pyasn1.type import tag
+from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc2985
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc5914
+from pyasn1_alt_modules import opentypemap
+
+cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
+
+cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+
+certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
 
 MAX = float('inf')
-
-
-def _OID(*components):
-    output = []
-    for x in tuple(components):
-        if isinstance(x, univ.ObjectIdentifier):
-            output.extend(list(x))
-        else:
-            output.append(int(x))
-    return univ.ObjectIdentifier(output)
 
 
 # Imports from RFC 2985
@@ -78,7 +82,7 @@ id_tamp = univ.ObjectIdentifier('2.16.840.1.101.2.1.2.77')
 
 # TAMP Status Query Message
 
-id_ct_TAMP_statusQuery = _OID(id_tamp, 1)
+id_ct_TAMP_statusQuery = id_tamp + (1,)
 
 
 class TAMPVersion(univ.Integer):
@@ -195,7 +199,7 @@ tamp_status_query['content'] = TAMPStatusQuery()
 
 # TAMP Status Response Message
 
-id_ct_TAMP_statusResponse = _OID(id_tamp, 2)
+id_ct_TAMP_statusResponse = id_tamp + (2,)
 
 
 class KeyIdentifiers(univ.SequenceOf):
@@ -285,7 +289,7 @@ tamp_status_response['content'] = TAMPStatusResponse()
 
 # Trust Anchor Update Message
 
-id_ct_TAMP_update = _OID(id_tamp, 3)
+id_ct_TAMP_update = id_tamp + (3,)
 
 
 class TBSCertificateChangeInfo(univ.Sequence):
@@ -372,7 +376,7 @@ tamp_update['content'] = TAMPUpdate()
 
 # Trust Anchor Update Confirm Message
 
-id_ct_TAMP_updateConfirm = _OID(id_tamp, 4)
+id_ct_TAMP_updateConfirm = id_tamp + (4,)
 
 
 class StatusCode(univ.Enumerated):
@@ -474,7 +478,7 @@ tamp_update_confirm['content'] = TAMPUpdateConfirm()
 
 # Apex Trust Anchor Update Message
 
-id_ct_TAMP_apexUpdate = _OID(id_tamp, 5)
+id_ct_TAMP_apexUpdate = id_tamp + (5,)
 
 
 class TAMPApexUpdate(univ.Sequence):
@@ -502,7 +506,7 @@ tamp_apex_update['content'] = TAMPApexUpdate()
 
 # Apex Trust Anchor Update Confirm Message
 
-id_ct_TAMP_apexUpdateConfirm = _OID(id_tamp, 6)
+id_ct_TAMP_apexUpdateConfirm = id_tamp + (6,)
 
 
 class TerseApexUpdateConfirm(StatusCode):
@@ -556,7 +560,7 @@ tamp_apex_update_confirm['content'] = TAMPApexUpdateConfirm()
 
 # Community Update Message
 
-id_ct_TAMP_communityUpdate = _OID(id_tamp, 7)
+id_ct_TAMP_communityUpdate = id_tamp + (7,)
 
 
 class CommunityUpdates(univ.Sequence):
@@ -594,7 +598,7 @@ tamp_community_update['content'] = TAMPCommunityUpdate()
 
 # Community Update Confirm Message
 
-id_ct_TAMP_communityUpdateConfirm = _OID(id_tamp, 8)
+id_ct_TAMP_communityUpdateConfirm = id_tamp + (8,)
 
 
 class TerseCommunityConfirm(StatusCode):
@@ -642,8 +646,7 @@ tamp_community_update_confirm['content'] = TAMPCommunityUpdateConfirm()
 
 # Sequence Number Adjust Message
 
-id_ct_TAMP_seqNumAdjust = _OID(id_tamp, 10)
-
+id_ct_TAMP_seqNumAdjust = id_tamp + (10,)
 
 
 class SequenceNumberAdjust(univ.Sequence):
@@ -664,7 +667,7 @@ tamp_sequence_number_adjust['content'] = SequenceNumberAdjust()
 
 # Sequence Number Adjust Confirm Message
 
-id_ct_TAMP_seqNumAdjustConfirm = _OID(id_tamp, 11)
+id_ct_TAMP_seqNumAdjustConfirm = id_tamp + (11,)
 
 
 class SequenceNumberAdjustConfirm(univ.Sequence):
@@ -686,7 +689,7 @@ tamp_sequence_number_adjust_confirm['content'] = SequenceNumberAdjustConfirm()
 
 # TAMP Error Message
 
-id_ct_TAMP_error = _OID(id_tamp, 9)
+id_ct_TAMP_error = id_tamp + (9,)
 
 
 class TAMPError(univ.Sequence):
@@ -714,7 +717,7 @@ id_attributes = univ.ObjectIdentifier('2.16.840.1.101.2.1.5')
 
 # contingency-public-key-decrypt-key unsigned attribute
 
-id_aa_TAMP_contingencyPublicKeyDecryptKey = _OID(id_attributes, 63)
+id_aa_TAMP_contingencyPublicKeyDecryptKey = id_attributes + (63,)
 
 
 class PlaintextSymmetricKey(univ.OctetString):
@@ -728,7 +731,7 @@ contingency_public_key_decrypt_key['values'][0] = PlaintextSymmetricKey()
 
 # id-pe-wrappedApexContinKey extension
 
-id_pe_wrappedApexContinKey =univ.ObjectIdentifier('1.3.6.1.5.5.7.1.20')
+id_pe_wrappedApexContinKey = univ.ObjectIdentifier('1.3.6.1.5.5.7.1.20')
 
 
 class ApexContingencyKey(univ.Sequence):
@@ -746,8 +749,7 @@ wrappedApexContinKey['critical'] = 0
 wrappedApexContinKey['extnValue'] = univ.OctetString()
 
 
-# Add to the map of CMS Content Type OIDs to Content Types in
-# rfc5652.py
+# Update the CMS Content Types Map
 
 _cmsContentTypesMapUpdate = {
     id_ct_TAMP_statusQuery: TAMPStatusQuery(),
@@ -763,24 +765,22 @@ _cmsContentTypesMapUpdate = {
     id_ct_TAMP_error: TAMPError(),
 }
 
-rfc5652.cmsContentTypesMap.update(_cmsContentTypesMapUpdate)
+cmsContentTypesMap.update(_cmsContentTypesMapUpdate)
 
 
-# Add to the map of CMS Attribute OIDs to Attribute Values in
-# rfc5652.py
+# Update the CMS Attributes Map
 
 _cmsAttributesMapUpdate = {
     id_aa_TAMP_contingencyPublicKeyDecryptKey: PlaintextSymmetricKey(),
 }
 
-rfc5652.cmsAttributesMap.update(_cmsAttributesMapUpdate)
+cmsAttributesMap.update(_cmsAttributesMapUpdate)
 
 
-# Add to the map of Certificate Extension OIDs to Extensions in
-# rfc5280.py
+# Update the Certificate Extensions Map
 
 _certificateExtensionsMap = {
     id_pe_wrappedApexContinKey: ApexContingencyKey(),
 }
 
-rfc5280.certificateExtensionsMap.update(_certificateExtensionsMap)
+certificateExtensionsMap.update(_certificateExtensionsMap)

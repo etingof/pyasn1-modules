@@ -17,6 +17,8 @@ from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5755
 from pyasn1_alt_modules import rfc4476
+from pyasn1_alt_modules import opentypemap
+
 
 
 class AttributeCertificatePolicyTestCase(unittest.TestCase):
@@ -57,15 +59,15 @@ aWQh
         self.assertEqual(substrate, der_encoder(asn1Object))
         self.assertEqual(1, asn1Object['acinfo']['version'])
 
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
+        policyQualifierInfosMap = opentypemap.get('policyQualifierInfosMap')
         found_ac_policy_qualifier1 = False
         found_ac_policy_qualifier2 = False
         for extn in asn1Object['acinfo']['extensions']:
-            self.assertIn(extn['extnID'], rfc5280.certificateExtensionsMap)
+            self.assertIn(extn['extnID'], certificateExtensionsMap)
             if extn['extnID'] == rfc4476.id_pe_acPolicies:
-                ev, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-
+                ev, rest = der_decoder(extn['extnValue'],
+                    asn1Spec=certificateExtensionsMap[extn['extnID']])
                 self.assertFalse(rest)
                 self.assertTrue(ev.prettyPrint())
                 self.assertEqual(extn['extnValue'], der_encoder(ev))
@@ -75,13 +77,10 @@ aWQh
         
                 for pq in ev[0]['policyQualifiers']:
                     self.assertIn(
-                        pq['policyQualifierId'], rfc5280.policyQualifierInfoMap)
+                        pq['policyQualifierId'], policyQualifierInfosMap)
 
-                    pqv, rest = der_decoder(
-                        pq['qualifier'],
-                        asn1Spec=rfc5280.policyQualifierInfoMap[
-                            pq['policyQualifierId']])
-        
+                    pqv, rest = der_decoder(pq['qualifier'],
+                        asn1Spec=policyQualifierInfosMap[pq['policyQualifierId']])
                     self.assertFalse(rest)
                     self.assertTrue(pqv.prettyPrint())
                     self.assertEqual(pq['qualifier'], der_encoder(pqv))
@@ -101,21 +100,19 @@ aWQh
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(
             substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
         self.assertEqual(1, asn1Object['acinfo']['version'])
 
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
         found_ac_policy_qualifier1 = False
         found_ac_policy_qualifier2 = False
         for extn in asn1Object['acinfo']['extensions']:
             if extn['extnID'] == rfc4476.id_pe_acPolicies:
-                ev, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']],
+                ev, rest = der_decoder(extn['extnValue'],
+                    asn1Spec=certificateExtensionsMap[extn['extnID']],
                     decodeOpenTypes=True)
-
                 self.assertFalse(rest)
                 self.assertTrue(ev.prettyPrint())
                 self.assertEqual(extn['extnValue'], der_encoder(ev))

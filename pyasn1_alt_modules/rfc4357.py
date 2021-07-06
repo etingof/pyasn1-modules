@@ -3,6 +3,7 @@
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
 # Modified by Russ Housley to allow gost_28147_param_Z from RFC 7836.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -25,6 +26,10 @@ from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc7836
+from pyasn1_alt_modules import opentypemap
+
+algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
+
 
 # Import from RFC 5280
 
@@ -447,7 +452,7 @@ GostR3411_94_ParamSetParameters.componentType = namedtype.NamedTypes(
 )
 
 
-# Update the Algorithm Identifier map in rfc5280.py
+# Update the Algorithm Identifier Map and the S/MIME Capability Map
 
 _algorithmIdentifierMapUpdate = {
     id_Gost28147_89: Gost28147_89_Parameters(),
@@ -477,4 +482,4 @@ _algorithmIdentifierMapUpdate = {
     id_GostR3411_94_CryptoProParamSet: GostR3411_94_ParamSetParameters(),
 }
 
-rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)

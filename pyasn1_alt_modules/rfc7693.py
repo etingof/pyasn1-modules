@@ -2,6 +2,8 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley.
+# Modified by Russ Housley to include the opentypemap manager and
+#   update the S/MIME Capability Map.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -14,8 +16,14 @@
 
 from pyasn1.type import univ
 
-from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
 
+algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
+
+smimeCapabilityMap = opentypemap.get('smimeCapabilityMap')
+
+
+# BLAKE2 Object Identifiers
 
 hashAlgs = univ.ObjectIdentifier('1.3.6.1.4.1.1722.12.2')
 
@@ -40,7 +48,7 @@ id_blake2s224 = blake2s + (7, )
 id_blake2s256 = blake2s + (8, )
 
 
-# Update the Algorithm Identifier map
+# Update the Algorithm Identifier Map and the S/MIME Capability Map
 
 _algorithmIdentifierMapUpdate = {
     id_blake2b160: univ.Null(),
@@ -53,4 +61,6 @@ _algorithmIdentifierMapUpdate = {
     id_blake2s256: univ.Null(),
 }
 
-rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+
+smimeCapabilityMap.update(_algorithmIdentifierMapUpdate)

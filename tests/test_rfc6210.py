@@ -15,6 +15,7 @@ from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc6210
+from pyasn1_alt_modules import opentypemap
 
 
 class AuthenticatedDataTestCase(unittest.TestCase):
@@ -39,30 +40,30 @@ EIbVbg2xql
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
+
         self.assertEqual(rfc5652.id_ct_authData, asn1Object['contentType'])
 
-        ad, rest = der_decoder(
-            asn1Object['content'], asn1Spec=rfc5652.AuthenticatedData())
-
+        ad, rest = der_decoder(asn1Object['content'],
+            asn1Spec=rfc5652.AuthenticatedData())
         self.assertFalse(rest)
         self.assertTrue(ad.prettyPrint())
         self.assertEqual(asn1Object['content'], der_encoder(ad))
+        
         self.assertEqual(0, ad['version'])
         self.assertEqual(
             rfc6210.id_alg_MD5_XOR_EXPERIMENT, ad['digestAlgorithm']['algorithm'])
-
-        mac_alg_p, rest = der_decoder(
-            ad['digestAlgorithm']['parameters'],
-            asn1Spec=rfc5280.algorithmIdentifierMap[ad['digestAlgorithm']['algorithm']])
-
+            
+        algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
+        mac_alg_p, rest = der_decoder(ad['digestAlgorithm']['parameters'],
+            asn1Spec=algorithmIdentifierMap[ad['digestAlgorithm']['algorithm']])
         self.assertFalse(rest)
         self.assertTrue(mac_alg_p.prettyPrint())
         self.assertEqual(
             ad['digestAlgorithm']['parameters'], der_encoder(mac_alg_p))
+
         self.assertEqual("0x01020304", mac_alg_p.prettyPrint()[:10])
 
 

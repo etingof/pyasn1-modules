@@ -14,7 +14,7 @@ from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc7773
-
+from pyasn1_alt_modules import opentypemap
 
 class AuthenticationContextExtnTestCase(unittest.TestCase):
     pem_text = """\
@@ -82,23 +82,22 @@ tAGXsYdcuQpglUngmo/FV4Z9qjIDkYQ=
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         extn_list = []
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
 
         for extn in asn1Object['tbsCertificate']['extensions']:
             extn_list.append(extn['extnID'])
 
             if extn['extnID'] == rfc7773.id_ce_authContext:
-                s = extn['extnValue']
-                acs, rest = der_decoder(
-                    s, asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
+                acs, rest = der_decoder(extn['extnValue'],
+                    asn1Spec=certificateExtensionsMap[extn['extnID']])
                 self.assertFalse(rest)
                 self.assertTrue(acs.prettyPrint())
-                self.assertEqual(s, der_encoder(acs))
+                self.assertEqual(extn['extnValue'], der_encoder(acs))
                 self.assertIn('id.elegnamnden.se', acs[0]['contextType'])
                 self.assertIn(
                     'AuthContextInfo IdentityProvider', acs[0]['contextInfo'])

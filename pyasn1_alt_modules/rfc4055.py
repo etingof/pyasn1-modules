@@ -6,6 +6,7 @@
 # Modified by Russ Housley to add maps for opentypes.
 # Modified by Russ Housley to add PKCS#1 v1.5 algorithm identifiers, which
 #   are not in the ASN.1 module, but they are discussed in RFC 4055.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -21,7 +22,11 @@ from pyasn1.type import tag
 from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
 
+algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
+
+smimeCapabilityMap = opentypemap.get('smimeCapabilityMap')
 
 def _OID(*components):
     output = []
@@ -259,7 +264,7 @@ rSASSA_PSS_SHA512_Identifier['algorithm'] = id_RSASSA_PSS
 rSASSA_PSS_SHA512_Identifier['parameters'] = rSASSA_PSS_SHA512_Params
 
 
-# Update the Algorithm Identifier map
+# Update the Algorithm Identifier Map
 
 _algorithmIdentifierMapUpdate = {
     id_sha1: univ.Null(),
@@ -277,4 +282,4 @@ _algorithmIdentifierMapUpdate = {
     id_RSASSA_PSS: RSASSA_PSS_params(),
 }
 
-rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)

@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -15,8 +16,11 @@
 from pyasn1.type import constraint
 from pyasn1.type import univ
 
-from pyasn1_alt_modules import rfc5280
-from pyasn1_alt_modules import rfc5751
+from pyasn1_alt_modules import opentypemap
+
+algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
+
+smimeCapabilityMap = opentypemap.get('smimeCapabilityMap')
 
 
 id_camellia128_cbc = univ.ObjectIdentifier('1.2.392.200011.61.1.1.1.2')
@@ -32,7 +36,6 @@ id_camellia192_wrap = univ.ObjectIdentifier('1.2.392.200011.61.1.1.3.3')
 id_camellia256_wrap = univ.ObjectIdentifier('1.2.392.200011.61.1.1.3.4')
 
 
-
 class Camellia_IV(univ.OctetString):
     subtypeSpec = constraint.ValueSizeConstraint(16, 16)
 
@@ -41,7 +44,7 @@ class CamelliaSMimeCapability(univ.Null):
     pass
 
 
-# Update the Algorithm Identifier map in rfc5280.py.
+# Update the Algorithm Identifiers Map
 
 _algorithmIdentifierMapUpdate = {
     id_camellia128_cbc: Camellia_IV(),
@@ -49,10 +52,10 @@ _algorithmIdentifierMapUpdate = {
     id_camellia256_cbc: Camellia_IV(),
 }
 
-rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
 
 
-# Update the SMIMECapabilities Attribute map in rfc5751.py
+# Update the S/MIME Capability Map
 
 _smimeCapabilityMapUpdate = {
     id_camellia128_cbc: CamelliaSMimeCapability(),
@@ -63,4 +66,4 @@ _smimeCapabilityMapUpdate = {
     id_camellia256_wrap: CamelliaSMimeCapability(),
 }
 
-rfc5751.smimeCapabilityMap.update(_smimeCapabilityMapUpdate)
+smimeCapabilityMap.update(_smimeCapabilityMapUpdate)

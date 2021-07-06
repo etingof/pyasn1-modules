@@ -15,6 +15,7 @@ from pyasn1.type import univ
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc7030
+from pyasn1_alt_modules import opentypemap
 
 
 class CSRAttrsTestCase(unittest.TestCase):
@@ -58,16 +59,13 @@ BgcrBgEBAQEWBggqhkjOPQQDAw==
                     attr_or_oid['attribute']['attrType'], self.the_attrTypes)
 
     def testOpenTypes(self):
-        openTypesMap = rfc5652.cmsAttributesMap.copy()
-
+        openTypesMap = opentypemap.get('cmsAttributesMap').copy()
         for at in self.the_attrTypes:
             openTypesMap.update({at: univ.ObjectIdentifier()})
 
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, openTypes=openTypesMap,
-            decodeOpenTypes=True)
-
+        asn1Object, rest = der_decoder(substrate,
+            asn1Spec=self.asn1Spec, openTypes=openTypesMap, decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))

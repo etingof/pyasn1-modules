@@ -15,6 +15,7 @@ from pyasn1.type import univ
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc4683
+from pyasn1_alt_modules import opentypemap
 
 
 class SIMCertificateTestCase(unittest.TestCase):
@@ -45,17 +46,16 @@ rYt3o64YQqGz9NTMAjEAmahE0EMiu/TyzRDidlG2SxmY2aHg9hQO0t38i1jInJyi
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.cert_pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         found_PEPSI = False
+        otherNamesMap = opentypemap.get('otherNamesMap')
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] == rfc5280.id_ce_subjectAltName:
                 extnValue, rest = der_decoder(
                     extn['extnValue'], asn1Spec=rfc5280.SubjectAltName())
-
                 self.assertFalse(rest)
                 self.assertTrue(extnValue.prettyPrint())
                 self.assertEqual(extn['extnValue'], der_encoder(extnValue))
@@ -64,14 +64,9 @@ rYt3o64YQqGz9NTMAjEAmahE0EMiu/TyzRDidlG2SxmY2aHg9hQO0t38i1jInJyi
                     if gn['otherName'].hasValue():
                         gn_on = gn['otherName']
                         if gn_on['type-id'] == rfc4683.id_on_SIM:
-                            self.assertIn(
-                                gn_on['type-id'], rfc5280.anotherNameMap)
-
-                            spec = rfc5280.anotherNameMap[gn_on['type-id']]
-
-                            on, rest = der_decoder(
-                                gn_on['value'], asn1Spec=spec)
-
+                            self.assertIn(gn_on['type-id'], otherNamesMap)
+                            on, rest = der_decoder(gn_on['value'],
+                                asn1Spec=otherNamesMap[gn_on['type-id']])
                             self.assertFalse(rest)
                             self.assertTrue(on.prettyPrint())
                             self.assertEqual(gn_on['value'], der_encoder(on))
@@ -87,7 +82,6 @@ rYt3o64YQqGz9NTMAjEAmahE0EMiu/TyzRDidlG2SxmY2aHg9hQO0t38i1jInJyi
         substrate = pem.readBase64fromText(self.cert_pem_text)
         asn1Object, rest = der_decoder(
             substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
@@ -99,7 +93,6 @@ rYt3o64YQqGz9NTMAjEAmahE0EMiu/TyzRDidlG2SxmY2aHg9hQO0t38i1jInJyi
                     extn['extnValue'],
                     asn1Spec=rfc5280.SubjectAltName(),
                     decodeOpenTypes=True)
-
                 self.assertFalse(rest)
                 self.assertTrue(extnValue.prettyPrint())
                 self.assertEqual(extn['extnValue'], der_encoder(extnValue))

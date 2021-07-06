@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -13,15 +14,17 @@
 # https://www.rfc-editor.org/errata/eid5875
 #
 
+import string
+
 from pyasn1.type import char
 from pyasn1.type import constraint
 from pyasn1.type import namedtype
 from pyasn1.type import namedval
 from pyasn1.type import univ
 
-from pyasn1_alt_modules import rfc5652
+from pyasn1_alt_modules import opentypemap
 
-import string
+cmsAttributesMap = opentypemap.get('cmsAttributesMap')
 
 MAX = float('inf')
 
@@ -79,12 +82,11 @@ id_aa_secureHeaderFieldsIdentifier = id_aa + (55, )
 
 
 
-# Map of Attribute Type OIDs to Attributes added to the
-# ones that are in rfc5652.py
+# Update the CMS Attribute Attributes Map
 
 _cmsAttributesMapUpdate = {
     id_aa_secureHeaderFieldsIdentifier: SecureHeaderFields(),
 }
 
-rfc5652.cmsAttributesMap.update(_cmsAttributesMapUpdate)
+cmsAttributesMap.update(_cmsAttributesMapUpdate)
 

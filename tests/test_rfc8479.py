@@ -16,6 +16,7 @@ from pyasn1_alt_modules import rfc4055
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc5958
 from pyasn1_alt_modules import rfc8479
+from pyasn1_alt_modules import opentypemap
 
 
 class ValidationParmTestCase(unittest.TestCase):
@@ -55,49 +56,45 @@ BCCK9DKMh7687DHjA7j1U37/y2qR2UcITZmjaYI7NvAUYg==
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        for attr in asn1Object['attributes']:
-            self.assertIn(attr['attrType'], rfc5652.cmsAttributesMap)
+        cmsAttributesMap = opentypemap.get('cmsAttributesMap')
 
+        for attr in asn1Object['attributes']:
+            self.assertIn(attr['attrType'], cmsAttributesMap)
             if attr['attrType'] == rfc8479.id_attr_validation_parameters:
-                av, rest = der_decoder(
-                    attr['attrValues'][0],
-                    asn1Spec=rfc5652.cmsAttributesMap[attr['attrType']])
+                av, rest = der_decoder(attr['attrValues'][0],
+                    asn1Spec=cmsAttributesMap[attr['attrType']])
                 self.assertFalse(rest)
                 self.assertTrue(av.prettyPrint())
                 self.assertEqual(attr['attrValues'][0], der_encoder(av))
-                self.assertEqual(rfc4055.id_sha384, av['hashAlg'])
 
+                self.assertEqual(rfc4055.id_sha384, av['hashAlg'])
                 seed = univ.OctetString(hexValue='8af4328c87bebcec31e303b8f55'
                                                  '37effcb6a91d947084d99a36982'
                                                  '3b36f01462')
-
                 self.assertEqual(seed, av['seed'])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
-
+        asn1Object, rest = der_decoder(substrate,
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
+        cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+
         for attr in asn1Object['attributes']:
-            self.assertIn(attr['attrType'], rfc5652.cmsAttributesMap)
+            self.assertIn(attr['attrType'], cmsAttributesMap)
             if attr['attrType'] == rfc8479.id_attr_validation_parameters:
                 av = attr['attrValues'][0]
-
                 self.assertEqual(av['hashAlg'], rfc4055.id_sha384)
-
                 seed = univ.OctetString(hexValue='8af4328c87bebcec31e303b8f553'
                                                  '7effcb6a91d947084d99a369823b'
                                                  '36f01462')
-
                 self.assertEqual(seed, av['seed'])
 
 

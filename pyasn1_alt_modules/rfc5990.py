@@ -3,6 +3,7 @@
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
 # Modified by Russ Housley to update the S/MIME Capabilities map.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -19,6 +20,11 @@ from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5751
+from pyasn1_alt_modules import opentypemap
+
+algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
+
+smimeCapabilityMap = opentypemap.get('smimeCapabilityMap')
 
 MAX = float('inf')
 
@@ -211,8 +217,8 @@ camellia256_Wrap['algorithm'] = id_camellia256_Wrap
 # camellia256_Wrap['parameters'] are absent
 
 
-# Update the Algorithm Identifier map in rfc5280.py.
-# Note that the ones that must not have parameters are not added to the map.
+# Update the Algorithm Identifier map and the S/MIME Capabilities map.
+# Note that the ones that must not have parameters are not added to the maps.
 
 _algorithmIdentifierMapUpdate = {
     id_rsa_kem: GenericHybridParameters(),
@@ -227,9 +233,6 @@ _algorithmIdentifierMapUpdate = {
     id_alg_CMS3DESwrap: univ.Null(),
 }
 
-rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
 
-
-# Update the S/MIME Capabilities map in rfc5751.py.
-
-rfc5751.smimeCapabilityMap.update(_algorithmIdentifierMapUpdate)
+smimeCapabilityMap.update(_algorithmIdentifierMapUpdate)

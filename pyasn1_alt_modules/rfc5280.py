@@ -6,6 +6,7 @@
 # Updated by Russ Housley for ORAddress Extension Attribute opentype support.
 # Updated by Russ Housley for AlgorithmIdentifier opentype support.
 # Updated by Russ Housley for https://github.com/etingof/pyasn1-modules/pull/139.
+# Updated by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # Copyright (c) 2021, Vigil Security, LLC
@@ -25,6 +26,20 @@ from pyasn1.type import opentype
 from pyasn1.type import tag
 from pyasn1.type import univ
 from pyasn1.type import useful
+
+from pyasn1_alt_modules import opentypemap
+
+algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
+
+certificateAttributesMap = opentypemap.get('certificateAttributesMap')
+
+certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
+
+orAddressExtensionAttributesMap = opentypemap.get('orAddressExtensionAttributesMap')
+
+otherNamesMap = anotherNameMap = opentypemap.get('otherNamesMap')
+
+policyQualifierInfosMap = opentypemap.get('policyQualifierInfosMap')
 
 MAX = float('inf')
 
@@ -285,9 +300,6 @@ class CertificateSerialNumber(univ.Integer):
     pass
 
 
-algorithmIdentifierMap = {}
-
-
 class AlgorithmIdentifier(univ.Sequence):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('algorithm', univ.ObjectIdentifier()),
@@ -309,9 +321,6 @@ Time.componentType = namedtype.NamedTypes(
 
 class AttributeValue(univ.Any):
     pass
-
-
-certificateAttributesMap = {}
 
 
 class AttributeTypeAndValue(univ.Sequence):
@@ -391,12 +400,6 @@ class PhysicalDeliveryOfficeName(PDSParameter):
 
 ub_extension_attributes = univ.Integer(256)
 
-certificateExtensionsMap = {
-}
-
-oraddressExtensionAttributeMap = {
-}
-
 
 class ExtensionAttribute(univ.Sequence):
     componentType = namedtype.NamedTypes(
@@ -406,7 +409,7 @@ class ExtensionAttribute(univ.Sequence):
         namedtype.NamedType(
             'extension-attribute-value',
             univ.Any().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)),
-            openType=opentype.OpenType('extension-attribute-type', oraddressExtensionAttributeMap))
+            openType=opentype.OpenType('extension-attribute-type', orAddressExtensionAttributesMap))
     )
 
 id_qt = _buildOid(id_pkix, 2)
@@ -1082,18 +1085,13 @@ PrivateKeyUsagePeriod.componentType = namedtype.NamedTypes(
 )
 
 
-anotherNameMap = {
-
-}
-
-
 class AnotherName(univ.Sequence):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('type-id', univ.ObjectIdentifier()),
         namedtype.NamedType(
             'value',
             univ.Any().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)),
-            openType=opentype.OpenType('type-id', anotherNameMap)
+            openType=opentype.OpenType('type-id', otherNamesMap)
         )
     )
 
@@ -1333,17 +1331,12 @@ class PolicyQualifierId(univ.ObjectIdentifier):
     pass
 
 
-policyQualifierInfoMap = {
-
-}
-
-
 class PolicyQualifierInfo(univ.Sequence):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('policyQualifierId', PolicyQualifierId()),
         namedtype.NamedType(
             'qualifier', univ.Any(),
-            openType=opentype.OpenType('policyQualifierId', policyQualifierInfoMap)
+            openType=opentype.OpenType('policyQualifierId', policyQualifierInfosMap)
         )
     )
 
@@ -1574,9 +1567,10 @@ id_ce_subjectKeyIdentifier = _buildOid(id_ce, 14)
 
 id_ce_inhibitAnyPolicy = _buildOid(id_ce, 54)
 
+
 # map of ORAddress ExtensionAttribute type to ExtensionAttribute value
 
-_oraddressExtensionAttributeMapUpdate = {
+_orAddressExtensionAttributesMapUpdate = {
     common_name: CommonName(),
     teletex_common_name: TeletexCommonName(),
     teletex_organization_name: TeletexOrganizationName(),
@@ -1602,7 +1596,7 @@ _oraddressExtensionAttributeMapUpdate = {
     teletex_domain_defined_attributes: TeletexDomainDefinedAttributes(),
 }
 
-oraddressExtensionAttributeMap.update(_oraddressExtensionAttributeMapUpdate)
+orAddressExtensionAttributesMap.update(_orAddressExtensionAttributesMapUpdate)
 
 
 # map of AttributeType -> AttributeValue

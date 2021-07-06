@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with some assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -18,6 +19,9 @@ from pyasn1.type import constraint
 from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
+
+otherNamesMap = opentypemap.get('otherNamesMap')
 
 MAX = float('inf')
 
@@ -42,11 +46,10 @@ on_SmtpUTF8Mailbox['type-id'] = id_on_SmtpUTF8Mailbox
 on_SmtpUTF8Mailbox['value'] = SmtpUTF8Mailbox()
 
 
-# Map of Other Name OIDs to Other Name is added to the
-# ones that are in rfc5280.py
+# Update the Other Names Map
 
-_anotherNameMapUpdate = {
+_otherNamesMapUpdate = {
     id_on_SmtpUTF8Mailbox: SmtpUTF8Mailbox(),
 }
 
-rfc5280.anotherNameMap.update(_anotherNameMapUpdate)
+otherNamesMap.update(_otherNamesMapUpdate)

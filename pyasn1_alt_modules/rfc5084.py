@@ -2,6 +2,8 @@
 #
 # Created by Russ Housley with assistance from the asn1ate tool, with manual
 #   changes to AES_CCM_ICVlen.subtypeSpec and added comments
+# Modified by Russ Housley to include the opentypemap manager, and drop use
+#   of the _OID routine.
 #
 # Copyright (c) 2018-2019, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -16,19 +18,12 @@ from pyasn1.type import constraint
 from pyasn1.type import namedtype
 from pyasn1.type import univ
 
-from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
+
+algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
 
 
-def _OID(*components):
-    output = []
-    for x in tuple(components):
-        if isinstance(x, univ.ObjectIdentifier):
-            output.extend(list(x))
-        else:
-            output.append(int(x))
-
-    return univ.ObjectIdentifier(output)
-
+# AES-CCM and AES-GCM Algorithm Paramaters
 
 class AES_CCM_ICVlen(univ.Integer):
     pass
@@ -67,23 +62,25 @@ GCMParameters.componentType = namedtype.NamedTypes(
     namedtype.DefaultedNamedType('aes-ICVlen', AES_GCM_ICVlen().subtype(value=12))
 )
 
-aes = _OID(2, 16, 840, 1, 101, 3, 4, 1)
 
-id_aes128_CCM = _OID(aes, 7)
+# Object Identifiers
 
-id_aes128_GCM = _OID(aes, 6)
+aes = univ.ObjectIdentifier((2, 16, 840, 1, 101, 3, 4, 1))
 
-id_aes192_CCM = _OID(aes, 27)
+id_aes128_CCM = aes + (7,)
 
-id_aes192_GCM = _OID(aes, 26)
+id_aes128_GCM = aes + (6,)
 
-id_aes256_CCM = _OID(aes, 47)
+id_aes192_CCM = aes + (27,)
 
-id_aes256_GCM = _OID(aes, 46)
+id_aes192_GCM = aes + (26,)
+
+id_aes256_CCM = aes + (47,)
+
+id_aes256_GCM = aes + (46,)
 
 
-# Map of Algorithm Identifier OIDs to Parameters is added to the
-# ones in rfc5280.py
+# Update the Algorithm Identifier Map and the S/MIME Capability Map
 
 _algorithmIdentifierMapUpdate = {
     id_aes128_CCM: CCMParameters(),
@@ -94,4 +91,4 @@ _algorithmIdentifierMapUpdate = {
     id_aes256_GCM: GCMParameters(),
 }
 
-rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)

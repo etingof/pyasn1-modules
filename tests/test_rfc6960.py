@@ -16,6 +16,7 @@ from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc4055
 from pyasn1_alt_modules import rfc6960
+from pyasn1_alt_modules import opentypemap
 
 
 class OCSPRequestTestCase(unittest.TestCase):
@@ -28,9 +29,10 @@ isWVpesQdXMCBDXe9M+iIzAhMB8GCSsGAQUFBzABAgQSBBBjdJOiIW9EKJGELNNf/rdA
         self.asn1Spec = rfc6960.OCSPRequest()
 
     def testDerCodec(self):
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
+
         substrate = pem.readBase64fromText(self.ocsp_req_pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
@@ -38,16 +40,13 @@ isWVpesQdXMCBDXe9M+iIzAhMB8GCSsGAQUFBzABAgQSBBBjdJOiIW9EKJGELNNf/rdA
 
         count = 0
         for extn in asn1Object['tbsRequest']['requestExtensions']:
-            self.assertIn(extn['extnID'], rfc5280.certificateExtensionsMap)
+            self.assertIn(extn['extnID'], certificateExtensionsMap)
 
-            ev, rest = der_decoder(
-                extn['extnValue'],
-                asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-
+            ev, rest = der_decoder(extn['extnValue'],
+                asn1Spec=certificateExtensionsMap[extn['extnID']])
             self.assertFalse(rest)
             self.assertTrue(ev.prettyPrint())
             self.assertEqual(extn['extnValue'], der_encoder(ev))
-
             count += 1
 
         self.assertEqual(1, count)
@@ -98,21 +97,21 @@ HAESdf7nebz1wtqAOXE1jWF/y8g=
         self.asn1Spec = rfc6960.OCSPResponse()
 
     def testDerCodec(self):
+        ocspResponseMap = opentypemap.get('ocspResponseMap')
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
+
         substrate = pem.readBase64fromText(self.ocsp_resp_pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
         self.assertEqual(0, asn1Object['responseStatus'])
 
         rb = asn1Object['responseBytes']
+        self.assertIn(rb['responseType'], ocspResponseMap)
 
-        self.assertIn(rb['responseType'], rfc6960.ocspResponseMap)
-
-        resp, rest = der_decoder(
-            rb['response'], asn1Spec=rfc6960.ocspResponseMap[rb['responseType']])
-
+        resp, rest = der_decoder(rb['response'],
+            asn1Spec=ocspResponseMap[rb['responseType']])
         self.assertFalse(rest)
         self.assertTrue(resp.prettyPrint())
         self.assertEqual(rb['response'], der_encoder(resp))
@@ -120,39 +119,32 @@ HAESdf7nebz1wtqAOXE1jWF/y8g=
 
         count = 0
         for extn in resp['tbsResponseData']['responseExtensions']:
-            self.assertIn(extn['extnID'], rfc5280.certificateExtensionsMap)
-
-            ev, rest = der_decoder(
-                extn['extnValue'],
-                asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-
+            self.assertIn(extn['extnID'], certificateExtensionsMap)
+            ev, rest = der_decoder(extn['extnValue'],
+                asn1Spec=certificateExtensionsMap[extn['extnID']])
             self.assertFalse(rest)
             self.assertTrue(ev.prettyPrint())
             self.assertEqual(extn['extnValue'], der_encoder(ev))
-
             count += 1
 
         self.assertEqual(1, count)
 
     def testOpenTypes(self):
-        substrate = pem.readBase64fromText(self.ocsp_resp_pem_text)
-        asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+        ocspResponseMap = opentypemap.get('ocspResponseMap')
 
+        substrate = pem.readBase64fromText(self.ocsp_resp_pem_text)
+        asn1Object, rest = der_decoder(substrate,
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
         self.assertEqual(0, asn1Object['responseStatus'])
 
         rb = asn1Object['responseBytes']
+        self.assertIn(rb['responseType'], ocspResponseMap)
 
-        self.assertIn(rb['responseType'], rfc6960.ocspResponseMap)
-
-        resp, rest = der_decoder(
-            rb['response'],
-            asn1Spec=rfc6960.ocspResponseMap[rb['responseType']],
-            decodeOpenTypes=True)
-
+        resp, rest = der_decoder(rb['response'],
+            asn1Spec=ocspResponseMap[rb['responseType']], decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(resp.prettyPrint())
         self.assertEqual(rb['response'], der_encoder(resp))

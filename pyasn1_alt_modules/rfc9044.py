@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -17,8 +18,11 @@ from pyasn1.type import namedtype
 from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5280
-from pyasn1_alt_modules import rfc5751
+from pyasn1_alt_modules import opentypemap
 
+algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
+
+smimeCapabilityMap = opentypemap.get('smimeCapabilityMap')
 
 # Object Identifiers
 
@@ -63,7 +67,7 @@ maca_aes256_GMAC['algorithm'] = id_aes256_GMAC
 # maca_aes256_GMAC['parameters'] are absent
 
 
-# Update the Algorithm Identifier map in rfc5280.py.
+# Update the Algorithm Identifiers Map and the SMIMECapability Map
 
 _algorithmIdentifierMapUpdate = {
     id_aes128_GMAC: GCMParameters(),
@@ -71,9 +75,6 @@ _algorithmIdentifierMapUpdate = {
     id_aes256_GMAC: GCMParameters(),
 }
 
-rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
 
-
-# Update the SMIMECapabilities Attribute Map in rfc5751.py
-
-rfc5751.smimeCapabilityMap.update(_algorithmIdentifierMapUpdate)
+smimeCapabilityMap.update(_algorithmIdentifierMapUpdate)

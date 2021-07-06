@@ -18,6 +18,7 @@ from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5083
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc8696
+from pyasn1_alt_modules import opentypemap
 
 
 class KeyTransPSKTestCase(unittest.TestCase):
@@ -75,6 +76,7 @@ BwEwGwYJYIZIAWUDBAEuMA4EDMr+ur76ztut3sr4iIANmvLRbyFUf87+2bPvLQQMoOWSXMGE
         self.assertEqual(2, ktri['version'])
 
     def testOtherRecipientInfoMap(self):
+        otherRecipientInfoMap = opentypemap.get('otherRecipientInfoMap')
         substrate = pem.readBase64fromText(self.key_trans_psk_pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
         self.assertFalse(rest)
@@ -94,7 +96,7 @@ BwEwGwYJYIZIAWUDBAEuMA4EDMr+ur76ztut3sr4iIANmvLRbyFUf87+2bPvLQQMoOWSXMGE
         self.assertEqual(0, aed['version'])
 
         ri = aed['recipientInfos'][0]
-        self.assertIn(ri['ori']['oriType'], rfc5652.otherRecipientInfoMap)
+        self.assertIn(ri['ori']['oriType'], otherRecipientInfoMap)
 
         ori, rest = der_decoder(
             ri['ori']['oriValue'],
@@ -157,6 +159,7 @@ WylxlCbB/w==
         self.assertEqual(expected_ski, ski)
 
     def testOtherRecipientInfoMap(self):
+        otherRecipientInfoMap = opentypemap.get('otherRecipientInfoMap')
         substrate = pem.readBase64fromText(self.key_agree_psk_pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
         self.assertFalse(rest)
@@ -176,7 +179,7 @@ WylxlCbB/w==
         self.assertEqual(0, aed['version'])
 
         ri = aed['recipientInfos'][0]
-        self.assertIn(ri['ori']['oriType'], rfc5652.otherRecipientInfoMap)
+        self.assertIn(ri['ori']['oriType'], otherRecipientInfoMap)
 
         ori, rest = der_decoder(
             ri['ori']['oriValue'],

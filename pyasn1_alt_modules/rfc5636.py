@@ -1,6 +1,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -15,6 +16,9 @@ from pyasn1.type import univ
 from pyasn1.type import useful
 
 from pyasn1_alt_modules import rfc5652
+from pyasn1_alt_modules import opentypemap
+
+cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
 
 
 # Imports from RFC 5652
@@ -102,7 +106,7 @@ class TACTokenandPartiallySignedCertificateHash(univ.Sequence):
     )
 
 
-# Add to the CMS Content Type Map in rfc5752.py
+# Update the CMS Content Type Map
 
 _cmsContentTypesMapUpdate = {
     id_kisa_tac_token: TACToken(),
@@ -110,4 +114,4 @@ _cmsContentTypesMapUpdate = {
     id_kisa_tac_tokenandpartially: TACTokenandPartiallySignedCertificateHash(),
 }
 
-rfc5652.cmsContentTypesMap.update(_cmsContentTypesMapUpdate)
+cmsContentTypesMap.update(_cmsContentTypesMapUpdate)

@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with some assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -19,6 +20,9 @@ from pyasn1.type import tag
 from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5652
+from pyasn1_alt_modules import opentypemap
+
+otherRecipientInfoMap = opentypemap.get('otherRecipientInfoMap')
 
 MAX = float('inf')
 
@@ -94,11 +98,11 @@ class CMSORIforPSKOtherInfo(univ.Sequence):
     )
 
 
-# Update the CMS Other Recipient Info map in rfc5652.py
+# Update the CMS Other Recipient Info Map
 
 _otherRecipientInfoMapUpdate = {
     id_ori_keyTransPSK: KeyTransPSKRecipientInfo(),
     id_ori_keyAgreePSK: KeyAgreePSKRecipientInfo(),
 }
 
-rfc5652.otherRecipientInfoMap.update(_otherRecipientInfoMapUpdate)
+otherRecipientInfoMap.update(_otherRecipientInfoMapUpdate)

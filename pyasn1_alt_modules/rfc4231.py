@@ -28,7 +28,7 @@ id_hmacWithSHA384 = rfc8018.id_hmacWithSHA384
 id_hmacWithSHA512 = rfc8018.id_hmacWithSHA512
 
 
-# The Algorithm Identifier map is updated by importing rfc8018.
+# The Algorithm Identifiers Map is updated by importing rfc8018.
 # To save looking it up, the map is updated with these entries:
 #  _algorithmIdentifierMapUpdate = {
 #     id_hmacWithSHA224: univ.Null(),

@@ -14,6 +14,7 @@ from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc6010
+from pyasn1_alt_modules import opentypemap
 
 
 class UnconstrainedCCCExtensionTestCase(unittest.TestCase):
@@ -92,7 +93,8 @@ KoZIhvcNAQkQDAsxEQwPa3RhLmV4YW1wbGUuY29tMA4GCSqGSIb3DQEHAQoBAQ==
         substrate = pem.readBase64fromText(self.constrained_pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        self.assertIn(asn1Object['extnID'], rfc5280.certificateExtensionsMap)
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
+        self.assertIn(asn1Object['extnID'], certificateExtensionsMap)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

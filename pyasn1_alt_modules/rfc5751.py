@@ -1,6 +1,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -17,6 +18,11 @@ from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc8018
+from pyasn1_alt_modules import opentypemap
+
+smimeCapabilityMap = opentypemap.get('smimeCapabilityMap')
+
+cmsAttributesMap = opentypemap.get('cmsAttributesMap')
 
 
 def _OID(*components):
@@ -43,9 +49,6 @@ rc2CBC = rfc8018.rc2CBC
 # S/MIME Capabilities Attribute
 
 smimeCapabilities = univ.ObjectIdentifier('1.2.840.113549.1.9.15')
-
-
-smimeCapabilityMap = { }
 
 
 class SMIMECapability(univ.Sequence):
@@ -110,7 +113,7 @@ _cmsAttributesMapUpdate = {
     id_aa_encrypKeyPref: SMIMEEncryptionKeyPreference(),
 }
 
-rfc5652.cmsAttributesMap.update(_cmsAttributesMapUpdate)
+cmsAttributesMap.update(_cmsAttributesMapUpdate)
 
 
 # SMIMECapabilities Attribute Map

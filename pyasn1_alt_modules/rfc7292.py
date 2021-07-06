@@ -1,6 +1,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with assistance from the asn1ate tool.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -21,8 +22,20 @@ from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc2315
 from pyasn1_alt_modules import rfc5652
-from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5958
+from pyasn1_alt_modules import opentypemap
+
+algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
+
+cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+
+pkcs12BagTypeMap = opentypemap.get('pkcs12BagTypeMap')
+
+pkcs12CertBagMap = opentypemap.get('pkcs12CertBagMap')
+
+pkcs12CRLBagMap = opentypemap.get('pkcs12CRLBagMap')
+
+pkcs12SecretBagMap = opentypemap.get('pkcs12SecretBagMap')
 
 
 def _OID(*components):
@@ -34,17 +47,6 @@ def _OID(*components):
             output.append(int(x))
 
     return univ.ObjectIdentifier(output)
-
-
-# Initialize the maps used in PKCS#12
-
-pkcs12BagTypeMap = { }
-
-pkcs12CertBagMap = { }
-
-pkcs12CRLBagMap = { }
-
-pkcs12SecretBagMap = { }
 
 
 # Imports from RFC 2315, RFC 5652, and RFC 5958
@@ -86,7 +88,7 @@ CMSSingleAttribute.componentType = namedtype.NamedTypes(
     namedtype.NamedType('attrType', AttributeType()),
     namedtype.NamedType('attrValues',
         AttributeValues().subtype(sizeSpec=constraint.ValueSizeConstraint(1, 1)),
-        openType=opentype.OpenType('attrType', rfc5652.cmsAttributesMap)
+        openType=opentype.OpenType('attrType', cmsAttributesMap)
     )
 )
 
@@ -344,7 +346,7 @@ _algorithmIdentifierMapUpdate = {
     pbeWithSHAAnd40BitRC2_CBC: Pkcs_12PbeParams(),
 }
 
-rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
 
 
 # Update the CMS Attribute map
@@ -354,4 +356,4 @@ _cmsAttributesMapUpdate = {
     pkcs_9_at_localKeyId: univ.OctetString(),
 }
 
-rfc5652.cmsAttributesMap.update(_cmsAttributesMapUpdate)
+cmsAttributesMap.update(_cmsAttributesMapUpdate)

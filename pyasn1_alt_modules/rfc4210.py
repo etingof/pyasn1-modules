@@ -8,6 +8,7 @@
 # Certificate Management Protocol structures as per RFC4210
 #
 # Based on Alex Railean's work
+# Modified by Russ Housley to import from RFC 5280 instead of RFC 2459.
 #
 from pyasn1.type import char
 from pyasn1.type import constraint
@@ -18,8 +19,8 @@ from pyasn1.type import univ
 from pyasn1.type import useful
 
 from pyasn1_alt_modules import rfc2314
-from pyasn1_alt_modules import rfc2459
 from pyasn1_alt_modules import rfc2511
+from pyasn1_alt_modules import rfc5280
 
 MAX = float('inf')
 
@@ -28,7 +29,7 @@ class KeyIdentifier(univ.OctetString):
     pass
 
 
-class CMPCertificate(rfc2459.Certificate):
+class CMPCertificate(rfc5280.Certificate):
     pass
 
 
@@ -108,7 +109,7 @@ class PKIConfirmContent(univ.Null):
 
 
 class CRLAnnContent(univ.SequenceOf):
-    componentType = rfc2459.CertificateList()
+    componentType = rfc5280.CertificateList()
 
 
 class CAKeyUpdAnnContent(univ.Sequence):
@@ -135,7 +136,7 @@ class RevDetails(univ.Sequence):
     """
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('certDetails', rfc2511.CertTemplate()),
-        namedtype.OptionalNamedType('crlEntryDetails', rfc2459.Extensions())
+        namedtype.OptionalNamedType('crlEntryDetails', rfc5280.Extensions())
     )
 
 
@@ -184,7 +185,7 @@ class Challenge(univ.Sequence):
      }
     """
     componentType = namedtype.NamedTypes(
-        namedtype.OptionalNamedType('owf', rfc2459.AlgorithmIdentifier()),
+        namedtype.OptionalNamedType('owf', rfc5280.AlgorithmIdentifier()),
         namedtype.NamedType('witness', univ.OctetString()),
         namedtype.NamedType('challenge', univ.OctetString())
     )
@@ -341,7 +342,7 @@ class RevAnnContent(univ.Sequence):
         namedtype.NamedType('certId', rfc2511.CertId()),
         namedtype.NamedType('willBeRevokedAt', useful.GeneralizedTime()),
         namedtype.NamedType('badSinceDate', useful.GeneralizedTime()),
-        namedtype.OptionalNamedType('crlDetails', rfc2459.Extensions())
+        namedtype.OptionalNamedType('crlDetails', rfc5280.Extensions())
     )
 
 
@@ -368,7 +369,7 @@ class RevRepContent(univ.Sequence):
             )
         ),
         namedtype.OptionalNamedType(
-            'crls', univ.SequenceOf(componentType=rfc2459.CertificateList()).subtype(
+            'crls', univ.SequenceOf(componentType=rfc5280.CertificateList()).subtype(
                 sizeSpec=constraint.ValueSizeConstraint(1, MAX),
                 explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1)
             )
@@ -457,7 +458,7 @@ class OOBCertHash(univ.Sequence):
     """
     componentType = namedtype.NamedTypes(
         namedtype.OptionalNamedType(
-            'hashAlg', rfc2459.AlgorithmIdentifier().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))
+            'hashAlg', rfc5280.AlgorithmIdentifier().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))
         ),
         namedtype.OptionalNamedType(
             'certId', rfc2511.CertId().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1))
@@ -485,8 +486,8 @@ class DHBMParameter(univ.Sequence):
      }   -- or HMAC [RFC2104, RFC2202])
     """
     componentType = namedtype.NamedTypes(
-        namedtype.NamedType('owf', rfc2459.AlgorithmIdentifier()),
-        namedtype.NamedType('mac', rfc2459.AlgorithmIdentifier())
+        namedtype.NamedType('owf', rfc5280.AlgorithmIdentifier()),
+        namedtype.NamedType('mac', rfc5280.AlgorithmIdentifier())
     )
 
 
@@ -506,9 +507,9 @@ class PBMParameter(univ.Sequence):
         namedtype.NamedType(
             'salt', univ.OctetString().subtype(subtypeSpec=constraint.ValueSizeConstraint(0, 128))
         ),
-        namedtype.NamedType('owf', rfc2459.AlgorithmIdentifier()),
+        namedtype.NamedType('owf', rfc5280.AlgorithmIdentifier()),
         namedtype.NamedType('iterationCount', univ.Integer()),
-        namedtype.NamedType('mac', rfc2459.AlgorithmIdentifier())
+        namedtype.NamedType('mac', rfc5280.AlgorithmIdentifier())
     )
 
 
@@ -723,15 +724,15 @@ class PKIHeader(univ.Sequence):
                 namedValues=namedval.NamedValues(('cmp1999', 1), ('cmp2000', 2))
             )
         ),
-        namedtype.NamedType('sender', rfc2459.GeneralName()),
-        namedtype.NamedType('recipient', rfc2459.GeneralName()),
+        namedtype.NamedType('sender', rfc5280.GeneralName()),
+        namedtype.NamedType('recipient', rfc5280.GeneralName()),
         namedtype.OptionalNamedType('messageTime', useful.GeneralizedTime().subtype(
             explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
-        namedtype.OptionalNamedType('protectionAlg', rfc2459.AlgorithmIdentifier().subtype(
+        namedtype.OptionalNamedType('protectionAlg', rfc5280.AlgorithmIdentifier().subtype(
             explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1))),
-        namedtype.OptionalNamedType('senderKID', rfc2459.KeyIdentifier().subtype(
+        namedtype.OptionalNamedType('senderKID', rfc5280.KeyIdentifier().subtype(
             explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 2))),
-        namedtype.OptionalNamedType('recipKID', rfc2459.KeyIdentifier().subtype(
+        namedtype.OptionalNamedType('recipKID', rfc5280.KeyIdentifier().subtype(
             explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 3))),
         namedtype.OptionalNamedType('transactionID', univ.OctetString().subtype(
             explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 4))),

@@ -17,6 +17,7 @@ from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5480
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc4262
+from pyasn1_alt_modules import opentypemap
 
 
 class SMIMECapExtnTestCase(unittest.TestCase):
@@ -63,11 +64,12 @@ Xr/lyFgYttd5n6E/AOW9cVjQojBhn6gYMzeciPTiEU9LLYKbTWO+qihZKmJYHxO1
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         found = False
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
         for extn in asn1Object['tbsCertificate']['extensions']:
            if extn['extnID'] == rfc4262.smimeCapabilities:
-               self.assertIn(extn['extnID'], rfc5280.certificateExtensionsMap)
+               self.assertIn(extn['extnID'], certificateExtensionsMap)
                scap, rest = der_decoder(extn['extnValue'],
-                   asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
+                   asn1Spec=certificateExtensionsMap[extn['extnID']])
                self.assertFalse(rest)
                self.assertTrue(scap.prettyPrint())
                self.assertEqual(extn['extnValue'], der_encoder(scap))

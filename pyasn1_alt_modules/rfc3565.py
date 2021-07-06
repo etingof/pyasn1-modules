@@ -2,6 +2,7 @@
 #
 # Created by Russ Housley.
 # Modified by Russ Housley to add maps for use with opentypes.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -17,6 +18,9 @@ from pyasn1.type import constraint
 from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
+
+algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
 
 
 class AlgorithmIdentifier(rfc5280.AlgorithmIdentifier):
@@ -24,9 +28,7 @@ class AlgorithmIdentifier(rfc5280.AlgorithmIdentifier):
 
 
 class AES_IV(univ.OctetString):
-    pass
-
-AES_IV.subtypeSpec = constraint.ValueSizeConstraint(16, 16)
+    subtypeSpec = constraint.ValueSizeConstraint(16, 16)
 
 
 id_aes128_CBC = univ.ObjectIdentifier('2.16.840.1.101.3.4.1.2')
@@ -54,4 +56,4 @@ _algorithmIdentifierMapUpdate = {
     id_aes256_wrap: univ.Null(),
 }
 
-rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)

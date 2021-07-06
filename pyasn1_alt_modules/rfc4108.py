@@ -4,6 +4,7 @@
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
 # Modified by Russ Housley to add items from the verified errata.
 # Modified by Russ Housley to add maps for use with opentypes.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -20,6 +21,13 @@ from pyasn1.type import univ, char, namedtype, namedval, tag, constraint, useful
 
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5652
+from pyasn1_alt_modules import opentypemap
+
+cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+
+cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
+
+otherNamesMap = opentypemap.get('otherNamesMap')
 
 MAX = float('inf')
 
@@ -310,8 +318,7 @@ HardwareModuleName.componentType = namedtype.NamedTypes(
 )
 
 
-# Map of Attribute Type OIDs to Attributes is added to the
-# ones that are in rfc5652.py
+# Update the CMS Attributes Map
 
 _cmsAttributesMapUpdate = {
     id_aa_wrappedFirmwareKey: WrappedFirmwareKey(),
@@ -325,11 +332,10 @@ _cmsAttributesMapUpdate = {
     id_aa_fwPkgMessageDigest: FirmwarePackageMessageDigest(),
 }
 
-rfc5652.cmsAttributesMap.update(_cmsAttributesMapUpdate)
+cmsAttributesMap.update(_cmsAttributesMapUpdate)
 
 
-# Map of Content Type OIDs to Content Types is added to the
-# ones that are in rfc5652.py
+# Update the CMS Content Types Map
 
 _cmsContentTypesMapUpdate = {
     id_ct_firmwareLoadError: FirmwarePackageLoadError(),
@@ -337,14 +343,13 @@ _cmsContentTypesMapUpdate = {
     id_ct_firmwarePackage: FirmwarePkgData(),
 }
 
-rfc5652.cmsContentTypesMap.update(_cmsContentTypesMapUpdate)
+cmsContentTypesMap.update(_cmsContentTypesMapUpdate)
 
 
-# Map of Other Name OIDs to Other Name is added to the
-# ones that are in rfc5280.py
+# Update the Other Names Map
 
-_anotherNameMapUpdate = {
+_otherNamesMapUpdate = {
     id_on_hardwareModuleName: HardwareModuleName(),
 }
 
-rfc5280.anotherNameMap.update(_anotherNameMapUpdate)
+otherNamesMap.update(_otherNamesMapUpdate)

@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley.
+# Modified by Russ Housley to include the opentypemap manager..
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -21,6 +22,11 @@ from pyasn1_alt_modules import rfc2437
 from pyasn1_alt_modules import rfc3447
 from pyasn1_alt_modules import rfc4055
 from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
+
+algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
+
+smimeCapabilityMap = opentypemap.get('smimeCapabilityMap')
 
 MAX = float('inf')
 
@@ -125,7 +131,7 @@ class DigestInfo(univ.Sequence):
     )
 
 
-# Update the Algorithm Identifier map
+# Update the Algorithm Identifier Map and the S/MIME Capability Map
 
 _algorithmIdentifierMapUpdate = {
     id_sha1: univ.Null(),
@@ -150,4 +156,4 @@ _algorithmIdentifierMapUpdate = {
     sha512_256WithRSAEncryption: univ.Null(),
 }
 
-rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)

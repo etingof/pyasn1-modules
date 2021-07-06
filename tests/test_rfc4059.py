@@ -14,6 +14,7 @@ from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc4059
+from pyasn1_alt_modules import opentypemap
 
 
 class WarrantyCertificateTestCase(unittest.TestCase):
@@ -40,9 +41,9 @@ SNZvBmsBe5D+PlZZF/XpJ21bf6HPAGkBMMDNPdTdKXk=
         self.asn1Spec = rfc5280.Certificate()
 
     def testDerCodec(self):
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
@@ -50,9 +51,9 @@ SNZvBmsBe5D+PlZZF/XpJ21bf6HPAGkBMMDNPdTdKXk=
         found = False
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] == rfc4059.id_pe_warranty_extn:
-                self.assertIn(extn['extnID'], rfc5280.certificateExtensionsMap)
+                self.assertIn(extn['extnID'], certificateExtensionsMap)
                 ev, rest = der_decoder(extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
+                    asn1Spec=certificateExtensionsMap[extn['extnID']])
                 self.assertFalse(rest)
                 self.assertTrue(ev.prettyPrint())
                 self.assertEqual(extn['extnValue'], der_encoder(ev))

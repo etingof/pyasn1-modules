@@ -5,6 +5,7 @@
 # Created by Stanisław Pitucha with asn1ate tool.
 # Modified by Russ Housley to add a maps for CMC Control Attributes
 #   and CMC Content Types for use with opentypes.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # Copyright (c) 2021, Vigil Security, LLC
@@ -27,6 +28,7 @@ from pyasn1.type import useful
 from pyasn1_alt_modules import rfc4211
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5652
+from pyasn1_alt_modules import opentypemap
 
 MAX = float('inf')
 
@@ -42,8 +44,13 @@ def _buildOid(*components):
     return univ.ObjectIdentifier(output)
 
 
-# Since CMS Attributes and CMC Controls both use 'attrType', one map is used 
-cmcControlAttributesMap = rfc5652.cmsAttributesMap
+# Since CMS Attributes and CMC Controls both use 'attrType', one map is used
+
+cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+
+cmcControlAttributesMap = cmsAttributesMap
+
+cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
 
 
 class ChangeSubjectName(univ.Sequence):
@@ -578,7 +585,7 @@ id_ad_cmc = _buildOid(rfc5280.id_ad, 12)
 id_alg_noSignature = _buildOid(id_pkix, 6, 2)
 
 
-# Map of CMC Control OIDs to CMC Control Attributes
+# Update the CMC Control Attributes Map (a.k.a. CMS Attributes Map)
 
 _cmcControlAttributesMapUpdate = {
     id_cmc_statusInfo: CMCStatusInfo(),
@@ -617,13 +624,12 @@ _cmcControlAttributesMapUpdate = {
 cmcControlAttributesMap.update(_cmcControlAttributesMapUpdate)
 
 
-# Map of CMC Content Type OIDs to CMC Content Types are added to
-# the ones that are in rfc5652.py
+#Update the CMS Content Type Map
 
 _cmsContentTypesMapUpdate = {
     id_cct_PKIData: PKIData(),
     id_cct_PKIResponse: PKIResponse(),
 }
 
-rfc5652.cmsContentTypesMap.update(_cmsContentTypesMapUpdate)
+cmsContentTypesMap.update(_cmsContentTypesMapUpdate)
 

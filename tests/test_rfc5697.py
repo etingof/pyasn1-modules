@@ -15,6 +15,7 @@ from pyasn1.type import univ
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5697
+from pyasn1_alt_modules import opentypemap
 
 
 class OtherCertTestCase(unittest.TestCase):
@@ -70,10 +71,8 @@ hn1cAiAIfnI1FVrosL/94ZKfGW+xydYaelsPL+WBgqGvKuTMEg==
 
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] == rfc5697.id_pe_otherCerts:
-                extnValue, rest = der_decoder(
-                    extn['extnValue'],
+                extnValue, rest = der_decoder(extn['extnValue'],
                     asn1Spec=rfc5697.OtherCertificates())
-
                 self.assertFalse(rest)
                 self.assertTrue(extnValue.prettyPrint())
                 self.assertEqual(extn['extnValue'], der_encoder(extnValue))
@@ -88,24 +87,22 @@ hn1cAiAIfnI1FVrosL/94ZKfGW+xydYaelsPL+WBgqGvKuTMEg==
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.cert_pem_text)
-        asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
-
+        asn1Object, rest = der_decoder(substrate,
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         other_cert_found = False
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
 
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] == rfc5697.id_pe_otherCerts:
-                self.assertIn(extn['extnID'], rfc5280.certificateExtensionsMap)
+                self.assertIn(extn['extnID'], certificateExtensionsMap)
 
-                extnValue, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']],
+                extnValue, rest = der_decoder(extn['extnValue'],
+                    asn1Spec=certificateExtensionsMap[extn['extnID']],
                     decodeOpenTypes=True)
-
                 self.assertFalse(rest)
                 self.assertTrue(extnValue.prettyPrint())
                 self.assertEqual(extn['extnValue'], der_encoder(extnValue))

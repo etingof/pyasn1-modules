@@ -3,6 +3,7 @@
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
 # Modified by Russ Housley to add a map for use with opentypes.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -22,6 +23,14 @@ from pyasn1_alt_modules import rfc2634
 from pyasn1_alt_modules import rfc4055
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
+
+cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+
+cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
+
+
+# Imports from RFC 5280 and RFC 5652
 
 ContentType = rfc5652.ContentType
 
@@ -179,21 +188,19 @@ ub_receiptsTo = rfc2634.ub_receiptsTo
 ReceiptRequest = rfc2634.ReceiptRequest
 
 
-# Map of Attribute Type to the Attribute structure is added to the
-# ones that are in rfc5652.py
+# Update the CMS Attributes Map
 
 _cmsAttributesMapUpdate = {
     id_aa_signingCertificateV2: SigningCertificateV2(),
 }
 
-rfc5652.cmsAttributesMap.update(_cmsAttributesMapUpdate)
+cmsAttributesMap.update(_cmsAttributesMapUpdate)
 
 
-# Map of Content Type OIDs to Content Types is added to the
-# ones that are in rfc5652.py
+# Update the CMS Content Types Map
 
 _cmsContentTypesMapUpdate = {
     id_ct_receipt: Receipt(),
 }
 
-rfc5652.cmsContentTypesMap.update(_cmsContentTypesMapUpdate)
+cmsContentTypesMap.update(_cmsContentTypesMapUpdate)

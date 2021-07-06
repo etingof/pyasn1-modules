@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -19,7 +20,9 @@ from pyasn1.type import namedval
 from pyasn1.type import useful
 from pyasn1.type import univ
 
-from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
+
+certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
 
 MAX = float('inf')
 
@@ -89,10 +92,10 @@ id_pe = univ.ObjectIdentifier((1, 3, 6, 1, 5, 5, 7, 1))
 id_pe_warranty_extn = id_pe + (16,)
 
 
-# Update the map of Certificate Extensions in rfc5280.py.
+# Update the Certificate Extensions Map
 
 _certificateExtensionsMap = {
     id_pe_warranty_extn: Warranty(),
 }
 
-rfc5280.certificateExtensionsMap.update(_certificateExtensionsMap)
+certificateExtensionsMap.update(_certificateExtensionsMap)

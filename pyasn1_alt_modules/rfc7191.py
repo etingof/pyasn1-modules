@@ -2,6 +2,7 @@
 #
 # Created by Russ Housley without assistance from the asn1ate tool.
 # Modified by Russ Housley to add support for opentypes.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -19,9 +20,16 @@ from pyasn1.type import tag
 from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5280
-from pyasn1_alt_modules import rfc5652
+from pyasn1_alt_modules import opentypemap
+
+cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+
+cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
 
 MAX = float('inf')
+
+
+# Import from RFC 5280
 
 DistinguishedName = rfc5280.DistinguishedName
 
@@ -46,7 +54,7 @@ class SingleAttribute(univ.Sequence):
 SingleAttribute.componentType = namedtype.NamedTypes(
     namedtype.NamedType('attrType', univ.ObjectIdentifier()),
     namedtype.NamedType('attrValues', AttributeValues(),
-        openType=opentype.OpenType('attrType', rfc5652.cmsAttributesMap)
+        openType=opentype.OpenType('attrType', cmsAttributesMap)
     )
 )
 
@@ -240,22 +248,20 @@ KeyPkgIdentifierAndReceiptReq.componentType = namedtype.NamedTypes(
 )
 
 
-# Map of Attribute Type OIDs to Attributes are added to
-# the ones that are in rfc5652.py
+# Update the of CMS Attributes Map
 
 _cmsAttributesMapUpdate = {
     id_aa_KP_keyPkgIdAndReceiptReq: KeyPkgIdentifierAndReceiptReq(),
 }
 
-rfc5652.cmsAttributesMap.update(_cmsAttributesMapUpdate)
+cmsAttributesMap.update(_cmsAttributesMapUpdate)
 
 
-# Map of CMC Content Type OIDs to CMC Content Types are added to
-# the ones that are in rfc5652.py
+# Update the CMS Content Types Maps
 
 _cmsContentTypesMapUpdate = {
     id_ct_KP_keyPackageError: KeyPackageError(),
     id_ct_KP_keyPackageReceipt: KeyPackageReceipt(),
 }
 
-rfc5652.cmsContentTypesMap.update(_cmsContentTypesMapUpdate)
+cmsContentTypesMap.update(_cmsContentTypesMapUpdate)

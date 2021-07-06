@@ -16,6 +16,7 @@ from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5913
 from pyasn1_alt_modules import rfc5755
 from pyasn1_alt_modules import rfc3114
+from pyasn1_alt_modules import opentypemap
 
 
 class ClearanceTestCase(unittest.TestCase):
@@ -53,15 +54,14 @@ AgTwMBEGCyqGSIb3DQEJEAcBAwIF4DAKBggqhkjOPQQDAwNnADBkAjAZSD+BVqzc
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         cat_value_found = False
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
+        securityCategoryMap = opentypemap.get('securityCategoryMap')
 
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] == rfc5913.id_pe_clearanceConstraints:
-                self.assertIn(extn['extnID'], rfc5280.certificateExtensionsMap)
-
-                ev, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-
+                self.assertIn(extn['extnID'], certificateExtensionsMap)
+                ev, rest = der_decoder(extn['extnValue'],
+                    asn1Spec=certificateExtensionsMap[extn['extnID']])
                 self.assertFalse(rest)
                 self.assertTrue(ev.prettyPrint())
                 self.assertEqual(extn['extnValue'], der_encoder(ev))
@@ -69,11 +69,12 @@ AgTwMBEGCyqGSIb3DQEJEAcBAwIF4DAKBggqhkjOPQQDAwNnADBkAjAZSD+BVqzc
                 for c in ev:
                     if c['policyId'] == rfc3114.id_tsp_TEST_Whirlpool:
                         for sc in c['securityCategories']:
-                            self.assertIn(sc['type'], rfc5755.securityCategoryMap)
-
-                            scv, rest = der_decoder(
-                                sc['value'],
-                                asn1Spec=rfc5755.securityCategoryMap[sc['type']])
+                            self.assertIn(sc['type'], securityCategoryMap)
+                            scv, rest = der_decoder(sc['value'],
+                                asn1Spec=securityCategoryMap[sc['type']])
+                            self.assertFalse(rest)
+                            self.assertTrue(scv.prettyPrint())
+                            self.assertEqual(sc['value'], der_encoder(scv))
 
                             for cat in scv:
                                 self.assertIn('USE ONLY', cat)
@@ -85,22 +86,20 @@ AgTwMBEGCyqGSIb3DQEJEAcBAwIF4DAKBggqhkjOPQQDAwNnADBkAjAZSD+BVqzc
         substrate = pem.readBase64fromText(self.cert_pem_text)
         asn1Object, rest = der_decoder(
             substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         cat_value_found = False
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
+        securityCategoryMap = opentypemap.get('securityCategoryMap')
 
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] == rfc5913.id_pe_clearanceConstraints:
-                self.assertIn(extn['extnID'], rfc5280.certificateExtensionsMap)
-
-                ev, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']],
+                self.assertIn(extn['extnID'], certificateExtensionsMap)
+                ev, rest = der_decoder(extn['extnValue'],
+                    asn1Spec=certificateExtensionsMap[extn['extnID']],
                     decodeOpenTypes=True)
-
                 self.assertFalse(rest)
                 self.assertTrue(ev.prettyPrint())
                 self.assertEqual(extn['extnValue'], der_encoder(ev))
@@ -108,7 +107,7 @@ AgTwMBEGCyqGSIb3DQEJEAcBAwIF4DAKBggqhkjOPQQDAwNnADBkAjAZSD+BVqzc
                 for c in ev:
                     if c['policyId'] == rfc3114.id_tsp_TEST_Whirlpool:
                         for sc in c['securityCategories']:
-                            self.assertIn(sc['type'], rfc5755.securityCategoryMap)
+                            self.assertIn(sc['type'], securityCategoryMap)
                             for cat in sc['value']:
                                 self.assertIn('USE ONLY', cat)
                                 cat_value_found = True

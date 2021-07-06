@@ -2,6 +2,8 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley.
+# Modified by Russ Housley to include the opentypemap manager and
+#   update the S/MIME Capabilities map.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -19,6 +21,11 @@ from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc3565
 from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
+
+algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
+
+smimeCapabilityMap = opentypemap.get('smimeCapabilityMap')
 
 MAX = float('inf')
 
@@ -257,4 +264,6 @@ _algorithmIdentifierMapUpdate = {
     aes256_CBC_PAD: AES_IV(),
 }
 
-rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+
+smimeCapabilityMap.update(_algorithmIdentifierMapUpdate)

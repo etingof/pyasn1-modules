@@ -13,6 +13,7 @@ from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc6482
+from pyasn1_alt_modules import opentypemap
 
 
 class RPKIROATestCase(unittest.TestCase):
@@ -56,7 +57,7 @@ IzU1
         substrate = pem.readBase64fromText(self.roa_pem_text)
 
         layers = {}
-        layers.update(rfc5652.cmsContentTypesMap)
+        layers.update(opentypemap.get('cmsContentTypesMap'))
 
         getNextLayer = {
             rfc5652.id_ct_contentInfo: lambda x: x['contentType'],
@@ -72,8 +73,8 @@ IzU1
 
         next_layer = rfc5652.id_ct_contentInfo
         while next_layer:
-            asn1Object, rest = der_decoder(substrate, asn1Spec=layers[next_layer])
-
+            asn1Object, rest = der_decoder(
+                substrate, asn1Spec=layers[next_layer])
             self.assertFalse(rest)
             self.assertTrue(asn1Object.prettyPrint())
             self.assertEqual(substrate, der_encoder(asn1Object))
@@ -88,7 +89,6 @@ IzU1
         substrate = pem.readBase64fromText(self.roa_pem_text)
         asn1Object, rest = der_decoder(
             substrate, asn1Spec=rfc5652.ContentInfo(), decodeOpenTypes=True)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
@@ -96,15 +96,15 @@ IzU1
         oid = asn1Object['content']['encapContentInfo']['eContentType']
         substrate = asn1Object['content']['encapContentInfo']['eContent']
 
-        self.assertIn(oid, rfc5652.cmsContentTypesMap)
+        cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
+        self.assertIn(oid, cmsContentTypesMap)
 
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=rfc5652.cmsContentTypesMap[oid],
-            decodeOpenTypes=True)
-
+            substrate, asn1Spec=cmsContentTypesMap[oid], decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
+
         self.assertEqual(0, asn1Object['version'])
         self.assertEqual(58363, asn1Object['asID'])
 

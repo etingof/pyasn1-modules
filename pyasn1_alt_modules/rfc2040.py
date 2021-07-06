@@ -2,6 +2,8 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley.
+# Modified by Russ Housley to include the opentypemap manager and
+#   update the S/MIME Capability map.
 #
 # Copyright (c) 2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -15,9 +17,14 @@
 
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc8018
+from pyasn1_alt_modules import opentypemap
+
+algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
+
+smimeCapabilityMap = opentypemap.get('smimeCapabilityMap')
 
 
-# The some RC5 object identifiers are defined in RFC 8018
+# The same RC5 object identifiers are defined in RFC 8018
 
 encryptionAlgorithm = rfc8018.encryptionAlgorithm
 
@@ -31,11 +38,13 @@ rc5_CBC_PAD = rfc8018.rc5_CBC_PAD
 RC5_CBC_Parameters = rfc8018.RC5_CBC_Parameters
 
 
-# Update the Algorithm Identifier map for the one not already handled
-# by importing rfc8018.
+# Update the Algorithm Identifier Map and the S/MIME Capability Map
+# for the one not already handled by importing rfc8018.
 
 _algorithmIdentifierMapUpdate = {
     rc5_CBC: RC5_CBC_Parameters(),
 }
 
-rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+
+smimeCapabilityMap.update(_algorithmIdentifierMapUpdate)
