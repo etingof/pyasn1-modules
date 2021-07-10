@@ -15,6 +15,7 @@ from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc7508
+from pyasn1_alt_modules import opentypemap
 
 
 class SignedMessageTestCase(unittest.TestCase):
@@ -52,9 +53,10 @@ bEtkkWCao1uNm5TOzphK0NbxzOsD854aC5ReKPSDAjAm1U0siLQw5p4qzGwyxDw9
         self.asn1Spec = rfc5652.ContentInfo()
 
     def testDerCodec(self):
+        cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+
         substrate = pem.readBase64fromText(self.signed_message_pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
@@ -63,18 +65,19 @@ bEtkkWCao1uNm5TOzphK0NbxzOsD854aC5ReKPSDAjAm1U0siLQw5p4qzGwyxDw9
 
         self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
 
-        sd, rest = der_decoder(
-            asn1Object['content'], asn1Spec=rfc5652.SignedData())
+        sd, rest = der_decoder(asn1Object['content'],
+            asn1Spec=rfc5652.SignedData())
+        self.assertFalse(rest)
+        self.assertTrue(sd.prettyPrint())
+        self.assertEqual(asn1Object['content'], der_encoder(sd))
 
         for sa in sd['signerInfos'][0]['signedAttrs']:
             sat = sa['attrType']
             sav0 = sa['attrValues'][0]
 
             if sat == rfc7508.id_aa_secureHeaderFieldsIdentifier:
-                self.assertIn(sat, rfc5652.cmsAttributesMap)
-                sav, rest = der_decoder(
-                    sav0, asn1Spec=rfc5652.cmsAttributesMap[sat])
-
+                self.assertIn(sat, cmsAttributesMap)
+                sav, rest = der_decoder(sav0, asn1Spec=cmsAttributesMap[sat])
                 self.assertFalse(rest)
                 self.assertTrue(sav.prettyPrint())
                 self.assertEqual(sav0, der_encoder(sav))
@@ -89,34 +92,34 @@ bEtkkWCao1uNm5TOzphK0NbxzOsD854aC5ReKPSDAjAm1U0siLQw5p4qzGwyxDw9
         self.assertTrue(secure_header_field_attr_found)
 
     def testOpenTypes(self):
-        substrate = pem.readBase64fromText(self.signed_message_pem_text)
-        asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+        cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+        cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
 
+        substrate = pem.readBase64fromText(self.signed_message_pem_text)
+        asn1Object, rest = der_decoder(substrate,
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertIn(asn1Object['contentType'], rfc5652.cmsContentTypesMap)
+        self.assertIn(asn1Object['contentType'], cmsContentTypesMap)
         self.assertEqual(asn1Object['contentType'], rfc5652.id_signedData)
 
         sd = asn1Object['content']
-
         self.assertEqual(
             rfc5652.CMSVersion().subtype(value='v1'), sd['version'])
 
         ect = sd['encapContentInfo']['eContentType']
-
-        self.assertIn(ect, rfc5652.cmsContentTypesMap)
+        self.assertIn(ect, cmsContentTypesMap)
         self.assertEqual(rfc5652.id_data, ect)
 
         for sa in sd['signerInfos'][0]['signedAttrs']:
             if sa['attrType'] == rfc7508.id_aa_secureHeaderFieldsIdentifier:
-                self.assertIn(sa['attrType'], rfc5652.cmsAttributesMap)
+                self.assertIn(sa['attrType'], cmsAttributesMap)
 
                 secure_header_field_attr_found = False
                 for sa in sd['signerInfos'][0]['signedAttrs']:
                     if sa['attrType'] == rfc7508.id_aa_secureHeaderFieldsIdentifier:
-                        self.assertIn(sa['attrType'], rfc5652.cmsAttributesMap)
+                        self.assertIn(sa['attrType'], cmsAttributesMap)
                         from_field = rfc7508.HeaderFieldName('From')
                         alice_email = rfc7508.HeaderFieldValue('alice@example.com')
                         for shf in sa['attrValues'][0]['secHeaderFields']:

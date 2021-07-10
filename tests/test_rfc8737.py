@@ -14,6 +14,7 @@ from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc8737
+from pyasn1_alt_modules import opentypemap
 
 
 class ACMEIdentifierTestCase(unittest.TestCase):
@@ -44,16 +45,17 @@ LWIbHF0HSW/CxDQo22mHT+tMqd13NzlDN3HxurIEGU4fBjk/rMSxw/bAPf4O0QT3
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         found = False
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
+
         for extn in asn1Object['tbsCertificate']['extensions']:
            if extn['extnID'] == rfc8737.id_pe_acmeIdentifier:
                self.assertTrue(extn['critical'])
-               self.assertIn(extn['extnID'], rfc5280.certificateExtensionsMap)
+               self.assertIn(extn['extnID'], certificateExtensionsMap)
                auth, rest = der_decoder(
                    extn['extnValue'], asn1Spec=rfc8737.Authorization())
                self.assertFalse(rest)

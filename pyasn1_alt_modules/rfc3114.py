@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -17,6 +18,9 @@ from pyasn1.type import namedval
 from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5755
+from pyasn1_alt_modules import opentypemap
+
+securityCategoryMap = opentypemap.get('securityCategoryMap')
 
 
 id_smime = univ.ObjectIdentifier((1, 2, 840, 113549, 1, 9, 16, ))
@@ -67,11 +71,10 @@ class SecurityCategoryValues(univ.SequenceOf):
 # such as: "ATTORNEY-CLIENT PRIVILEGED INFORMATION"
 
 
-# Map of security category type OIDs to security category added
-# to the ones that are in rfc5755.py
+# Update the Security Category Map
 
 _securityCategoryMapUpdate = {
     id_tsp_TEST_Whirlpool_Categories: SecurityCategoryValues(),
 }
 
-rfc5755.securityCategoryMap.update(_securityCategoryMapUpdate)
+securityCategoryMap.update(_securityCategoryMapUpdate)

@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with some help from asn1ate v.0.6.0
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -26,14 +27,19 @@ from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc6960
 from pyasn1_alt_modules import rfc3281
+from pyasn1_alt_modules import opentypemap
+
+cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
+
+otherRevInfoFormatMap = opentypemap.get('otherRevInfoFormatMap')
+
+scvpValidationPolMap = opentypemap.get('scvpValidationPolMap')
+
+scvpValidationAlgMap = opentypemap.get('scvpValidationAlgMap')
+
+scvpWantBackMap = opentypemap.get('scvpWantBackMap')
 
 MAX = float('inf')
-
-scvpValidationPolMap = { }
-
-scvpValidationAlgMap = { }
-
-scvpWantBackMap = { }
 
 
 # Imports from RFC 5280
@@ -216,8 +222,7 @@ class OtherRevInfo(univ.Sequence):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('riType', univ.ObjectIdentifier()),
         namedtype.NamedType('riValue', univ.Any(),
-            openType=opentype.OpenType('riType',
-                rfc5652.otherRevInfoFormatMap))
+            openType=opentype.OpenType('riType', otherRevInfoFormatMap))
     )
 
 
@@ -712,7 +717,7 @@ id_ct_scvp_valPolRequest = id_ct + (12,)
 id_ct_scvp_valPolResponse = id_ct + (13,)
 
 
-# Update the Content Types map in rfc5652.py
+# Update the Content Types Map
 
 _cmsContentTypesMapUpdate = {
     id_ct_scvp_certValRequest: CVRequest(),
@@ -721,14 +726,14 @@ _cmsContentTypesMapUpdate = {
     id_ct_scvp_valPolResponse: ValPolResponse(),
 }
 
-rfc5652.cmsContentTypesMap.update(_cmsContentTypesMapUpdate)
+cmsContentTypesMap.update(_cmsContentTypesMapUpdate)
 
 
 # id_svp_defaultValPolicy: parameters MUST be absent
 # so there is nothing to add to scvpValidationPolMap
 
 
-# Update the SCVP Validation Algorithm map
+# Update the SCVP Validation Algorithm Map
 
 _scvpValidationAlgMapUpdate = {
     # id_svp_basicValAlg: parameters MUST be absent
@@ -738,7 +743,7 @@ _scvpValidationAlgMapUpdate = {
 scvpValidationAlgMap.update(_scvpValidationAlgMapUpdate)
 
 
-# Update the SCVP Want Back map
+# Update the SCVP Want Back Map
 
 _scvpWantBackMapUpdate = {
     id_swb_pkc_best_cert_path: CertBundle(),

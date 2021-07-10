@@ -16,6 +16,7 @@ from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc8017
 from pyasn1_alt_modules import rfc2985
+from pyasn1_alt_modules import opentypemap
 
 
 class SMIMECapabilitiesTestCase(unittest.TestCase):
@@ -34,19 +35,17 @@ hvcNAQEPBQAwDQYJKoZIhvcNAQEQBQA=
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.smime_capabilities_pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
+        algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
         for cap in asn1Object:
-            self.assertIn(cap['algorithm'], rfc5280.algorithmIdentifierMap)
+            self.assertIn(cap['algorithm'], algorithmIdentifierMap)
 
             if cap['parameters'].hasValue():
-                p, rest = der_decoder(
-                    cap['parameters'],
-                    asn1Spec=rfc5280.algorithmIdentifierMap[cap['algorithm']])
-
+                p, rest = der_decoder(cap['parameters'],
+                    asn1Spec=algorithmIdentifierMap[cap['algorithm']])
                 self.assertFalse(rest)
                 if not p == univ.Null(""):
                     self.assertTrue(p.prettyPrint())
@@ -60,9 +59,8 @@ hvcNAQEPBQAwDQYJKoZIhvcNAQEQBQA=
 
     def OpenTypesCodec(self):
         substrate = pem.readBase64fromText(self.smime_capabilities_pem_text)
-        asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
-
+        asn1Object, rest = der_decoder(substrate, 
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))

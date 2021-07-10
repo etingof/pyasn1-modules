@@ -13,6 +13,7 @@ from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc3709
+from pyasn1_alt_modules import opentypemap
 
 
 class CertificateExtnWithUrlTestCase(unittest.TestCase):
@@ -76,12 +77,11 @@ Pj22pmfmQi5w21UljqoTj/+lQLkU3wfy5BdVKBwI0GfEA+YL3ctSzPNqAA==
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
         for extn in asn1Object['tbsCertificate']['extensions']:
-            if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
-                extnValue, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-
+            if extn['extnID'] in certificateExtensionsMap:
+                extnValue, rest = der_decoder(extn['extnValue'],
+                    asn1Spec=certificateExtensionsMap[extn['extnID']])
                 self.assertEqual(extn['extnValue'], der_encoder(extnValue))
 
 
@@ -178,12 +178,11 @@ kbpmR6cDliloU808Bi/erMkrfUHRoZ2d586lkmwkLcoDkJ/yPD+Jhw==
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
         for extn in asn1Object['tbsCertificate']['extensions']:
-            if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
-                extnValue, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-
+            if extn['extnID'] in certificateExtensionsMap:
+                extnValue, rest = der_decoder(extn['extnValue'],
+                    asn1Spec=certificateExtensionsMap[extn['extnID']])
                 self.assertEqual(extn['extnValue'], der_encoder(extnValue))
 
 

@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -16,7 +17,9 @@ from pyasn1.type import char
 from pyasn1.type import namedtype
 from pyasn1.type import univ
 
-from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
+
+otherNamesMap = opentypemap.get('otherNamesMap')
 
 
 id_pkix = univ.ObjectIdentifier((1, 3, 6, 1, 5, 5, 7, ))
@@ -33,11 +36,10 @@ class PermanentIdentifier(univ.Sequence):
     )
 
 
-# Map of Other Name OIDs to Other Name is added to the
-# ones that are in rfc5280.py
+# Update the Other Names to Map
 
-_anotherNameMapUpdate = {
+_otherNameMapUpdate = {
     id_on_permanentIdentifier: PermanentIdentifier(),
 }
 
-rfc5280.anotherNameMap.update(_anotherNameMapUpdate)
+otherNamesMap.update(_otherNameMapUpdate)

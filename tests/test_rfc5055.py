@@ -15,6 +15,7 @@ from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc5055
+from pyasn1_alt_modules import opentypemap
 
 
 class SCVPCVRequestTestCase(unittest.TestCase):
@@ -63,7 +64,7 @@ QVBJOnZzcy1kdi1ycy1wMTE=
 
     def testDerCodec(self):
         layers = { }
-        layers.update(rfc5652.cmsContentTypesMap)
+        layers.update(opentypemap.get('cmsContentTypesMap'))
         self.assertIn(rfc5055.id_ct_scvp_certValRequest, layers)
 
         getNextLayer = {
@@ -318,7 +319,7 @@ vMNSPw==
 
     def testDerCodec(self):
         layers = { }
-        layers.update(rfc5652.cmsContentTypesMap)
+        layers.update(opentypemap.get('cmsContentTypesMap'))
         self.assertIn(rfc5055.id_ct_scvp_certValResponse, layers)
 
         getNextLayer = {
@@ -351,12 +352,13 @@ vMNSPw==
         self.assertEqual('URN:VSSAPI:vss-dv-rs-p11',
             asn1Object['requestorName'][0]['uniformResourceIdentifier'])
 
+        scvpWantBackMap = opentypemap.get('scvpWantBackMap')
         found = False
         for cr in asn1Object['replyObjects']:
             for rwb in cr['replyWantBacks']:
-                if rwb['wb'] in rfc5055.scvpWantBackMap:
+                if rwb['wb'] in scvpWantBackMap:
                     wbv, rest = der_decoder(rwb['value'], 
-                        asn1Spec=rfc5055.scvpWantBackMap[rwb['wb']])
+                        asn1Spec=scvpWantBackMap[rwb['wb']])
                     self.assertFalse(rest)
                     self.assertTrue(wbv.prettyPrint())
                     self.assertEqual(rwb['value'], der_encoder(wbv))
@@ -367,6 +369,7 @@ vMNSPw==
         self.assertTrue(found)
 
     def testOpenTypes(self):
+        cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
         substrate = pem.readBase64fromText(self.cvresponse_pem_text)
         asn1Object, rest = der_decoder(
             substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
@@ -376,7 +379,7 @@ vMNSPw==
 
         substrate = asn1Object['content']['encapContentInfo']['eContent']
         oid = asn1Object['content']['encapContentInfo']['eContentType']
-        asn1Spec = rfc5652.cmsContentTypesMap[oid]
+        asn1Spec = cmsContentTypesMap[oid]
         asn1Object, rest = der_decoder(
             substrate, asn1Spec=asn1Spec, decodeOpenTypes=True)
         self.assertFalse(rest)
@@ -386,12 +389,13 @@ vMNSPw==
         self.assertEqual('URN:VSSAPI:vss-dv-rs-p11',
             asn1Object['requestorName'][0]['uniformResourceIdentifier'])
 
+        scvpWantBackMap = opentypemap.get('scvpWantBackMap')
         found = False
         for cr in asn1Object['replyObjects']:
             for rwb in cr['replyWantBacks']:
-                if rwb['wb'] in rfc5055.scvpWantBackMap:
+                if rwb['wb'] in scvpWantBackMap:
                     wbv, rest = der_decoder(rwb['value'], 
-                        asn1Spec=rfc5055.scvpWantBackMap[rwb['wb']],
+                        asn1Spec=scvpWantBackMap[rwb['wb']],
                         decodeOpenTypes=True)
                     self.assertFalse(rest)
                     self.assertTrue(wbv.prettyPrint())
@@ -412,7 +416,7 @@ MCMGCyqGSIb3DQEJEAEMoBQwEgQQ7V8C3E2ZIRLNgTQZzWGb+Q==
 
     def testDerCodec(self):
         layers = { }
-        layers.update(rfc5652.cmsContentTypesMap)
+        layers.update(opentypemap.get('cmsContentTypesMap'))
         self.assertIn(rfc5055.id_ct_scvp_valPolRequest, layers)
 
         getNextLayer = {
@@ -584,7 +588,7 @@ Y8yBvZcgq9UK6oRgyI81bE26Fo7mDVvhfb40vehuJ9ql22CoFMm0
 
     def testDerCodec(self):
         layers = { }
-        layers.update(rfc5652.cmsContentTypesMap)
+        layers.update(opentypemap.get('cmsContentTypesMap'))
         self.assertIn(rfc5055.id_ct_scvp_valPolResponse, layers)
 
         getNextLayer = {
@@ -617,6 +621,7 @@ Y8yBvZcgq9UK6oRgyI81bE26Fo7mDVvhfb40vehuJ9ql22CoFMm0
         self.assertEqual(10, asn1Object['clockSkew'])
 
     def testOpenTypes(self):
+        cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
         substrate = pem.readBase64fromText(self.valpolresponse_pem_text)
         asn1Object, rest = der_decoder(
             substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
@@ -627,7 +632,7 @@ Y8yBvZcgq9UK6oRgyI81bE26Fo7mDVvhfb40vehuJ9ql22CoFMm0
 
         substrate = asn1Object['content']['encapContentInfo']['eContent']
         oid = asn1Object['content']['encapContentInfo']['eContentType']
-        asn1Spec = rfc5652.cmsContentTypesMap[oid]
+        asn1Spec = cmsContentTypesMap[oid]
         asn1Object, rest = der_decoder(
             substrate, asn1Spec=asn1Spec, decodeOpenTypes=True)
         self.assertFalse(rest)

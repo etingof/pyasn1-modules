@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -16,6 +17,9 @@ from pyasn1.type import namedtype
 from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5652
+from pyasn1_alt_modules import opentypemap
+
+cmsAttributesMap = opentypemap.get('cmsAttributesMap')
 
 
 id_attr_validation_parameters = univ.ObjectIdentifier('1.3.6.1.4.1.2312.18.8.1')
@@ -35,11 +39,10 @@ at_validation_parameters['attrType'] = id_attr_validation_parameters
 at_validation_parameters['attrValues'][0] = ValidationParams()
 
 
-# Map of Attribute Type OIDs to Attributes added to the
-# ones that are in rfc5652.py
+# Update the CMS Attributes Map
 
 _cmsAttributesMapUpdate = {
     id_attr_validation_parameters: ValidationParams(),
 }
 
-rfc5652.cmsAttributesMap.update(_cmsAttributesMapUpdate)
+cmsAttributesMap.update(_cmsAttributesMapUpdate)

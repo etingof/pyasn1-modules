@@ -17,6 +17,7 @@ from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5480
 from pyasn1_alt_modules import rfc6402
 from pyasn1_alt_modules import rfc6955
+from pyasn1_alt_modules import opentypemap
 
 
 class CertificationRequestTestCase(unittest.TestCase):
@@ -53,13 +54,12 @@ Xo9l9a+tyVybAsCoiClhYw==
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         spki_a = asn1Object['certificationRequestInfo']['subjectPublicKeyInfo']['algorithm']
-
+        algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
         self.assertEqual(rfc5480.dhpublicnumber, spki_a['algorithm'])
-        self.assertIn(spki_a['algorithm'], rfc5280.algorithmIdentifierMap)
+        self.assertIn(spki_a['algorithm'], algorithmIdentifierMap)
 
-        params, rest = der_decoder(
-            spki_a['parameters'], asn1Spec=rfc6955.DomainParameters())
-
+        params, rest = der_decoder(spki_a['parameters'],
+            asn1Spec=rfc6955.DomainParameters())
         self.assertFalse(rest)
         self.assertTrue(params.prettyPrint())
         self.assertEqual(spki_a['parameters'], der_encoder(params))
@@ -69,26 +69,23 @@ Xo9l9a+tyVybAsCoiClhYw==
 
         self.assertEqual(
             rfc6955.id_dhPop_static_sha1_hmac_sha1, sig_a['algorithm'])
-        self.assertIn(sig_a['algorithm'], rfc5280.algorithmIdentifierMap)
+        self.assertIn(sig_a['algorithm'], algorithmIdentifierMap)
         self.assertEqual(sig_a['parameters'], der_encoder(univ.Null("")))
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
-
+        asn1Object, rest = der_decoder(substrate,
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         spki_a = asn1Object['certificationRequestInfo']['subjectPublicKeyInfo']['algorithm']
-
         self.assertEqual(rfc5480.dhpublicnumber, spki_a['algorithm'])
         self.assertEqual(
             55, spki_a['parameters']['validationParms']['pgenCounter'])
 
         sig_a = asn1Object['signatureAlgorithm']
-
         self.assertEqual(
             rfc6955.id_dhPop_static_sha1_hmac_sha1, sig_a['algorithm'])
         self.assertEqual(univ.Null(""), sig_a['parameters'])

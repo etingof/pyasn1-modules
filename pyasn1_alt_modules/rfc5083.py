@@ -3,6 +3,7 @@
 # Created by Russ Housley without assistance from the asn1ate tool.
 # Modified by Russ Housley to add a map for use with opentypes and
 #   simplify the code for the object identifier assignment.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2018-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -17,6 +18,9 @@ from pyasn1.type import tag
 from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5652
+from pyasn1_alt_modules import opentypemap
+
+cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
 
 MAX = float('inf')
 
@@ -42,11 +46,10 @@ AuthEnvelopedData.componentType = namedtype.NamedTypes(
 )
 
 
-# Map of Content Type OIDs to Content Types is added to the
-# ones that are in rfc5652.py
+# Update the CMS Content Types Map
 
 _cmsContentTypesMapUpdate = {
     id_ct_authEnvelopedData: AuthEnvelopedData(),
 }
 
-rfc5652.cmsContentTypesMap.update(_cmsContentTypesMapUpdate)
+cmsContentTypesMap.update(_cmsContentTypesMapUpdate)

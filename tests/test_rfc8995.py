@@ -13,6 +13,7 @@ from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc8995
+from pyasn1_alt_modules import opentypemap
 
 
 class MASAURLCertExtnTestCase(unittest.TestCase):
@@ -47,10 +48,12 @@ g7Q2Ew==
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         found = False
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
+
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] == rfc8995.id_pe_masa_url:
                 extn_value, rest = der_decoder(extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
+                    asn1Spec=certificateExtensionsMap[extn['extnID']])
                 self.assertFalse(rest)
                 self.assertTrue(extn_value.prettyPrint())
                 self.assertEqual(extn['extnValue'], der_encoder(extn_value))

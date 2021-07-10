@@ -46,11 +46,11 @@ rSASSA_PSS_SHA512_Params = rfc4055.rSASSA_PSS_SHA512_Params
 rSASSA_PSS_SHA512_Identifier = rfc4055.rSASSA_PSS_SHA512_Identifier
 
 
-# The the Algorithm Identifier map in rfc5280 is updated by
-# importing rfc4055.  As a reminder it includes:
+# The Algorithm Identifiers Map is updated by importing rfc4055.
+#  As a reminder it includes:
 #
 # _algorithmIdentifierMapUpdate = {
 #     id_RSASSA_PSS: RSASSA_PSS_params(),
 # }
 # 
-# rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+# algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)

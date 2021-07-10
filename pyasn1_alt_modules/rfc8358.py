@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -14,8 +15,12 @@
 
 from pyasn1.type import univ
 
-from pyasn1_alt_modules import rfc5652
+from pyasn1_alt_modules import opentypemap
 
+cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
+
+
+# Object Identifiers for the Content Types
 
 id_ct = univ.ObjectIdentifier('1.2.840.113549.1.9.16.1')
 
@@ -34,8 +39,7 @@ id_ct_utf8TextWithCRLF = id_ct + (37, )
 id_ct_xml = id_ct + (28, )
 
 
-# Map of Content Type OIDs to Content Types is added to the
-# ones that are in rfc5652.py
+# Update the CMS of Content Types Map
 
 _cmsContentTypesMapUpdate = {
     id_ct_asciiTextWithCRLF: univ.OctetString(),
@@ -47,4 +51,4 @@ _cmsContentTypesMapUpdate = {
     id_ct_xml: univ.OctetString(),
 }
 
-rfc5652.cmsContentTypesMap.update(_cmsContentTypesMapUpdate)
+cmsContentTypesMap.update(_cmsContentTypesMapUpdate)

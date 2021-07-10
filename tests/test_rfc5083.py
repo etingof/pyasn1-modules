@@ -15,6 +15,7 @@ from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc5083
 from pyasn1_alt_modules import rfc5035
+from pyasn1_alt_modules import opentypemap
 
 
 class AuthEnvelopedDataTestCase(unittest.TestCase):
@@ -67,6 +68,9 @@ IDAeDBFXYXRzb24sIGNvbWUgaGVyZQYJKoZIhvcNAQcB
         self.asn1Spec = rfc5652.ContentInfo()
 
     def testDerCodec(self):
+        cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
+        cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(
             substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
@@ -74,7 +78,7 @@ IDAeDBFXYXRzb24sIGNvbWUgaGVyZQYJKoZIhvcNAQcB
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertIn(asn1Object['contentType'], rfc5652.cmsContentTypesMap)
+        self.assertIn(asn1Object['contentType'], cmsContentTypesMap)
         self.assertEqual(rfc5083.id_ct_authEnvelopedData, asn1Object['contentType'])
 
         authenv = asn1Object['content']
@@ -82,7 +86,7 @@ IDAeDBFXYXRzb24sIGNvbWUgaGVyZQYJKoZIhvcNAQcB
         self.assertEqual(0, authenv['version'])
 
         for attr in authenv['unauthAttrs']:
-            self.assertIn(attr['attrType'], rfc5652.cmsAttributesMap)
+            self.assertIn(attr['attrType'], cmsAttributesMap)
             if attr['attrType'] == rfc5035.id_aa_contentHint:
                 self.assertIn(
                     'Watson', attr['attrValues'][0]['contentDescription'])

@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -15,6 +16,9 @@
 from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
+
+certificateAttributesMap = opentypemap.get('certificateAttributesMap')
 
 
 # Device Owner Attribute
@@ -26,10 +30,10 @@ at_deviceOwner['type'] = id_deviceOwner
 at_deviceOwner['values'][0] = univ.ObjectIdentifier()
 
 
-# Add to the map of Attribute Type OIDs to Attributes in rfc5280.py.
+# Update the Certificate Attributes Map
 
 _certificateAttributesMapUpdate = {
     id_deviceOwner: univ.ObjectIdentifier(),
 }
 
-rfc5280.certificateAttributesMap.update(_certificateAttributesMapUpdate)
+certificateAttributesMap.update(_certificateAttributesMapUpdate)

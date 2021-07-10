@@ -15,6 +15,7 @@ from pyasn1.compat.octets import str2octs
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc4334
+from pyasn1_alt_modules import opentypemap
 
 
 class CertificateTestCase(unittest.TestCase):
@@ -50,24 +51,24 @@ DAlVlhox680Jxy5J8Pkx
         substrate = pem.readBase64fromText(self.cert_pem_text)
         asn1Object, rest = der_decoder(
             substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         extn_list = []
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
 
         for extn in asn1Object['tbsCertificate']['extensions']:
             extn_list.append(extn['extnID'])
             if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
-                extnValue, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-
+                extnValue, rest = der_decoder(extn['extnValue'],
+                    asn1Spec=certificateExtensionsMap[extn['extnID']])
+                self.assertFalse(rest)
+                self.assertTrue(extnValue.prettyPrint())
                 self.assertEqual(extn['extnValue'], der_encoder(extnValue))
 
                 if extn['extnID'] == rfc4334.id_pe_wlanSSID:
-                    self.assertIn( str2octs('Example'), extnValue)
+                    self.assertIn(str2octs('Example'), extnValue)
             
                 if extn['extnID'] == rfc5280.id_ce_extKeyUsage:
                     self.assertIn(rfc4334.id_kp_eapOverLAN, extnValue)

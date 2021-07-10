@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2020-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -17,6 +18,9 @@ from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc8692
+from pyasn1_alt_modules import opentypemap
+
+algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
 
 
 # Imports fprm RFC 5280
@@ -95,11 +99,11 @@ maca_KMACwithSHAKE256['algorithm'] = id_KMACWithSHAKE256
 maca_KMACwithSHAKE256['parameters'] = KMACwithSHAKE256_params()
 
 
-# Update the Algorithm Identifier map in rfc5280.py
+# Update the Algorithm Identifiers Map
 
 _algorithmIdentifierMapUpdate = {
     id_KMACWithSHAKE128: KMACwithSHAKE128_params(),
     id_KMACWithSHAKE256: KMACwithSHAKE256_params(),
 }
 
-rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)

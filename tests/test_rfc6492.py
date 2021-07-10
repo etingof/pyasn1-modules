@@ -14,6 +14,7 @@ from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc6492
+from pyasn1_alt_modules import opentypemap
 
 
 class RPKIProvisioningTestCase(unittest.TestCase):
@@ -56,8 +57,7 @@ J3DaFmF8obzBv328Fs29I7bOpWxLnqnxy2fcnVFkKteWzCdLXTHItJHUrcRgWQ==
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
         
-        layers = { }
-        layers.update(rfc5652.cmsContentTypesMap)
+        layers = opentypemap.get('cmsContentTypesMap').copy()
         self.assertIn(rfc6492.id_ct_xml, layers)
 
         getNextLayer = {
@@ -91,7 +91,6 @@ J3DaFmF8obzBv328Fs29I7bOpWxLnqnxy2fcnVFkKteWzCdLXTHItJHUrcRgWQ==
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
-
         asn1Object, rest = der_decoder(substrate,
             asn1Spec=rfc5652.ContentInfo(), decodeOpenTypes=True)
         self.assertFalse(rest)

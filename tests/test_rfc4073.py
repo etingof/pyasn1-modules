@@ -16,6 +16,7 @@ from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc2634
 from pyasn1_alt_modules import rfc4073
 from pyasn1_alt_modules import rfc5652
+from pyasn1_alt_modules import opentypemap
 
 
 class ContentCollectionTestCase(unittest.TestCase):
@@ -65,7 +66,7 @@ buWO3egPDL8Kf7tBhzjIKLw=
 
     def testDerCodec(self):
 
-        def test_layer(substrate, content_type):
+        def test_layer(substrate, content_type, attrMap):
             asn1Object, rest = der_decoder(substrate, asn1Spec=layers[content_type])
             self.assertFalse(rest)
             self.assertTrue(asn1Object.prettyPrint())
@@ -73,11 +74,13 @@ buWO3egPDL8Kf7tBhzjIKLw=
 
             if content_type == rfc4073.id_ct_contentWithAttrs:
                 for attr in asn1Object['attrs']:
-                    self.assertIn(attr['attrType'], rfc5652.cmsAttributesMap)
+                    self.assertIn(attr['attrType'], attrMap)
     
             return asn1Object
 
-        layers = rfc5652.cmsContentTypesMap
+        attrMap = opentypemap.get('cmsAttributesMap')
+
+        layers = opentypemap.get('cmsContentTypesMap')
 
         getNextLayer = {
             rfc5652.id_ct_contentInfo: lambda x: x['contentType'],
@@ -99,20 +102,23 @@ buWO3egPDL8Kf7tBhzjIKLw=
 
         while this_layer != rfc5652.id_data:
             if this_layer == rfc4073.id_ct_contentCollection:
-                asn1Object = test_layer(substrate, this_layer)
+                asn1Object = test_layer(substrate, this_layer, attrMap)
                 for ci in asn1Object:
                     substrate = ci['content']
                     this_layer = ci['contentType']
                     while this_layer != rfc5652.id_data:
-                        asn1Object = test_layer(substrate, this_layer)
+                        asn1Object = test_layer(substrate, this_layer, attrMap)
                         substrate = getNextSubstrate[this_layer](asn1Object)
                         this_layer = getNextLayer[this_layer](asn1Object)
             else:
-                asn1Object = test_layer(substrate, this_layer)
+                asn1Object = test_layer(substrate, this_layer, attrMap)
                 substrate = getNextSubstrate[this_layer](asn1Object)
                 this_layer = getNextLayer[this_layer](asn1Object)
 
     def testOpenTypes(self):
+        cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+        cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
+
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(substrate,
                                        asn1Spec=rfc5652.ContentInfo(),
@@ -124,17 +130,17 @@ buWO3egPDL8Kf7tBhzjIKLw=
         self.assertEqual(rfc4073.id_ct_contentCollection, asn1Object['contentType'])
 
         for ci in asn1Object['content']:
-            self.assertIn(ci['contentType'], rfc5652.cmsContentTypesMap)
+            self.assertIn(ci['contentType'], cmsContentTypesMap)
             self.assertEqual(rfc4073.id_ct_contentWithAttrs, ci['contentType'])
 
             next_ci = ci['content']['content']
 
-            self.assertIn(next_ci['contentType'], rfc5652.cmsContentTypesMap)
+            self.assertIn(next_ci['contentType'], cmsContentTypesMap)
             self.assertEqual(rfc5652.id_data, next_ci['contentType'])
             self.assertIn(str2octs('Content-Type: text'), next_ci['content'])
 
             for attr in ci['content']['attrs']:
-                self.assertIn(attr['attrType'], rfc5652.cmsAttributesMap)
+                self.assertIn(attr['attrType'], cmsAttributesMap)
                 if attr['attrType'] == rfc2634.id_aa_contentHint:
                     self.assertIn('RFC 4073', attr['attrValues'][0]['contentDescription'])
 

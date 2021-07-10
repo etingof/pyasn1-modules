@@ -14,6 +14,7 @@ from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc4055
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc8649
+from pyasn1_alt_modules import opentypemap
 
 
 class RootCertificateExtnTestCase(unittest.TestCase):
@@ -29,15 +30,13 @@ GANG
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.extn_pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
         self.assertEqual(rfc8649.id_ce_hashOfRootKey, asn1Object['extnID'])
 
-        hashed_root_key, rest = der_decoder(
-            asn1Object['extnValue'], rfc8649.HashedRootKey())
-
+        hashed_root_key, rest = der_decoder(asn1Object['extnValue'],
+            asn1Spec=rfc8649.HashedRootKey())
         self.assertFalse(rest)
         self.assertTrue(hashed_root_key.prettyPrint())
         self.assertEqual(asn1Object['extnValue'], der_encoder(hashed_root_key))
@@ -45,12 +44,12 @@ GANG
             rfc4055.id_sha512, hashed_root_key['hashAlg']['algorithm'])
 
     def testExtensionsMap(self):
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
         substrate = pem.readBase64fromText(self.extn_pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertEqual(rfc8649.id_ce_hashOfRootKey, asn1Object['extnID'])
-        self.assertIn(asn1Object['extnID'], rfc5280.certificateExtensionsMap)
+        self.assertIn(asn1Object['extnID'], certificateExtensionsMap)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

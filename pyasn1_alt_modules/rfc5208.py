@@ -1,6 +1,9 @@
 #
 # This file is part of pyasn1-alt-modules software.
 #
+# Modified by Russ Housley to import from RFC 5280 instead of
+#   RFC 2251 and RFC 2459.
+#
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # Copyright (c) 2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -12,9 +15,22 @@
 #
 # Sample captures could be obtained with "openssl pkcs8 -topk8" command
 #
-from pyasn1_alt_modules import rfc2251
-from pyasn1_alt_modules.rfc2459 import *
+from pyasn1.type import namedtype
+from pyasn1.type import namedval
+from pyasn1.type import tag
+from pyasn1.type import univ
 
+from pyasn1_alt_modules import rfc5280
+
+
+# Imports from RFC 5280
+
+AlgorithmIdentifier = rfc5280.AlgorithmIdentifier
+
+Attribute = rfc5280.Attribute
+
+
+# PKCS#8
 
 class KeyEncryptionAlgorithms(AlgorithmIdentifier):
     pass
@@ -40,7 +56,7 @@ class PrivateKey(univ.OctetString):
 
 
 class Attributes(univ.SetOf):
-    componentType = rfc2251.Attribute()
+    componentType = Attribute()
 
 
 class Version(univ.Integer):

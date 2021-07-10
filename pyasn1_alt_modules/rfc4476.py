@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -18,6 +19,11 @@ from pyasn1.type import namedtype
 from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
+
+certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
+
+policyQualifierInfosMap = opentypemap.get('policyQualifierInfosMap')
 
 MAX = float('inf')
 
@@ -74,20 +80,20 @@ class AcPoliciesSyntax(univ.SequenceOf):
     subtypeSpec = constraint.ValueSizeConstraint(1, MAX)
 
 
-# Update the policy qualifier map in rfc5280.py
+# Update the policy qualifier map
 
-_policyQualifierInfoMapUpdate = {
+_policyQualifierInfosMapUpdate = {
     id_qt_acps: ACPSuri(),
     id_qt_acunotice: UserNotice(),
 }
 
-rfc5280.policyQualifierInfoMap.update(_policyQualifierInfoMapUpdate)
+policyQualifierInfosMap.update(_policyQualifierInfosMapUpdate)
 
 
-# Update the certificate extension map in rfc5280.py
+# Update the certificate extension map
 
 _certificateExtensionsMapUpdate = {
     id_pe_acPolicies: AcPoliciesSyntax(),
 }
 
-rfc5280.certificateExtensionsMap.update(_certificateExtensionsMapUpdate)
+certificateExtensionsMap.update(_certificateExtensionsMapUpdate)

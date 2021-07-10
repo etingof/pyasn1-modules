@@ -14,6 +14,7 @@ from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5990
+from pyasn1_alt_modules import opentypemap
 
 
 class RSAKEMTestCase(unittest.TestCase):
@@ -34,18 +35,17 @@ YIZIAWUDBAIBAgEQMAsGCWCGSAFlAwQBBQ==
         self.assertEqual(substrate, der_encoder(asn1Object))
         self.assertEqual(rfc5990.id_rsa_kem, asn1Object['algorithm'])
 
-        rsa_kem_p, rest = der_decoder(
-            asn1Object['parameters'],
-            asn1Spec=rfc5280.algorithmIdentifierMap[rfc5990.id_rsa_kem])
+        algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
+        rsa_kem_p, rest = der_decoder(asn1Object['parameters'],
+            asn1Spec=algorithmIdentifierMap[rfc5990.id_rsa_kem])
 
         self.assertFalse(rest)
         self.assertTrue(rsa_kem_p.prettyPrint())
         self.assertEqual(asn1Object['parameters'], der_encoder(rsa_kem_p))
         self.assertEqual(rfc5990.id_kem_rsa, rsa_kem_p['kem']['algorithm'])
 
-        kem_rsa_p, rest = der_decoder(
-            rsa_kem_p['kem']['parameters'],
-            asn1Spec=rfc5280.algorithmIdentifierMap[rfc5990.id_kem_rsa])
+        kem_rsa_p, rest = der_decoder(rsa_kem_p['kem']['parameters'],
+            asn1Spec=algorithmIdentifierMap[rfc5990.id_kem_rsa])
 
         self.assertFalse(rest)
         self.assertTrue(kem_rsa_p.prettyPrint())
@@ -57,7 +57,7 @@ YIZIAWUDBAIBAgEQMAsGCWCGSAFlAwQBBQ==
 
         kdf_p, rest = der_decoder(
             kem_rsa_p['keyDerivationFunction']['parameters'],
-            asn1Spec=rfc5280.algorithmIdentifierMap[rfc5990.id_kdf_kdf3])
+            asn1Spec=algorithmIdentifierMap[rfc5990.id_kdf_kdf3])
 
         self.assertFalse(rest)
         self.assertTrue(kdf_p.prettyPrint())

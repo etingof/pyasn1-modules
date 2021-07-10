@@ -14,6 +14,7 @@ from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc8360
+from pyasn1_alt_modules import opentypemap
 
 
 class CertExtnsTestCase(unittest.TestCase):
@@ -435,9 +436,10 @@ AgMA++8wCgIDAwAAAgMDNZs=
         self.asn1Spec = rfc5280.Extensions()
 
     def testDerCodec(self):
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
+        
         substrate = pem.readBase64fromText(self.extns_pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
@@ -445,10 +447,8 @@ AgMA++8wCgIDAwAAAgMDNZs=
         oids = []
         for extn in asn1Object:
             oids.append(extn['extnID'])
-            extn_value, rest = der_decoder(
-                extn['extnValue'],
-                rfc5280.certificateExtensionsMap[extn['extnID']])
-
+            extn_value, rest = der_decoder(extn['extnValue'],
+                asn1Spec=certificateExtensionsMap[extn['extnID']])
             self.assertFalse(rest)
             self.assertTrue(extn_value.prettyPrint())
             self.assertEqual(extn['extnValue'], der_encoder(extn_value))

@@ -3,6 +3,7 @@
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
 # Modified by Russ Housley to add map for use with opentypes.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -19,6 +20,9 @@ from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc2560
 from pyasn1_alt_modules import rfc5652
+from pyasn1_alt_modules import opentypemap
+
+otherRevInfoFormatMap = opentypemap.get('otherRevInfoFormatMap')
 
 
 # RevocationInfoChoice for OCSP response:
@@ -48,12 +52,11 @@ SCVPReqRes.componentType = namedtype.NamedTypes(
 )
 
 
-# Map of Revocation Info Format OIDs to Revocation Info Format
-# is added to the ones that are in rfc5652.py
+# Update the Revocation Info Formats Map
 
 _otherRevInfoFormatMapUpdate = {
      id_ri_ocsp_response: OCSPResponse(),
      id_ri_scvp: SCVPReqRes(),
 }
 
-rfc5652.otherRevInfoFormatMap.update(_otherRevInfoFormatMapUpdate)
+otherRevInfoFormatMap.update(_otherRevInfoFormatMapUpdate)

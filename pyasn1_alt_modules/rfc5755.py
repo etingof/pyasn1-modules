@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -24,12 +25,15 @@ from pyasn1.type import useful
 
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5652
+from pyasn1_alt_modules import opentypemap
+
+certificateAttributesMap = opentypemap.get('certificateAttributesMap')
+
+certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
+
+securityCategoryMap = opentypemap.get('securityCategoryMap')
 
 MAX = float('inf')
-
-# Map for Security Category type to value
-
-securityCategoryMap = { }
 
 
 # Imports from RFC 5652
@@ -367,8 +371,7 @@ class ACClearAttrs(univ.Sequence):
     )
 
 
-# Map of Certificate Extension OIDs to Extensions added to the
-# ones that are in rfc5280.py
+# Update the Certificate Extensions Map
 
 _certificateExtensionsMapUpdate = {
     id_pe_ac_auditIdentity: univ.OctetString(),
@@ -378,11 +381,10 @@ _certificateExtensionsMapUpdate = {
     id_pe_aaControls: AAControls(),
 }
 
-rfc5280.certificateExtensionsMap.update(_certificateExtensionsMapUpdate)
+certificateExtensionsMap.update(_certificateExtensionsMapUpdate)
 
 
-# Map of AttributeType OIDs to AttributeValue added to the
-# ones that are in rfc5280.py
+# Update the Certificate Attributes Map
 
 _certificateAttributesMapUpdate = {
     id_aca_authenticationInfo: SvceAuthInfo(),
@@ -395,4 +397,4 @@ _certificateAttributesMapUpdate = {
     id_aca_encAttrs: ContentInfo(),
 }
 
-rfc5280.certificateAttributesMap.update(_certificateAttributesMapUpdate)
+certificateAttributesMap.update(_certificateAttributesMapUpdate)

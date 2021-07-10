@@ -13,6 +13,7 @@ from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc6019
+from pyasn1_alt_modules import opentypemap
 
 
 class BinarySigningTimeTestCase(unittest.TestCase):
@@ -23,7 +24,6 @@ class BinarySigningTimeTestCase(unittest.TestCase):
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
-
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
         self.assertFalse(rest)
@@ -38,15 +38,19 @@ class BinarySigningTimeTestCase(unittest.TestCase):
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True)
-
+        asn1Object, rest = der_decoder(substrate, 
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertIn(asn1Object['attrType'], rfc5652.cmsAttributesMap)
         self.assertEqual(0x5cbf8654, asn1Object['attrValues'][0])
+
+    def testAttributesMap(self):
+        substrate = pem.readBase64fromText(self.pem_text)
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
+
+        cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+        self.assertIn(asn1Object['attrType'], cmsAttributesMap)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

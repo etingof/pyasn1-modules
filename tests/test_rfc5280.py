@@ -14,6 +14,7 @@ from pyasn1.type import univ
 
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
 
 
 class CertificateTestCase(unittest.TestCase):
@@ -183,14 +184,13 @@ vjnIhxTFoCb5vA==
                 else:
                     self.assertLess(9, len(atv['value']['printableString']))
 
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
         crl_extn_count = 0
 
         for extn in asn1Object['tbsCertList']['crlExtensions']:
-            if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
-                ev, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-
+            if extn['extnID'] in certificateExtensionsMap:
+                ev, rest = der_decoder(extn['extnValue'],
+                    asn1Spec=certificateExtensionsMap[extn['extnID']])
                 self.assertFalse(rest)
                 self.assertTrue(ev.prettyPrint())
                 self.assertEqual(extn['extnValue'], der_encoder(ev))
@@ -207,19 +207,18 @@ vjnIhxTFoCb5vA==
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        cert_extn_count = 0
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
+        crl_extn_count = 0
 
         for extn in asn1Object['tbsCertList']['crlExtensions']:
-            if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
-                extnValue, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-
+            if extn['extnID'] in certificateExtensionsMap:
+                extnValue, rest = der_decoder(extn['extnValue'],
+                    asn1Spec=certificateExtensionsMap[extn['extnID']])
                 self.assertEqual(extn['extnValue'], der_encoder(extnValue))
 
-                cert_extn_count += 1
+                crl_extn_count += 1
 
-        self.assertEqual(1, cert_extn_count)
+        self.assertEqual(1, crl_extn_count)
 
 
 class ORAddressOpenTypeTestCase(unittest.TestCase):

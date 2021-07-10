@@ -1,6 +1,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -11,10 +12,12 @@
 # https://www.rfc-editor.org/rfc/rfc8419.txt
 # https://www.rfc-editor.org/errata/eid5869
 
-
 from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
+
+algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
 
 
 class ShakeOutputLen(univ.Integer):
@@ -58,11 +61,10 @@ hashAlg_SHAKE256_LEN['algorithm'] = id_shake256_len
 hashAlg_SHAKE256_LEN['parameters'] = ShakeOutputLen()
 
 
-# Map of Algorithm Identifier OIDs to Parameters added to the
-# ones in rfc5280.py.  Do not add OIDs with absent paramaters.
+# Update the Algorithm Identifiers Map
 
 _algorithmIdentifierMapUpdate = {
     id_shake256_len: ShakeOutputLen(),
 }
 
-rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)

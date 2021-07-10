@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with some help from asn1ate v.0.6.0
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -21,10 +22,13 @@ from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5652
+from pyasn1_alt_modules import opentypemap
+
+cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+
+ersEncryptionInfoValuesMap = opentypemap.get('ersEncryptionInfoValuesMap')
 
 MAX = float('inf')
-
-ersEncryptionInfoValueMap = { }
 
 
 # Imports from RFC 5280 and RFC 5652
@@ -83,7 +87,7 @@ class EncryptionInfo(univ.Sequence):
         namedtype.NamedType('encryptionInfoType', univ.ObjectIdentifier()),
         namedtype.NamedType('encryptionInfoValue', univ.Any(),
             openType=opentype.OpenType('encryptionInfoType',
-                ersEncryptionInfoValueMap))
+                ersEncryptionInfoValuesMap))
     )
 
 
@@ -111,11 +115,11 @@ id_aa_er_internal = univ.ObjectIdentifier('1.2.840.113549.1.9.16.2.49')
 id_aa_er_internal = univ.ObjectIdentifier('1.2.840.113549.1.9.16.2.50')
 
 
-# Update the CMS Attribute Map in rfc5652.py.
+# Update the CMS Attribute Map
 
 _cmsAttributesMapUpdate = {
     id_aa_er_internal: EvidenceRecord(),
     id_aa_er_internal: EvidenceRecord(),
 }
 
-rfc5652.cmsAttributesMap.update(_cmsAttributesMapUpdate)
+cmsAttributesMap.update(_cmsAttributesMapUpdate)

@@ -1,6 +1,8 @@
 #
 # This file is part of pyasn1-alt-modules software.
 #
+# Modified by Russ Housley to import from RFC 5280 instead of RFC 2459.
+#
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # Copyright (c) 2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -13,8 +15,39 @@
 # Sample captures from:
 # openssl crl2pkcs7 -nocrl -certfile cert1.cer -out outfile.p7b
 #
-from pyasn1_alt_modules.rfc2459 import *
+from pyasn1.type import namedtype
+from pyasn1.type import opentype
+from pyasn1.type import tag
+from pyasn1.type import univ
+from pyasn1.type import useful
 
+from pyasn1_alt_modules import rfc5280
+
+
+# Keep the original maps so that anyone using this old module has the
+# same interface as with pyasn-modules.  Thus, opentypemap is not used.
+
+from pyasn1_alt_modules.rfc2459 import certificateAttributesMap
+
+contentTypeMap = {}
+
+
+# Imports from RFC 5280
+
+AlgorithmIdentifier = rfc5280.AlgorithmIdentifier
+
+AttributeType = rfc5280.AttributeType
+
+AttributeValue = rfc5280.AttributeValue
+
+Certificate = rfc5280.Certificate
+
+CertificateSerialNumber = rfc5280.CertificateSerialNumber
+
+Name = rfc5280.Name
+
+
+# PKCS#7
 
 class Attribute(univ.Sequence):
     componentType = namedtype.NamedTypes(
@@ -52,9 +85,6 @@ class EncryptedContent(univ.OctetString):
     pass
 
 
-contentTypeMap = {}
-
-
 class EncryptedContentInfo(univ.Sequence):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('contentType', ContentType()),
@@ -68,7 +98,7 @@ class EncryptedContentInfo(univ.Sequence):
     )
 
 
-class Version(univ.Integer):  # overrides x509.Version
+class Version(univ.Integer):
     pass
 
 

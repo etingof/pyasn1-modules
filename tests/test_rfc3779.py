@@ -7,12 +7,13 @@
 import sys
 import unittest
 
-from pyasn1.codec.der import decoder as der_decoder
-from pyasn1.codec.der import encoder as der_encoder
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc3779
+from pyasn1_alt_modules import opentypemap
 
 
 class CertificateExtnTestCase(unittest.TestCase):
@@ -45,14 +46,11 @@ V+vo2L72yerdbsP9xjqvhZrLKfsLZjYK4SdYYthi
         self.asn1Spec = rfc5280.Certificate()
 
     def testDerCodec(self):
-
         substrate = pem.readBase64fromText(self.pem_text)
-
-        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
-
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
-        self.assertEqual(substrate, der_encoder.encode(asn1Object))
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         extn_list = []
         for extn in asn1Object['tbsCertificate']['extensions']:
@@ -60,35 +58,35 @@ V+vo2L72yerdbsP9xjqvhZrLKfsLZjYK4SdYYthi
 
             if extn['extnID'] == rfc3779.id_pe_ipAddrBlocks:
                 s = extn['extnValue']
-                addr_blocks, rest = der_decoder.decode(s, rfc3779.IPAddrBlocks())
+                addr_blocks, rest = der_decoder(s, rfc3779.IPAddrBlocks())
                 self.assertFalse(rest)
                 self.assertTrue(addr_blocks.prettyPrint())
-                self.assertEqual(s, der_encoder.encode(addr_blocks))
+                self.assertEqual(s, der_encoder(addr_blocks))
 
             if extn['extnID'] == rfc3779.id_pe_autonomousSysIds:
                 s = extn['extnValue']
-                as_ids, rest = der_decoder.decode(s, rfc3779.ASIdentifiers())
+                as_ids, rest = der_decoder(s, rfc3779.ASIdentifiers())
                 self.assertFalse(rest)
                 self.assertTrue(as_ids.prettyPrint())
-                self.assertEqual(s, der_encoder.encode(as_ids))
+                self.assertEqual(s, der_encoder(as_ids))
 
         self.assertIn(rfc3779.id_pe_ipAddrBlocks, extn_list)
         self.assertIn(rfc3779.id_pe_autonomousSysIds, extn_list)
 
     def testExtensionsMap(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
-        self.assertEqual(substrate, der_encoder.encode(asn1Object))
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
         for extn in asn1Object['tbsCertificate']['extensions']:
             if (extn['extnID'] == rfc3779.id_pe_ipAddrBlocks or
                     extn['extnID'] == rfc3779.id_pe_autonomousSysIds):
-                extnValue, rest = der_decoder.decode(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-                self.assertEqual(extn['extnValue'], der_encoder.encode(extnValue))
+                extnValue, rest = der_decoder(extn['extnValue'],
+                    asn1Spec=certificateExtensionsMap[extn['extnID']])
+                self.assertEqual(extn['extnValue'], der_encoder(extnValue))
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

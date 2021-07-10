@@ -4,6 +4,7 @@
 #
 # Created by Stanisław Pitucha with asn1ate tool.
 # Modified by Russ Housley to add support for opentypes.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # Copyright (c) 2021, Vigil Security, LLC
@@ -24,6 +25,19 @@ from pyasn1.type import useful
 
 from pyasn1_alt_modules import rfc3281
 from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
+
+cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+
+cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
+
+otherKeyAttributesMap = opentypemap.get('otherKeyAttributesMap')
+
+otherCertFormatMap = opentypemap.get('otherCertFormatMap')
+
+otherRevInfoFormatMap = opentypemap.get('otherRevInfoFormatMap')
+
+otherRecipientInfoMap = opentypemap.get('otherRecipientInfoMap')
 
 MAX = float('inf')
 
@@ -37,19 +51,6 @@ def _buildOid(*components):
             output.append(int(x))
 
     return univ.ObjectIdentifier(output)
-
-
-cmsContentTypesMap = { }
-
-cmsAttributesMap = { }
-
-otherKeyAttributesMap = { }
-
-otherCertFormatMap = { }
-
-otherRevInfoFormatMap = { }
-
-otherRecipientInfoMap = { }
 
 
 class AttCertVersionV1(univ.Integer):

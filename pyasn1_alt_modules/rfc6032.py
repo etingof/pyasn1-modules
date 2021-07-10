@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -18,6 +19,11 @@ from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc5083
+from pyasn1_alt_modules import opentypemap
+
+cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
+
+cmsAttributesMap = opentypemap.get('cmsAttributesMap')
 
 
 # Content Decryption Key Identifier attribute
@@ -48,21 +54,18 @@ EncryptedKeyPackage.componentType = namedtype.NamedTypes(
 )
 
 
-# Map of Attribute Type OIDs to Attributes are
-# added to the ones that are in rfc5652.py
+# Update the CMS Attributes Map
 
 _cmsAttributesMapUpdate = {
     id_aa_KP_contentDecryptKeyID: ContentDecryptKeyID(),
 }
 
-rfc5652.cmsAttributesMap.update(_cmsAttributesMapUpdate)
+cmsAttributesMap.update(_cmsAttributesMapUpdate)
 
 
-# Map of Content Type OIDs to Content Types are
-# added to the ones that are in rfc5652.py
-
+# Update the CMS Content Types Map
 _cmsContentTypesMapUpdate = {
     id_ct_KP_encryptedKeyPkg: EncryptedKeyPackage(),
 }
 
-rfc5652.cmsContentTypesMap.update(_cmsContentTypesMapUpdate)
+cmsContentTypesMap.update(_cmsContentTypesMapUpdate)

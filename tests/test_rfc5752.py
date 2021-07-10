@@ -14,6 +14,7 @@ from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc4055
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc5752
+from pyasn1_alt_modules import opentypemap
 
 
 class MultipleSignaturesTestCase(unittest.TestCase):
@@ -83,7 +84,7 @@ jdEOIlE+zO/fF9I+syiz898JzTosN/V8wvaDoALtnQ==
         substrate = pem.readBase64fromText(self.pem_text)
 
         layers = { }
-        layers.update(rfc5652.cmsContentTypesMap)
+        layers.update(opentypemap.get('cmsContentTypesMap'))
 
         getNextLayer = {
             rfc5652.id_ct_contentInfo: lambda x: x['contentType'],
@@ -112,13 +113,13 @@ jdEOIlE+zO/fF9I+syiz898JzTosN/V8wvaDoALtnQ==
             substrate = getNextSubstrate[next_layer](asn1Object)
             next_layer = getNextLayer[next_layer](asn1Object)
 
+        cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+
         found_mult_sig1 = False
         for attr in signerInfos[0]['signedAttrs']:
-            if attr['attrType'] in rfc5652.cmsAttributesMap:
-                av, rest = der_decoder(
-                    attr['attrValues'][0],
-                    asn1Spec=rfc5652.cmsAttributesMap[attr['attrType']])
-
+            if attr['attrType'] in cmsAttributesMap:
+                av, rest = der_decoder(attr['attrValues'][0],
+                    asn1Spec=cmsAttributesMap[attr['attrType']])
                 self.assertFalse(rest)
                 self.assertTrue(av.prettyPrint())
                 self.assertEqual(attr['attrValues'][0], der_encoder(av))
@@ -135,10 +136,9 @@ jdEOIlE+zO/fF9I+syiz898JzTosN/V8wvaDoALtnQ==
 
         found_mult_sig2 = False
         for attr in signerInfos[1]['signedAttrs']:
-            if attr['attrType'] in rfc5652.cmsAttributesMap:
-                av, rest = der_decoder(
-                    attr['attrValues'][0],
-                    asn1Spec=rfc5652.cmsAttributesMap[attr['attrType']])
+            if attr['attrType'] in cmsAttributesMap:
+                av, rest = der_decoder(attr['attrValues'][0],
+                    asn1Spec=cmsAttributesMap[attr['attrType']])
 
                 self.assertFalse(rest)
                 self.assertTrue(av.prettyPrint())
@@ -161,7 +161,6 @@ jdEOIlE+zO/fF9I+syiz898JzTosN/V8wvaDoALtnQ==
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(
             substrate, asn1Spec=rfc5652.ContentInfo(), decodeOpenTypes=True)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))

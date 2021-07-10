@@ -7,6 +7,7 @@
 #
 
 import sys
+import unittest
 
 from pyasn1.type import univ
 
@@ -18,11 +19,7 @@ from pyasn1_alt_modules import rfc2876
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc5751
-
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
+from pyasn1_alt_modules import opentypemap
 
 
 class EnvelopedDataTestCase(unittest.TestCase):
@@ -119,8 +116,9 @@ z10epK+S
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        
-        self.assertIn(asn1Object['contentType'], rfc5652.cmsContentTypesMap.keys())
+
+        cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
+        self.assertIn(asn1Object['contentType'], cmsContentTypesMap)
         kari_kea = asn1Object['content']['recipientInfos'][0]['kari']['keyEncryptionAlgorithm']
         self.assertEqual(rfc2876.id_kEAKeyEncryptionAlgorithm, kari_kea['algorithm'])
         self.assertEqual(rfc2876.id_fortezzaWrap80, kari_kea['parameters']['algorithm'])
@@ -145,13 +143,14 @@ MCcwGAYJYIZIAWUCAQEYMAsGCWCGSAFlAgEBFzALBglghkgBZQIBAQQ="
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
+        smimeCapabilityMap = opentypemap.get('smimeCapabilityMap')
         found_wrap_alg = False
         for cap in asn1Object:
-            if cap['capabilityID'] in rfc5751.smimeCapabilityMap.keys():
+            if cap['capabilityID'] in smimeCapabilityMap:
                 if cap['parameters'].hasValue():
                     param, rest = der_decoder(
                         cap['parameters'],
-                        asn1Spec=rfc5751.smimeCapabilityMap[cap['capabilityID']])
+                        asn1Spec=smimeCapabilityMap[cap['capabilityID']])
                     self.assertFalse(rest)
                     self.assertTrue(param.prettyPrint())
                     self.assertEqual(cap['parameters'], der_encoder(param))

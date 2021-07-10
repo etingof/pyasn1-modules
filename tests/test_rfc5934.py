@@ -17,6 +17,7 @@ from pyasn1.type import univ
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc5934
+from pyasn1_alt_modules import opentypemap
 
 
 class TAMPStatusResponseTestCase(unittest.TestCase):
@@ -160,23 +161,20 @@ iPxQyqz7LIQe9/5ynJV5/CPUDBL9QK2vSCOQaihWCg==
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.tsr_pem_text)
-        asn1Object, rest = der_decoder(
-            substrate, asn1Spec=rfc5652.ContentInfo(), decodeOpenTypes=True)
-
+        asn1Object, rest = der_decoder(substrate,
+            asn1Spec=rfc5652.ContentInfo(), decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         eci = asn1Object['content']['encapContentInfo']
-
-        self.assertIn(eci['eContentType'], rfc5652.cmsContentTypesMap)
+        cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
+        self.assertIn(eci['eContentType'], cmsContentTypesMap)
         self.assertEqual(rfc5934.id_ct_TAMP_statusResponse, eci['eContentType'])
 
-        tsr, rest = der_decoder(
-            eci['eContent'],
-            asn1Spec=rfc5652.cmsContentTypesMap[eci['eContentType']],
+        tsr, rest = der_decoder(eci['eContent'],
+            asn1Spec=cmsContentTypesMap[eci['eContentType']],
             decodeOpenTypes=True)
-
         self.assertFalse(rest)
         self.assertTrue(tsr.prettyPrint())
         self.assertEqual(eci['eContent'], der_encoder(tsr))

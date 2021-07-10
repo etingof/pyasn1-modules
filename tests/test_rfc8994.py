@@ -13,6 +13,7 @@ from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc8994
+from pyasn1_alt_modules import opentypemap
 
 
 class ACPNodeNameTestCase(unittest.TestCase):
@@ -25,21 +26,19 @@ K2FyZWE1MS5yZXNlYXJjaEBhY3AuZXhhbXBsZS5jb20=
         self.asn1Spec = rfc5280.GeneralName()
 
     def testDerCodec(self):
+        otherNamesMap = opentypemap.get('otherNamesMap')
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertIn(asn1Object['otherName']['type-id'],
-                      rfc5280.anotherNameMap)
+
+        self.assertIn(asn1Object['otherName']['type-id'], otherNamesMap)
         self.assertEqual(rfc8994.id_on_AcpNodeName,
                          asn1Object['otherName']['type-id'])
 
-        acpNode, rest = der_decoder(
-            asn1Object['otherName']['value'],
-            asn1Spec=rfc5280.anotherNameMap[asn1Object['otherName']['type-id']])
-
+        acpNode, rest = der_decoder(asn1Object['otherName']['value'],
+            asn1Spec=otherNamesMap[asn1Object['otherName']['type-id']])
         self.assertFalse(rest)
         self.assertTrue(acpNode.prettyPrint())
         self.assertEqual(asn1Object['otherName']['value'], der_encoder(acpNode))
@@ -49,7 +48,6 @@ K2FyZWE1MS5yZXNlYXJjaEBhY3AuZXhhbXBsZS5jb20=
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(
             substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))

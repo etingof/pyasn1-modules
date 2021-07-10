@@ -15,6 +15,7 @@ from pyasn1.compat.octets import str2octs
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc6032
+from pyasn1_alt_modules import opentypemap
 
 
 class EncryptedKeyPkgTestCase(unittest.TestCase):
@@ -69,20 +70,22 @@ YIZIAWUCAQVCMRAEDnB0Zi1rZGMtODEyMzc0
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.encrypted_key_pkg_pem_text)
         asn1Object, rest = der_decoder(substrate,
-                                       asn1Spec=self.asn1Spec,
-                                       decodeOpenTypes=True)
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        self.assertIn(asn1Object['contentType'], rfc5652.cmsContentTypesMap)
+        cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
+        cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+
+        self.assertIn(asn1Object['contentType'], cmsContentTypesMap)
 
         eci = asn1Object['content']['encrypted']['encryptedContentInfo']
 
-        self.assertIn(eci['contentType'], rfc5652.cmsContentTypesMap)
+        self.assertIn(eci['contentType'], cmsContentTypesMap)
 
         for attr in asn1Object['content']['encrypted']['unprotectedAttrs']:
-            self.assertIn(attr['attrType'], rfc5652.cmsAttributesMap)
+            self.assertIn(attr['attrType'], cmsAttributesMap)
             self.assertNotEqual('0x', attr['attrValues'][0].prettyPrint()[:2])
 
             if attr['attrType'] == rfc6032.id_aa_KP_contentDecryptKeyID:

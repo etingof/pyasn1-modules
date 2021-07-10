@@ -1,6 +1,9 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley.
+# Modified by Russ Housley to import SCVP-related structures from RFC 5055,
+#   which did not exist at the time this module was first written.  Also,
+#   include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -15,6 +18,10 @@ from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc4055
+from pyasn1_alt_modules import rfc5055
+from pyasn1_alt_modules import opentypemap
+
+certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
 
 
 # Imports from RFC 5280
@@ -32,25 +39,12 @@ id_sha1 = rfc4055.id_sha1
 
 
 # Imports from RFC 5055
-# These are defined here because a module for RFC 5055 does not exist yet
 
-class SCVPIssuerSerial(univ.Sequence):
-    componentType = namedtype.NamedTypes(
-        namedtype.NamedType('issuer', GeneralNames()),
-        namedtype.NamedType('serialNumber', CertificateSerialNumber())
-    )
+SCVPIssuerSerial = rfc5055.SCVPIssuerSerial
 
+sha1_alg_id = rfc5055.algid_SHA1
 
-sha1_alg_id = AlgorithmIdentifier()
-sha1_alg_id['algorithm'] = id_sha1
-
-
-class SCVPCertID(univ.Sequence):
-    componentType = namedtype.NamedTypes(
-        namedtype.NamedType('certHash', univ.OctetString()),
-        namedtype.NamedType('issuerSerial', SCVPIssuerSerial()),
-        namedtype.DefaultedNamedType('hashAlgorithm', sha1_alg_id)
-    )
+SCVPCertID = rfc5055.SCVPCertID
 
 
 # Other Certificates Extension
@@ -61,10 +55,10 @@ class OtherCertificates(univ.SequenceOf):
     componentType = SCVPCertID()
 
 
-# Update of certificate extension map in rfc5280.py
+# Update the Certificate Extension Map
 
 _certificateExtensionsMapUpdate = {
     id_pe_otherCerts: OtherCertificates(),
 }
 
-rfc5280.certificateExtensionsMap.update(_certificateExtensionsMapUpdate)
+certificateExtensionsMap.update(_certificateExtensionsMapUpdate)

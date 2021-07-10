@@ -17,6 +17,7 @@ from pyasn1_alt_modules import rfc2985
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc7906
+from pyasn1_alt_modules import opentypemap
 
 
 class AttributeSetTestCase(unittest.TestCase):
@@ -123,18 +124,16 @@ toMsV8fLBpBjA5YGQvd3TAcSw1lNbWpArL+hje1dzQ7pxslnkklv3CTxAjBuVebz
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.attr_set_pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
+        cmsAttributesMap = opentypemap.get('cmsAttributesMap')
+
         for attr in asn1Object:
-            self.assertIn(attr['type'], rfc5652.cmsAttributesMap)
-
-            av, rest = der_decoder(
-                attr['values'][0],
-                asn1Spec=rfc5652.cmsAttributesMap[attr['type']])
-
+            self.assertIn(attr['type'], cmsAttributesMap)
+            av, rest = der_decoder(attr['values'][0],
+                asn1Spec=cmsAttributesMap[attr['type']])
             self.assertFalse(rest)
             self.assertTrue(av.prettyPrint())
             self.assertEqual(attr['values'][0], der_encoder(av))
@@ -143,14 +142,12 @@ toMsV8fLBpBjA5YGQvd3TAcSw1lNbWpArL+hje1dzQ7pxslnkklv3CTxAjBuVebz
                 self.assertEqual(univ.OctetString(hexValue='7906'), av)
 
     def testOpenTypes(self):
-        openTypesMap = rfc5280.certificateAttributesMap.copy()
-        openTypesMap.update(rfc5652.cmsAttributesMap)
+        openTypesMap = opentypemap.get('certificateAttributesMap').copy()
+        openTypesMap.update(opentypemap.get('cmsAttributesMap'))
 
         substrate = pem.readBase64fromText(self.attr_set_pem_text)
-        asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, openTypes=openTypesMap,
-            decodeOpenTypes=True)
-
+        asn1Object, rest = der_decoder(substrate,
+            asn1Spec=self.asn1Spec, openTypes=openTypesMap, decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))

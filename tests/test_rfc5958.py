@@ -16,6 +16,7 @@ from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc5958
 from pyasn1_alt_modules import rfc8410
+from pyasn1_alt_modules import opentypemap
 
 
 class PrivateKeyTestCase(unittest.TestCase):
@@ -56,23 +57,21 @@ YWlyc4EhABm/RAlphM3+hUG6wWfcO5bIUIaqMLa2ywxcOK1wMWbh
         self.asn1Spec = rfc5652.ContentInfo()
 
     def testOpenTypes(self):
+        cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
+        self.assertIn(rfc5958.id_ct_KP_aKeyPackage, cmsContentTypesMap)
+
         substrate = pem.readBase64fromText(self.asymmetric_key_pkg_pem_text)
         asn1Object, rest = der_decoder(
             substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertIn(
-            rfc5958.id_ct_KP_aKeyPackage, rfc5652.cmsContentTypesMap)
 
         oneKey = asn1Object['content'][0]
-
         self.assertEqual(
             rfc8410.id_Ed25519, oneKey['privateKeyAlgorithm']['algorithm'])
 
         pkcs_9_at_friendlyName = univ.ObjectIdentifier('1.2.840.113549.1.9.9.20')
-
         self.assertEqual(
             pkcs_9_at_friendlyName, oneKey['attributes'][0]['attrType'])
 

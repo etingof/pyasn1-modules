@@ -16,6 +16,7 @@ from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5755
 from pyasn1_alt_modules import rfc3114
+from pyasn1_alt_modules import opentypemap
 
 
 class AttributeCertificateTestCase(unittest.TestCase):
@@ -52,18 +53,14 @@ Q4eikPk4LQey
         self.assertEqual(1, asn1Object['acinfo']['version'])
 
         count = 0
-
+        certificateAttributesMap = opentypemap.get('certificateAttributesMap')
         for attr in asn1Object['acinfo']['attributes']:
-            self.assertIn(attr['type'], rfc5280.certificateAttributesMap)
-
-            av, rest = der_decoder(
-                attr['values'][0],
-                asn1Spec=rfc5280.certificateAttributesMap[attr['type']])
-
+            self.assertIn(attr['type'], certificateAttributesMap)
+            av, rest = der_decoder(attr['values'][0],
+                asn1Spec=certificateAttributesMap[attr['type']])
             self.assertFalse(rest)
             self.assertTrue(av.prettyPrint())
             self.assertEqual(attr['values'][0], der_encoder(av))
-
             count += 1
 
         self.assertEqual(5, count)
@@ -71,17 +68,16 @@ Q4eikPk4LQey
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(substrate,
-                                       asn1Spec=self.asn1Spec,
-                                       decodeOpenTypes=True)
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
         self.assertEqual(1, asn1Object['acinfo']['version'])
 
         count = 0
-
+        certificateAttributesMap = opentypemap.get('certificateAttributesMap')
         for attr in asn1Object['acinfo']['attributes']:
-            self.assertIn(attr['type'], rfc5280.certificateAttributesMap)
+            self.assertIn(attr['type'], certificateAttributesMap)
             count += 1
             if attr['type'] == rfc5755.id_aca_authenticationInfo:
                 self.assertEqual(
@@ -126,41 +122,39 @@ FFMC7GjGtCeLtXYqWfBnRdK26dOaHLB2
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
+        certificateAttributesMap = opentypemap.get('certificateAttributesMap')
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
+        securityCategoryMap = opentypemap.get('securityCategoryMap')
         clearance_found = False
 
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] == rfc5280.id_ce_subjectDirectoryAttributes:
-                self.assertIn(extn['extnID'], rfc5280.certificateExtensionsMap)
-
-                ev, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-
+                self.assertIn(extn['extnID'], certificateExtensionsMap)
+                ev, rest = der_decoder(extn['extnValue'],
+                    asn1Spec=certificateExtensionsMap[extn['extnID']])
                 self.assertFalse(rest)
                 self.assertTrue(ev.prettyPrint())
                 self.assertEqual(extn['extnValue'], der_encoder(ev))
 
                 for attr in ev:
                     if attr['type'] == rfc5755.id_at_clearance:
-                        self.assertIn(attr['type'], rfc5280.certificateAttributesMap)
-
-                        av, rest = der_decoder(
-                            attr['values'][0],
-                            asn1Spec=rfc5280.certificateAttributesMap[attr['type']])
-
-                        self.assertEqual(rfc3114.id_tsp_TEST_Whirlpool, av['policyId'])
+                        self.assertIn(attr['type'], certificateAttributesMap)
+                        av, rest = der_decoder(attr['values'][0],
+                            asn1Spec=certificateAttributesMap[attr['type']])
+                        self.assertFalse(rest)
+                        self.assertTrue(av.prettyPrint())
+                        self.assertEqual(attr['values'][0], der_encoder(av))
+                        self.assertEqual(
+                            rfc3114.id_tsp_TEST_Whirlpool, av['policyId'])
 
                         for cat in av['securityCategories']:
                             self.assertEqual(
                                 rfc3114.id_tsp_TEST_Whirlpool_Categories, cat['type'])
                             self.assertIn(
-                                cat['type'], rfc5755.securityCategoryMap)
-                            catv, rest = der_decoder(
-                                cat['value'],
-                                asn1Spec=rfc5755.securityCategoryMap[cat['type']])
-
+                                cat['type'], securityCategoryMap)
+                            catv, rest = der_decoder(cat['value'],
+                                asn1Spec=securityCategoryMap[cat['type']])
                             self.assertIn('USE ONLY', catv[0])
-
                             clearance_found = True
 
         self.assertTrue(clearance_found)

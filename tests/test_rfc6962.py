@@ -16,6 +16,7 @@ from pyasn1.type import univ
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc6962
+from pyasn1_alt_modules import opentypemap
 
 
 class CriticalPoisonTestCase(unittest.TestCase):
@@ -44,15 +45,14 @@ C9XZboSDJ3ucsf6MGikdqYiO7sPkhBqr1u5YVce01dDCioQwT1xIjm+/bNuPp/Sp
     def testDerCodec(self):
         # The id_ce_criticalPoison is not automatically added to the map.
         # Normally certificates that contiain it are rejected.
-        self.assertNotIn(
-            rfc6962.id_ce_criticalPoison, rfc5280.certificateExtensionsMap)
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
+        self.assertNotIn(rfc6962.id_ce_criticalPoison, certificateExtensionsMap)
 
         extn_map = { rfc6962.id_ce_criticalPoison: univ.Null(""), }
-        extn_map.update(rfc5280.certificateExtensionsMap)
+        extn_map.update(certificateExtensionsMap)
 
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
@@ -98,17 +98,17 @@ oR58h8S3foDw6XkDUmjyfKIOFmgErlVvMWmB+Wo5Srer/T4lWsAERRP+dlcMZ5Wr
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
         extn_list = []
 
         for extn in asn1Object['tbsCertificate']['extensions']:
             extn_list.append(extn['extnID'])
             ev, rest = der_decoder(extn['extnValue'],
-                asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
+                asn1Spec=certificateExtensionsMap[extn['extnID']])
             self.assertFalse(rest)
             if not ev == univ.Null(""):
                 self.assertTrue(ev.prettyPrint())

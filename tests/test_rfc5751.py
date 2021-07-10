@@ -15,6 +15,7 @@ from pyasn1.type import univ
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc5751
+from pyasn1_alt_modules import opentypemap
 
 
 class SignedMessageTestCase(unittest.TestCase):
@@ -63,12 +64,11 @@ LQIVALwzN2XE93BcF0kTqkyFyrtSkUhZAhRjlqIUi89X3rBIX2xk3YQESV8cyg==
         smimeCapMap = {
             univ.ObjectIdentifier('1.2.3.4.5.6.77'): univ.OctetString(),
         }
-        smimeCapMap.update(rfc5751.smimeCapabilityMap)
+        smimeCapMap.update(opentypemap.get('smimeCapabilityMap'))
 
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder (substrate,
-                                        asn1Spec=self.asn1Spec,
-                                        decodeOpenTypes=True)
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
@@ -80,19 +80,17 @@ LQIVALwzN2XE93BcF0kTqkyFyrtSkUhZAhRjlqIUi89X3rBIX2xk3YQESV8cyg==
             self.assertEqual(1, si['version'])
 
             for attr in si['signedAttrs']:
-
                 if attr['attrType'] == rfc5751.smimeCapabilities:
                     for scap in attr['attrValues'][0]:
                         if scap['capabilityID'] in smimeCapMap.keys():
                             scap_p, rest = der_decoder(scap['parameters'],
-                                                       asn1Spec=smimeCapMap[scap['capabilityID']])
+                                asn1Spec=smimeCapMap[scap['capabilityID']])
                             self.assertFalse(rest)
                             self.assertEqual(scap['parameters'], der_encoder(scap_p))
                             self.assertIn('parameters', scap_p.prettyPrint())
 
                 if attr['attrType'] == rfc5751.id_aa_encrypKeyPref:
                     ekp_issuer_serial = attr['attrValues'][0]['issuerAndSerialNumber']
-
                     self.assertEqual(173360179, ekp_issuer_serial['serialNumber'])
 
 

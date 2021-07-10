@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -12,13 +13,19 @@
 # https://www.rfc-editor.org/rfc/rfc5753.txt
 #
 
-from pyasn1.type import univ, char, namedtype, namedval, tag, constraint, useful
+from pyasn1.type import namedtype
+from pyasn1.type import tag
+from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5480
 from pyasn1_alt_modules import rfc5652
-from pyasn1_alt_modules import rfc5751
 from pyasn1_alt_modules import rfc8018
+from pyasn1_alt_modules import opentypemap
+
+algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
+
+smimeCapabilityMap = opentypemap.get('smimeCapabilityMap')
 
 
 # Imports from RFC 5280
@@ -131,8 +138,7 @@ class MQVuserKeyingMaterial(univ.Sequence):
     )
 
 
-# Update the Algorithm Identifier map in rfc5280.py and
-# Update the SMIMECapabilities Attribute Map in rfc5751.py
+# Update the Algorithm Identifiers Map and S/MIME Capability Map
 
 _algorithmIdentifierMapUpdate = {
     dhSinglePass_stdDH_sha1kdf_scheme: KeyWrapAlgorithm(),
@@ -152,6 +158,6 @@ _algorithmIdentifierMapUpdate = {
     mqvSinglePass_sha512kdf_scheme: KeyWrapAlgorithm(),
 }
 
-rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
 
-rfc5751.smimeCapabilityMap.update(_algorithmIdentifierMapUpdate)
+smimeCapabilityMap.update(_algorithmIdentifierMapUpdate)

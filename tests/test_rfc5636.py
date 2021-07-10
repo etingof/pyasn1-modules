@@ -14,6 +14,7 @@ from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc5636
+from pyasn1_alt_modules import opentypemap
 
 
 class TraceableAnonymousCertificateTestCase(unittest.TestCase):
@@ -55,7 +56,7 @@ Efe1LUIWVmbJ3HKtk8JTrWTg9iLVp+keqOWJfSEEUZXnyNIMt/SCONtZT+6SJQqwQV0C8AcR
         substrate = pem.readBase64fromText(self.pem_text)
 
         layers = { }
-        layers.update(rfc5652.cmsContentTypesMap)
+        layers.update(opentypemap.get('cmsContentTypesMap'))
 
         getNextLayer = {
             rfc5652.id_ct_contentInfo: lambda x: x['contentType'],
@@ -96,11 +97,12 @@ Efe1LUIWVmbJ3HKtk8JTrWTg9iLVp+keqOWJfSEEUZXnyNIMt/SCONtZT+6SJQqwQV0C8AcR
 
         substrate = asn1Object['content']['encapContentInfo']['eContent']
         oid = asn1Object['content']['encapContentInfo']['eContentType']
-        self.assertIn(oid, rfc5652.cmsContentTypesMap)
+        cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
+        self.assertIn(oid, cmsContentTypesMap)
 
         tac_token, rest = der_decoder(
             substrate,
-            asn1Spec=rfc5652.cmsContentTypesMap[oid],
+            asn1Spec=cmsContentTypesMap[oid],
             decodeOpenTypes=True)
 
         self.assertFalse(rest)

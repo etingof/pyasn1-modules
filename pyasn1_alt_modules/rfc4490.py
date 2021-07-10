@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -13,11 +14,16 @@
 # https://www.rfc-editor.org/rfc/rfc4490.txt
 #
 
-
-from pyasn1.type import univ, char, namedtype, namedval, tag, constraint, useful
+from pyasn1.type import constraint
+from pyasn1.type import namedtype
+from pyasn1.type import tag
+from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc4357
 from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import opentypemap
+
+algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
 
 
 # Imports from RFC 4357
@@ -103,11 +109,11 @@ class GostR3410_2001_Signature(univ.OctetString):
     subtypeSpec = constraint.ValueSizeConstraint(64, 64)
 
 
-# Update the Algorithm Identifier map in rfc5280.py
+# Update the Algorithm Identifier Map and the S/MIME Capability Map
 
 _algorithmIdentifierMapUpdate = {
     id_Gost28147_89_CryptoPro_KeyWrap: Gost28147_89_KeyWrapParameters(),
     id_Gost28147_89_None_KeyWrap: Gost28147_89_KeyWrapParameters(),
 }
 
-rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)

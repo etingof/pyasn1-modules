@@ -17,6 +17,7 @@ from pyasn1.type import univ
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc3537
 from pyasn1_alt_modules import rfc5751
+from pyasn1_alt_modules import opentypemap
 
 
 class SMIMECapabilitiesTestCase(unittest.TestCase):
@@ -26,10 +27,7 @@ class SMIMECapabilitiesTestCase(unittest.TestCase):
         self.asn1Spec = rfc5751.SMIMECapabilities()
 
     def testDerCodec(self):
-        alg_oid_list = [
-            rfc3537.id_alg_HMACwithAESwrap,
-            rfc3537.id_alg_HMACwith3DESwrap,
-        ]
+        openTypesMap = opentypemap.get('smimeCapabilityMap')
 
         substrate = pem.readBase64fromText(self.smime_capabilities_pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
@@ -40,16 +38,13 @@ class SMIMECapabilitiesTestCase(unittest.TestCase):
         count = 0
         for cap in asn1Object:
             self.assertEqual(der_encoder(univ.Null("")), cap['parameters'])
-            self.assertTrue(cap['capabilityID'] in alg_oid_list)
+            self.assertIn(cap['capabilityID'], openTypesMap)
             count += 1
 
         self.assertEqual(count, 2)
 
     def testOpenTypes(self):
-        openTypesMap = {
-            rfc3537.id_alg_HMACwithAESwrap: univ.Null(""),
-            rfc3537.id_alg_HMACwith3DESwrap: univ.Null(""),
-        }
+        openTypesMap = opentypemap.get('smimeCapabilityMap')
 
         asn1Spec=rfc5751.SMIMECapabilities()
         substrate = pem.readBase64fromText(self.smime_capabilities_pem_text)
@@ -63,7 +58,7 @@ class SMIMECapabilitiesTestCase(unittest.TestCase):
         count = 0
         for cap in asn1Object:
             self.assertEqual(univ.Null(""), cap['parameters'])
-            self.assertTrue(cap['capabilityID'] in openTypesMap.keys())
+            self.assertIn(cap['capabilityID'], openTypesMap)
             count += 1
 
         self.assertEqual(count, 2)

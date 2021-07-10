@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -19,6 +20,9 @@ from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc4998
 from pyasn1_alt_modules import rfc5055
+from pyasn1_alt_modules import opentypemap
+
+scvpWantBackMap = opentypemap.get('scvpWantBackMap')
 
 MAX = float('inf')
 
@@ -64,7 +68,7 @@ id_swb_ers_revocation_info = id_swb + (19,)
 id_swb_ers_all = id_swb + (20,)
 
 
-# Update the SCVP Want Back map in rfc5055.py.
+# Update the SCVP Want Back Map
 
 _scvpWantBackMapUpdate = {
     id_swb_partial_cert_path: CertBundle(),
@@ -75,4 +79,4 @@ _scvpWantBackMapUpdate = {
     id_swb_ers_all: EvidenceRecordWantBacks(),
 }
 
-rfc5055.scvpWantBackMap.update(_scvpWantBackMapUpdate)
+scvpWantBackMap.update(_scvpWantBackMapUpdate)

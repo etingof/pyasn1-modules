@@ -1,6 +1,8 @@
 #
 # This file is part of pyasn1-alt-modules software.
 #
+# Modified by Russ Housley to import from RFC 5280 and RFC 5652
+#
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # Copyright (c) 2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -12,10 +14,46 @@
 #
 # Sample captures could be obtained with OpenSSL
 #
-from pyasn1_alt_modules import rfc2315
-from pyasn1_alt_modules.rfc2459 import *
+from pyasn1.type import char
+from pyasn1.type import constraint
+from pyasn1.type import namedtype
+from pyasn1.type import namedval
+from pyasn1.type import tag
+from pyasn1.type import univ
+
+from pyasn1_alt_modules import rfc5652
+from pyasn1_alt_modules import rfc5280
 
 MAX = float('inf')
+
+
+# Imports from RFC 5280
+
+AlgorithmIdentifier = rfc5280.AlgorithmIdentifier
+
+AttributeTypeAndValue = rfc5280.AttributeTypeAndValue
+
+Extensions = rfc5280.Extensions
+
+GeneralName = rfc5280.GeneralName
+
+Name = rfc5280.Name
+
+SubjectPublicKeyInfo = rfc5280.SubjectPublicKeyInfo
+
+Time = rfc5280.Time
+
+UniqueIdentifier = rfc5280.UniqueIdentifier
+
+Version = rfc5280.Version
+
+
+# Imports from RFC 5652
+
+EnvelopedData = rfc5652.EnvelopedData
+
+
+# Object Identifiers
 
 id_pkix = univ.ObjectIdentifier('1.3.6.1.5.5.7')
 id_pkip = univ.ObjectIdentifier('1.3.6.1.5.5.7.5')
@@ -32,12 +70,12 @@ id_regInfo_certReq = univ.ObjectIdentifier('1.3.6.1.5.5.7.5.2.2')
 
 
 # This should be in PKIX Certificate Extensions module
-
-class GeneralName(univ.OctetString):
-    pass
-
-
+#
+# class GeneralName(univ.OctetString):
+#    pass
+#
 # end of PKIX Certificate Extensions module
+
 
 class UTF8Pairs(char.UTF8String):
     pass
@@ -81,7 +119,7 @@ class EncryptedValue(univ.Sequence):
 class EncryptedKey(univ.Choice):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('encryptedValue', EncryptedValue()),
-        namedtype.NamedType('envelopedData', rfc2315.EnvelopedData().subtype(
+        namedtype.NamedType('envelopedData', EnvelopedData().subtype(
             implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0)))
     )
 
@@ -93,14 +131,18 @@ class PKIArchiveOptions(univ.Choice):
         namedtype.NamedType('keyGenParameters', KeyGenParameters().subtype(
             implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))),
         namedtype.NamedType('archiveRemGenPrivKey',
-                            univ.Boolean().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 2)))
+            univ.Boolean().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 2)))
     )
 
 
 class SinglePubInfo(univ.Sequence):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('pubMethod', univ.Integer(
-            namedValues=namedval.NamedValues(('dontCare', 0), ('x500', 1), ('web', 2), ('ldap', 3)))),
+            namedValues=namedval.NamedValues(
+                ('dontCare', 0),
+                ('x500', 1),
+                ('web', 2),
+                ('ldap', 3)))),
         namedtype.OptionalNamedType('pubLocation', GeneralName())
     )
 
@@ -108,7 +150,9 @@ class SinglePubInfo(univ.Sequence):
 class PKIPublicationInfo(univ.Sequence):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('action',
-                            univ.Integer(namedValues=namedval.NamedValues(('dontPublish', 0), ('pleasePublish', 1)))),
+                            univ.Integer(namedValues=namedval.NamedValues(
+                                ('dontPublish', 0),
+                                ('pleasePublish', 1)))),
         namedtype.OptionalNamedType('pubInfos', univ.SequenceOf(componentType=SinglePubInfo()).subtype(
             sizeSpec=constraint.ValueSizeConstraint(1, MAX)))
     )
@@ -132,11 +176,11 @@ class SubsequentMessage(univ.Integer):
 class POPOPrivKey(univ.Choice):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('thisMessage',
-                            univ.BitString().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
+            univ.BitString().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
         namedtype.NamedType('subsequentMessage', SubsequentMessage().subtype(
             implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))),
         namedtype.NamedType('dhMAC',
-                            univ.BitString().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 2)))
+            univ.BitString().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 2)))
     )
 
 
@@ -161,8 +205,8 @@ class POPOSigningKeyInput(univ.Sequence):
         namedtype.NamedType(
             'authInfo', univ.Choice(
                 componentType=namedtype.NamedTypes(
-                    namedtype.NamedType(
-                        'sender', GeneralName().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))
+                    namedtype.NamedType('sender',
+                        GeneralName().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))
                     ),
                     namedtype.NamedType('publicKeyMAC', PKMACValue())
                 )
@@ -184,7 +228,7 @@ class POPOSigningKey(univ.Sequence):
 class ProofOfPossession(univ.Choice):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('raVerified',
-                            univ.Null().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
+            univ.Null().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
         namedtype.NamedType('signature', POPOSigningKey().subtype(
             implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1))),
         namedtype.NamedType('keyEncipherment', POPOPrivKey().subtype(
@@ -202,9 +246,9 @@ class Controls(univ.SequenceOf):
 class OptionalValidity(univ.Sequence):
     componentType = namedtype.NamedTypes(
         namedtype.OptionalNamedType('notBefore',
-                                    Time().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
+            Time().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
         namedtype.OptionalNamedType('notAfter',
-                                    Time().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
+            Time().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
     )
 
 

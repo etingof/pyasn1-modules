@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -18,6 +19,9 @@ from pyasn1.type import univ
 from pyasn1_alt_modules import rfc3279
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc5652
+from pyasn1_alt_modules import opentypemap
+
+algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
 
 
 # Imports from RFC 5652
@@ -86,7 +90,7 @@ id_alg_ecdhPop_static_sha384_hmac_sha384 = id_pkix + (6, 27, )
 id_alg_ecdhPop_static_sha512_hmac_sha512 = id_pkix + (6, 28, )
 
 
-# Update the Algorithm Identifier map in rfc5280.py
+# Update the Algorithm Identifier Map
 
 _algorithmIdentifierMapUpdate = {
     id_alg_dh_pop: DomainParameters(),
@@ -105,4 +109,4 @@ _algorithmIdentifierMapUpdate = {
     id_alg_ecdhPop_static_sha512_hmac_sha512: univ.Null(""),
 }
 
-rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)

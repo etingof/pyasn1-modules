@@ -8,13 +8,13 @@
 import sys
 import unittest
 
-from pyasn1.codec.der import decoder as der_decoder
-from pyasn1.codec.der import encoder as der_encoder
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc8226
-
+from pyasn1_alt_modules import opentypemap
 
 class JWTClaimConstraintsTestCase(unittest.TestCase):
     jwtcc_pem_text = ("MD2gBzAFFgNmb2+hMjAwMBkWA2ZvbzASDARmb28xDARmb28yDARmb2"
@@ -25,12 +25,10 @@ class JWTClaimConstraintsTestCase(unittest.TestCase):
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.jwtcc_pem_text)
-        asn1Object, rest = der_decoder.decode(
-            substrate, asn1Spec=self.asn1Spec)
-
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
-        self.assertEqual(substrate, der_encoder.encode(asn1Object))
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
 
 class TNAuthorizationListTestCase(unittest.TestCase):
@@ -42,12 +40,10 @@ class TNAuthorizationListTestCase(unittest.TestCase):
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.tnal_pem_text)
-        asn1Object, rest = der_decoder.decode(
-            substrate, asn1Spec=self.asn1Spec)
-
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
-        self.assertEqual(substrate, der_encoder.encode(asn1Object))
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
 
 class CertificateOpenTypesTestCase(unittest.TestCase):
@@ -73,23 +69,19 @@ yEFWA6G95b/HbtPMTjLpPKtrOjhofc4LyVCDYhFhKzpvHh1qeA==
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.cert_pem_text)
-        asn1Object, rest = der_decoder.decode(
-            substrate, asn1Spec=self.asn1Spec)
-
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
-        self.assertEqual(substrate, der_encoder.encode(asn1Object))
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
         extn_list = []
         for extn in asn1Object['tbsCertificate']['extensions']:
             extn_list.append(extn['extnID'])
-            if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
-                extnValue, rest = der_decoder.decode(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-
-                self.assertEqual(
-                    extn['extnValue'], der_encoder.encode(extnValue))
+            if extn['extnID'] in certificateExtensionsMap:
+                extnValue, rest = der_decoder(extn['extnValue'],
+                    asn1Spec=certificateExtensionsMap[extn['extnID']])
+                self.assertEqual(extn['extnValue'], der_encoder(extnValue))
 
                 if extn['extnID'] == rfc8226.id_pe_TNAuthList:
                     self.assertEqual('fake', extnValue[0]['spc'])

@@ -14,6 +14,7 @@ from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc8520
+from pyasn1_alt_modules import opentypemap
 
 
 class MUDCertTestCase(unittest.TestCase):
@@ -93,6 +94,7 @@ izaUuU1EEwgOMELjeFL62Ssvq8X+x6hZFCLygI7GNeitlblNhCXhFFurqMs=
         self.assertIn(rfc8520.id_pe_mud_url, extn_list)
 
     def testExtensionsMap(self):
+        certificateExtensionsMap = opentypemap.get('certificateExtensionsMap')
         substrate = pem.readBase64fromText(self.mud_cert_pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
@@ -101,10 +103,9 @@ izaUuU1EEwgOMELjeFL62Ssvq8X+x6hZFCLygI7GNeitlblNhCXhFFurqMs=
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         for extn in asn1Object['tbsCertificate']['extensions']:
-            if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
-                extnValue, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
+            if extn['extnID'] in certificateExtensionsMap:
+                extnValue, rest = der_decoder(extn['extnValue'],
+                    asn1Spec=certificateExtensionsMap[extn['extnID']])
                 self.assertEqual(extn['extnValue'], der_encoder(extnValue))
 
 

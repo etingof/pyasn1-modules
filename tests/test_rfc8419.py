@@ -14,6 +14,7 @@ from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5280
 from pyasn1_alt_modules import rfc8419
+from pyasn1_alt_modules import opentypemap
 
 
 class Ed25519TestCase(unittest.TestCase):
@@ -95,32 +96,32 @@ class SHAKE256LENTestCase(unittest.TestCase):
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.alg_id_5_pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
-        self.assertEqual(rfc8419.id_shake256_len, asn1Object['algorithm'])
-        self.assertTrue(asn1Object['parameters'].isValue)
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        param, rest = der_decoder(
-            asn1Object['parameters'],
-            asn1Spec=rfc5280.algorithmIdentifierMap[asn1Object['algorithm']])
+        self.assertEqual(rfc8419.id_shake256_len, asn1Object['algorithm'])
+        self.assertTrue(asn1Object['parameters'].isValue)
 
+        algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
+        param, rest = der_decoder(asn1Object['parameters'],
+            asn1Spec=algorithmIdentifierMap[asn1Object['algorithm']])
         self.assertFalse(rest)
         self.assertTrue(param.prettyPrint())
         self.assertEqual(asn1Object['parameters'], der_encoder(param))
+
         self.assertEqual(512, param)
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.alg_id_5_pem_text)
-        asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
-
+        asn1Object, rest = der_decoder(substrate, 
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+
         self.assertEqual(rfc8419.id_shake256_len, asn1Object['algorithm'])
         self.assertEqual(512, asn1Object['parameters'])
-        self.assertEqual(substrate, der_encoder(asn1Object))
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])

@@ -16,6 +16,7 @@ from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5480
 from pyasn1_alt_modules import rfc5751
 from pyasn1_alt_modules import rfc6664
+from pyasn1_alt_modules import opentypemap
 
 
 class SMIMECapabilitiesTestCase(unittest.TestCase):
@@ -40,7 +41,6 @@ PQMBBwYFK4EEACIGBSuBBAAjMBoGCSqGSIb3DQEBCDANBglghkgBZQMEAgEFAA==
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.smime_capabilities_pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
@@ -56,24 +56,23 @@ PQMBBwYFK4EEACIGBSuBBAAjMBoGCSqGSIb3DQEBCDANBglghkgBZQMEAgEFAA==
         ]
 
         count = 0
+        smimeCapabilityMap = opentypemap.get('smimeCapabilityMap')
         for cap in asn1Object:
             if cap['capabilityID'] in expectedCaps:
-                self.assertIn(cap['capabilityID'], rfc5751.smimeCapabilityMap)
-                substrate = cap['parameters']
-                cap_p, rest = der_decoder(substrate,
+                self.assertIn(cap['capabilityID'], smimeCapabilityMap)
+                cap_p, rest = der_decoder(cap['parameters'],
                     asn1Spec=rfc5751.smimeCapabilityMap[cap['capabilityID']])
                 self.assertFalse(rest)
                 self.assertTrue(cap_p.prettyPrint())
-                self.assertEqual(substrate, der_encoder(cap_p))
+                self.assertEqual(cap['parameters'], der_encoder(cap_p))
                 count += 1
 
         self.assertEqual(len(expectedCaps), count)
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.smime_capabilities_pem_text)
-        asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
-
+        asn1Object, rest = der_decoder(substrate,
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))

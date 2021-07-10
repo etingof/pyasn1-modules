@@ -8,8 +8,8 @@
 import sys
 import unittest
 
-from pyasn1.codec.der import decoder as der_decoder
-from pyasn1.codec.der import encoder as der_encoder
+from pyasn1.codec.der.decoder import decode as der_decoder
+from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1.type import char
 from pyasn1.type import namedtype
 from pyasn1.type import univ
@@ -17,6 +17,7 @@ from pyasn1.type import univ
 from pyasn1_alt_modules import pem
 from pyasn1_alt_modules import rfc5652
 from pyasn1_alt_modules import rfc6402
+from pyasn1_alt_modules import opentypemap
 
 
 class ContentInfoTestCase(unittest.TestCase):
@@ -71,13 +72,13 @@ xicQmJP+VoMHo/ZpjFY9fYCjNZUArgKsEwK/s+p9yrVVeB1Nf8Mn
 
         while next_layer:
 
-            asn1Object, rest = der_decoder.decode(
+            asn1Object, rest = der_decoder(
                 substrate, asn1Spec=layers[next_layer]
             )
 
             self.assertFalse(rest)
             self.assertTrue(asn1Object.prettyPrint())
-            self.assertEqual(substrate, der_encoder.encode(asn1Object))
+            self.assertEqual(substrate, der_encoder(asn1Object))
 
             substrate = getNextSubstrate[next_layer](asn1Object)
             next_layer = getNextLayer[next_layer](asn1Object)
@@ -113,29 +114,30 @@ xicQmJP+VoMHo/ZpjFY9fYCjNZUArgKsEwK/s+p9yrVVeB1Nf8Mn
             univ.ObjectIdentifier('1.2.840.113549.1.1.11'): univ.Null(""),
         }
 
-        openTypeMap.update(rfc5652.cmsAttributesMap)
-        openTypeMap.update(rfc6402.cmcControlAttributesMap)
+        openTypeMap.update(opentypemap.get('cmsAttributesMap'))
+        openTypeMap.update(opentypemap.get('cmcControlAttributesMap'))
 
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decoder.decode(substrate,
+        asn1Object, rest = der_decoder(substrate,
             asn1Spec=rfc5652.ContentInfo(), decodeOpenTypes=True)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
-        self.assertEqual(substrate, der_encoder.encode(asn1Object))
+        self.assertEqual(substrate, der_encoder(asn1Object))
 
         eci = asn1Object['content']['encapContentInfo']
 
-        self.assertIn(eci['eContentType'], rfc5652.cmsContentTypesMap)
+        cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
+        self.assertIn(eci['eContentType'], cmsContentTypesMap)
         self.assertEqual(rfc6402.id_cct_PKIData, eci['eContentType'])
 
-        pkid, rest = der_decoder.decode(eci['eContent'],
-            asn1Spec=rfc5652.cmsContentTypesMap[eci['eContentType']],
+        pkid, rest = der_decoder(eci['eContent'],
+            asn1Spec=cmsContentTypesMap[eci['eContentType']],
             openTypes=openTypeMap,
             decodeOpenTypes=True)
 
         self.assertFalse(rest)
         self.assertTrue(pkid.prettyPrint())
-        self.assertEqual(eci['eContent'], der_encoder.encode(pkid))
+        self.assertEqual(eci['eContent'], der_encoder(pkid))
 
         for req in pkid['reqSequence']:
             cr = req['tcr']['certificationRequest']

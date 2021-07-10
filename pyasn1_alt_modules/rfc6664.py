@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley with some assistance from asn1ate v.0.6.0.
+# Modified by Russ Housley to include the opentypemap manager.
 #
 # Copyright (c) 2019-2021, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -22,6 +23,9 @@ from pyasn1_alt_modules import rfc5751
 from pyasn1_alt_modules import rfc5480
 from pyasn1_alt_modules import rfc4055
 from pyasn1_alt_modules import rfc3279
+from pyasn1_alt_modules import opentypemap
+
+smimeCapabilityMap = opentypemap.get('smimeCapabilityMap')
 
 MAX = float('inf')
 
@@ -121,7 +125,7 @@ class EC_SMimeCaps(univ.SequenceOf):
     subtypeSpec=constraint.ValueSizeConstraint(1, MAX)
 
 
-# Update the SMIMECapabilities Attribute Map in rfc5751.py
+# Update the SMIMECapabilities Attribute Map
 #
 # The map can either include an entry for scap-sa-rsaSSA-PSS or 
 # scap-pk-rsaSSA-PSS, but not both.  One is associated with the
@@ -144,4 +148,4 @@ _smimeCapabilityMapUpdate = {
     id_mgf1: AlgorithmIdentifier(),
 }
 
-rfc5751.smimeCapabilityMap.update(_smimeCapabilityMapUpdate)
+smimeCapabilityMap.update(_smimeCapabilityMapUpdate)
