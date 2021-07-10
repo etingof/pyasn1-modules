@@ -1,3 +1,8 @@
+Revision 0.4.0, released 10-07-2021
+-----------------------------------
+- Added opentypemap to manage the open type maps for all modules
+- Add RFC9092 providing CMS Content Type for Geofeed Data
+
 Revision 0.3.2, released 14-06-2021
 -----------------------------------
 - Modified RFC5280 to use CRLNumber() in the extensions opentype map.
@@ -35,7 +40,7 @@ Revision 0.3.1, released 13-06-2021
 - Add RFC8737 providing the ACME TLS ALPN Challenge Certificate Extension
 - Add RFC8951 providing Enrollment over Secure Transport (EST) clarifications
 - Add a simple test for the RFC6170 module
-- Add RFC 8894 providing  Simple Certificate Enrolment Protocol (SCEP)
+- Add RFC8894 providing Simple Certificate Enrolment Protocol (SCEP)
 - Modified RFC5990 to update the S/MIME Capabilities map
 - Improve test routines for RFC6664
 
