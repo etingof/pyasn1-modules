@@ -1,12 +1,17 @@
+Revision 0.4.1, released XX-XX-2021
+-----------------------------------
+- Update RFC4210 to import from RFC 5280, RFC 4211, and RFC6402 instead of
+  earlier RFCs covering the same things
+- Update RFC4210 o import from RFC 5280 and RFC5252 instead of earlier
+  RFCs covering the same things, and to include an opentype map for
+  AttributeTypeAndValue
+- Add RFC9118 providing Enhanced JWT Claim Constraints certificate extension
+
 Revision 0.4.0, released 10-07-2021
 -----------------------------------
 - Added opentypemap to manage the open type maps for all modules
 - Add RFC9092 providing CMS Content Type for Geofeed Data
-- Update RFC4210 by Russ Housley to import from RFC 5280, RFC 4211, and
-  RFC6402 instead of earlier RFCs covering the same things
-- Update RFC4210 o import from RFC 5280 and RFC5252 instead of earlier
-  RFCs covering the same things, and to include an opentype map for
-  AttributeTypeAndValue
+
 
 Revision 0.3.2, released 14-06-2021
 -----------------------------------
