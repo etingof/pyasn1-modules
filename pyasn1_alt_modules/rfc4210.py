@@ -9,6 +9,8 @@
 #
 # Based on Alex Railean's work
 # Modified by Russ Housley to import from RFC 5280 instead of RFC 2459.
+# Modified by Russ Housley to import from RFC 4211 instead of RFC 2511.
+# Modified by Russ Housley to import from RFC 6402 instead of RFC 2314.
 #
 from pyasn1.type import char
 from pyasn1.type import constraint
@@ -18,8 +20,8 @@ from pyasn1.type import tag
 from pyasn1.type import univ
 from pyasn1.type import useful
 
-from pyasn1_alt_modules import rfc2314
-from pyasn1_alt_modules import rfc2511
+from pyasn1_alt_modules import rfc6402
+from pyasn1_alt_modules import rfc4211
 from pyasn1_alt_modules import rfc5280
 
 MAX = float('inf')
@@ -135,7 +137,7 @@ class RevDetails(univ.Sequence):
      }
     """
     componentType = namedtype.NamedTypes(
-        namedtype.NamedType('certDetails', rfc2511.CertTemplate()),
+        namedtype.NamedType('certDetails', rfc4211.CertTemplate()),
         namedtype.OptionalNamedType('crlEntryDetails', rfc5280.Extensions())
     )
 
@@ -153,7 +155,7 @@ class CertOrEncCert(univ.Choice):
     """
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('certificate', CMPCertificate().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
-        namedtype.NamedType('encryptedCert', rfc2511.EncryptedValue().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1)))
+        namedtype.NamedType('encryptedCert', rfc4211.EncryptedValue().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1)))
     )
 
 
@@ -167,8 +169,8 @@ class CertifiedKeyPair(univ.Sequence):
     """
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('certOrEncCert', CertOrEncCert()),
-        namedtype.OptionalNamedType('privateKey', rfc2511.EncryptedValue().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
-        namedtype.OptionalNamedType('publicationInfo', rfc2511.PKIPublicationInfo().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1)))
+        namedtype.OptionalNamedType('privateKey', rfc4211.EncryptedValue().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
+        namedtype.OptionalNamedType('publicationInfo', rfc4211.PKIPublicationInfo().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1)))
     )
 
 
@@ -339,7 +341,7 @@ class RevAnnContent(univ.Sequence):
     """
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('status', PKIStatus()),
-        namedtype.NamedType('certId', rfc2511.CertId()),
+        namedtype.NamedType('certId', rfc4211.CertId()),
         namedtype.NamedType('willBeRevokedAt', useful.GeneralizedTime()),
         namedtype.NamedType('badSinceDate', useful.GeneralizedTime()),
         namedtype.OptionalNamedType('crlDetails', rfc5280.Extensions())
@@ -363,7 +365,7 @@ class RevRepContent(univ.Sequence):
             )
         ),
         namedtype.OptionalNamedType(
-            'revCerts', univ.SequenceOf(componentType=rfc2511.CertId()).subtype(
+            'revCerts', univ.SequenceOf(componentType=rfc4211.CertId()).subtype(
                 sizeSpec=constraint.ValueSizeConstraint(1, MAX),
                 explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0)
             )
@@ -461,7 +463,7 @@ class OOBCertHash(univ.Sequence):
             'hashAlg', rfc5280.AlgorithmIdentifier().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))
         ),
         namedtype.OptionalNamedType(
-            'certId', rfc2511.CertId().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1))
+            'certId', rfc4211.CertId().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1))
         ),
         namedtype.NamedType('hashVal', univ.BitString())
     )
@@ -560,7 +562,7 @@ class PKIBody(univ.Choice):
     """
     componentType = namedtype.NamedTypes(
         namedtype.NamedType(
-            'ir', rfc2511.CertReqMessages().subtype(
+            'ir', rfc4211.CertReqMessages().subtype(
                 explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0)
             )
         ),
@@ -570,7 +572,7 @@ class PKIBody(univ.Choice):
             )
         ),
         namedtype.NamedType(
-            'cr', rfc2511.CertReqMessages().subtype(
+            'cr', rfc4211.CertReqMessages().subtype(
                 explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 2)
             )
         ),
@@ -580,7 +582,7 @@ class PKIBody(univ.Choice):
             )
         ),
         namedtype.NamedType(
-            'p10cr', rfc2314.CertificationRequest().subtype(
+            'p10cr', rfc6402.CertificationRequest().subtype(
                 explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 4)
             )
         ),
@@ -595,7 +597,7 @@ class PKIBody(univ.Choice):
             )
         ),
         namedtype.NamedType(
-            'kur', rfc2511.CertReqMessages().subtype(
+            'kur', rfc4211.CertReqMessages().subtype(
                 explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 7)
             )
         ),
@@ -605,7 +607,7 @@ class PKIBody(univ.Choice):
             )
         ),
         namedtype.NamedType(
-            'krr', rfc2511.CertReqMessages().subtype(
+            'krr', rfc4211.CertReqMessages().subtype(
                 explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 9)
             )
         ),
@@ -625,7 +627,7 @@ class PKIBody(univ.Choice):
             )
         ),
         namedtype.NamedType(
-            'ccr', rfc2511.CertReqMessages().subtype(
+            'ccr', rfc4211.CertReqMessages().subtype(
                 explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 13)
             )
         ),
