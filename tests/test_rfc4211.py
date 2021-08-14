@@ -34,7 +34,6 @@ xfu5YVWi81/fw8QQ6X6YGHFQkomLd7jxakVyjxSng9BhO6GpjJNF
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
-
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
@@ -46,6 +45,28 @@ xfu5YVWi81/fw8QQ6X6YGHFQkomLd7jxakVyjxSng9BhO6GpjJNF
             count += 1
 
         self.assertEqual(1, count)
+
+    def testOpenTypes(self):
+        substrate = pem.readBase64fromText(self.pem_text)
+        asn1Object, rest = der_decoder(substrate,
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+
+        count = 0
+        
+        for ctrl in asn1Object[0][0]['controls']:
+
+            if ctrl['type'] == rfc4211.id_regCtrl_regToken:
+                self.assertEqual(u'11111', ctrl['value'])
+                count += 1
+            
+            if ctrl['type'] == rfc4211.id_regCtrl_authenticator:
+                self.assertEqual(u'server_magic', ctrl['value'])
+                count += 1
+
+        self.assertEqual(2, count)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
