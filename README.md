@@ -3,7 +3,7 @@ ASN.1 modules for Python
 ------------------------
 [![PyPI](https://img.shields.io/pypi/v/pyasn1-modules.svg?maxAge=2592000)](https://pypi.org/project/pyasn1-modules)
 [![Python Versions](https://img.shields.io/pypi/pyversions/pyasn1-modules.svg)](https://pypi.org/project/pyasn1-modules/)
-[![Build status](https://travis-ci.org/etingof/pyasn1-modules.svg?branch=master)](https://travis-ci.org/etingof/pyasn1-modules)
+[![Test](https://github.com/etingof/pyasn1-modules/actions/workflows/test.yml/badge.svg)](https://github.com/etingof/pyasn1-modules/actions/workflows/test.yml)
 [![Coverage Status](https://img.shields.io/codecov/c/github/etingof/pyasn1-modules.svg)](https://codecov.io/github/etingof/pyasn1-modules/)
 [![GitHub license](https://img.shields.io/badge/license-BSD-blue.svg)](https://raw.githubusercontent.com/etingof/pyasn1-modules/master/LICENSE.txt)
 
