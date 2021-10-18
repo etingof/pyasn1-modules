@@ -41,6 +41,7 @@ Revision 0.3.0, released XX-03-2020
 - Add RFC8708 providing HSS/LMS Hash-based Signature Algorithm for CMS
 - Advance copyright statement to year 2020
 - Add RFC8769 providing CBOR and CBOR Sequence content types for CMS
+- Add RFC4511 providing Lightweight Directory Access Protocol (LDAP)
 
 Revision 0.2.8, released 16-11-2019
 -----------------------------------
