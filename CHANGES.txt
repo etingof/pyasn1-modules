@@ -2,10 +2,11 @@ Revision 0.4.1, released XX-XX-2021
 -----------------------------------
 - Update RFC4210 to import from RFC 5280, RFC 4211, and RFC6402 instead of
   earlier RFCs covering the same things
-- Update RFC4210 o import from RFC 5280 and RFC5252 instead of earlier
+- Update RFC4211 to import from RFC 5280 and RFC5252 instead of earlier
   RFCs covering the same things, and to include an opentype map for
   AttributeTypeAndValue
 - Add RFC9118 providing Enhanced JWT Claim Constraints certificate extension
+- Add RFC2743 providing GSSAPI Tokens
 
 Revision 0.4.0, released 10-07-2021
 -----------------------------------
