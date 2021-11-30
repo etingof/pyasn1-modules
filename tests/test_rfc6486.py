@@ -85,8 +85,12 @@ C9ijmXiajracUe+7eCluqgXRE8yRtnscWoA/9fVFz1lPwgEeNHLoaK7Sqew=
 
         self.assertEqual(0, asn1Object['version'])
 
+        counter = 0
         for f in asn1Object['fileList']:
             self.assertEqual('ZXSGBDBkL82TFGHuE4VOYtJP-E4.crl', f['file'])
+            counter += 1
+    
+        self.assertEqual(1, counter)
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.manifest_pem_text)
@@ -109,8 +113,12 @@ C9ijmXiajracUe+7eCluqgXRE8yRtnscWoA/9fVFz1lPwgEeNHLoaK7Sqew=
         self.assertEqual(substrate, der_encoder(asn1Object))
         self.assertEqual(0, asn1Object['version'])
 
+        counter = 0
         for f in asn1Object['fileList']:
             self.assertEqual('ZXSGBDBkL82TFGHuE4VOYtJP-E4.crl', f['file'])
+            counter += 1
+    
+        self.assertEqual(1, counter)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
