@@ -17,22 +17,17 @@ from pyasn1_alt_modules import rfc9174
 
 class DTNTCPCPEKUTestCase(unittest.TestCase):
     cert_pem_text = """\
-MIIC1zCCAl2gAwIBAgIJAKWzVCgbsG5NMAoGCCqGSM49BAMDMD8xCzAJBgNVBAYT
-AlVTMQswCQYDVQQIDAJWQTEQMA4GA1UEBwwHSGVybmRvbjERMA8GA1UECgwIQm9n
-dXMgQ0EwHhcNMjEwMTE2MjAxMTI5WhcNMjIwMTE2MjAxMTI5WjBaMQswCQYDVQQG
-EwJVUzELMAkGA1UECBMCVkExEDAOBgNVBAcTB0hlcm5kb24xEDAOBgNVBAoTB0V4
-YW1wbGUxGjAYBgNVBAMTEWR0bjQ4LmV4YW1wbGUuY29tMHYwEAYHKoZIzj0CAQYF
-K4EEACIDYgAE8FF2VLHojmqlnawpQwjG6fWBQDPOy05hYq8oKcyg1PXH6kgoO8wQ
-yKYVwsDHEvc1Vg6ErQm3LzdI8OQpYx3H386R2F/dT/PEmUSdcOIWsB4zrFsbzNwJ
-GIGeZ33ZS+xGo4IBCDCCAQQwCwYDVR0PBAQDAgeAMEIGCWCGSAGG+EIBDQQ1FjNU
-aGlzIGNlcnRpZmljYXRlIGNhbm5vdCBiZSB0cnVzdGVkIGZvciBhbnkgcHVycG9z
-ZS4wHQYDVR0OBBYEFPI12zQE2qVV8r1pA5mwYuziFQjBMB8GA1UdIwQYMBaAFPI1
-2zQE2qVV8r1pA5mwYuziFQjBMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcD
-IzAcBgNVHREEFTATghFkdG40OC5leGFtcGxlLmNvbTA0BggrBgEFBQcBAQQoMCYw
-JAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmV4YW1wbGUuY29tLzAKBggqhkjOPQQD
-AwNoADBlAjBrZPOd8T+aWNaik+7p/9TVHCD49n9Dvb3Vs2JfZzPA3Q2Is0jK6aJI
-uHZfAh1QybsCMQC+sRcTa8IoiD5naC26IseGjn+V0vizzUcibyU81fikjZAN1F/j
-m94qsr2FXsRt1T0=
+MIIB8zCCAZqgAwIBAgIUAsJMTfFzPXEjQgv8hzX61gPlLRQwCgYIKoZIzj0EAwIw
+IDEeMBwGA1UEAwwVQ2VydGlmaWNhdGUgQXV0aG9yaXR5MB4XDTIxMTAyMzAzNTgw
+MFoXDTIxMTEwMjAzNTgwMFowEjEQMA4GA1UEAwwHbm9kZTAwMTBZMBMGByqGSM49
+AgEGCCqGSM49AwEHA0IABPxKn98UjqixrgiIx3ZUpLWw3q8yFXSYM6xWJNbTWoW3
+CBWL/ZjTDzb9VVhNV34O/SrL78DhXMQKaPk2kz5lnoejgb8wgbwwDAYDVR0TAQH/
+BAIwADA2BgNVHREELzAtoBwGCCsGAQUFBwgLoBAWDmR0bjovL25vZGUwMDEvgg1u
+b2RlMDAxLmxvY2FsMAsGA1UdDwQEAwIHgDAnBgNVHSUEIDAeBggrBgEFBQcDIwYI
+KwYBBQUHAwIGCCsGAQUFBwMBMB0GA1UdDgQWBBQUnHImDKsWD19h3w4bLThvvkpC
+LjAfBgNVHSMEGDAWgBR5CN7I7XeM2IgirDTmETKzGrso7zAKBggqhkjOPQQDAgNH
+ADBEAiBEHt895peKHaT33NsMY7M2Ei1p9Kb7d8q2YCRGGRnbBgIgC69DqkCiw/6Y
+h8+YEpY2YN5ffny5AzQLooM7DzSKJcc=
 """
 
     def setUp(self):
@@ -45,19 +40,77 @@ m94qsr2FXsRt1T0=
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
         
-        found = False
+        counter = 0
         for extn in asn1Object['tbsCertificate']['extensions']:
             if extn['extnID'] == rfc5280.id_ce_extKeyUsage:
-                    ekus, rest = der_decoder(
-                        extn['extnValue'], rfc5280.ExtKeyUsageSyntax())
-                    self.assertFalse(rest)
-                    self.assertTrue(ekus.prettyPrint())
-                    self.assertEqual(extn['extnValue'], der_encoder(ekus))
-            
-                    self.assertIn(rfc9174.id_kp_bundleSecurity, ekus)
-                    found = True
+                ekus, rest = der_decoder(
+                    extn['extnValue'], asn1Spec=rfc5280.ExtKeyUsageSyntax())
+                self.assertFalse(rest)
+                self.assertTrue(ekus.prettyPrint())
+                self.assertEqual(extn['extnValue'], der_encoder(ekus))
+        
+                self.assertIn(rfc9174.id_kp_bundleSecurity, ekus)
+                counter += 1
 
-        self.assertTrue(found)
+            if extn['extnID'] == rfc5280.id_ce_subjectAltName:
+                san, rest = der_decoder(
+                    extn['extnValue'], asn1Spec=rfc5280.SubjectAltName())
+                self.assertFalse(rest)
+                self.assertTrue(san.prettyPrint())
+                self.assertEqual(der_encoder(san), extn['extnValue'])
+
+                for gn in san:
+                    if gn['otherName'].hasValue():
+                        self.assertEqual(
+                            rfc9174.id_on_bundleEID, gn['otherName']['type-id'])
+
+                        on, rest = der_decoder(gn['otherName']['value'],
+                            asn1Spec=rfc9174.BundleEID())
+                        self.assertFalse(rest)
+                        self.assertTrue(on.prettyPrint())
+                        self.assertEqual(
+                            der_encoder(on), gn['otherName']['value'])
+
+                        self.assertIn('node001', on)
+                        counter += 1
+
+        self.assertEqual(2, counter)
+
+    def testOpenTypes(self):
+        substrate = pem.readBase64fromText(self.cert_pem_text)
+        asn1Object, rest = der_decoder(substrate,
+            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+        self.assertFalse(rest)
+        self.assertTrue(asn1Object.prettyPrint())
+        self.assertEqual(substrate, der_encoder(asn1Object))
+        
+        counter = 0
+        for extn in asn1Object['tbsCertificate']['extensions']:
+            if extn['extnID'] == rfc5280.id_ce_extKeyUsage:
+                ekus, rest = der_decoder(extn['extnValue'],
+                    asn1Spec=rfc5280.ExtKeyUsageSyntax(), decodeOpenTypes=True)
+                self.assertFalse(rest)
+                self.assertTrue(ekus.prettyPrint())
+                self.assertEqual(extn['extnValue'], der_encoder(ekus))
+        
+                self.assertIn(rfc9174.id_kp_bundleSecurity, ekus)
+                counter += 1
+
+            if extn['extnID'] == rfc5280.id_ce_subjectAltName:
+                san, rest = der_decoder(extn['extnValue'],
+                    asn1Spec=rfc5280.SubjectAltName(), decodeOpenTypes=True)
+                self.assertFalse(rest)
+                self.assertTrue(san.prettyPrint())
+                self.assertEqual(der_encoder(san), extn['extnValue'])
+
+                for gn in san:
+                    if gn['otherName'].hasValue():
+                        self.assertEqual(
+                            rfc9174.id_on_bundleEID, gn['otherName']['type-id'])
+                        self.assertIn('node001', gn['otherName']['value'])
+                        counter += 1
+
+        self.assertEqual(2, counter)
 
 class DTNTCPCPONTestCase(unittest.TestCase):
     othername_pem_text = "oBwGCCsGAQUFBwgLoBAWDmR0bjovL2V4YW1wbGUv"
