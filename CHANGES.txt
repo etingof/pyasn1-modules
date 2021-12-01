@@ -12,7 +12,8 @@ Revision 0.4.1, released XX-XX-2021
 - Add RFC5794 providing the ARIA Encryption Algorithm
 - Add RFC9174 providing naming and extended key usage for the Delay-Tolerant
   Networking TCP Convergence Layer Version 4
-- Improve the test for RFC 6486
+- Improve the test for RFC6486
+- Improve the test for RFC9174
 
 Revision 0.4.0, released 10-07-2021
 -----------------------------------
