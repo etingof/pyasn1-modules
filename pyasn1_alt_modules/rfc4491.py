@@ -3,7 +3,7 @@
 #
 # Created by Russ Housley.
 #
-# Copyright (c) 2019-2021, Vigil Security, LLC
+# Copyright (c) 2019-2022, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 # Using the GOST R 34.10-94, GOST R 34.10-2001, and GOST R 34.11-94

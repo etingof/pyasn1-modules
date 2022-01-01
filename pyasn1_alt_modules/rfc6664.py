@@ -4,7 +4,7 @@
 # Created by Russ Housley with some assistance from asn1ate v.0.6.0.
 # Modified by Russ Housley to include the opentypemap manager.
 #
-# Copyright (c) 2019-2021, Vigil Security, LLC
+# Copyright (c) 2019-2022, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 # S/MIME Capabilities for Public Key Definitions

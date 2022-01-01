@@ -3,7 +3,7 @@
 #
 # Created by Russ Housley.
 #
-# Copyright (c) 2020-2021, Vigil Security, LLC
+# Copyright (c) 2020-2022, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 # Identifiers for HMAC-SHA-224, HMAC-SHA-256, HMAC-SHA-384,
