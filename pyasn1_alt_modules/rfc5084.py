@@ -5,7 +5,7 @@
 # Modified by Russ Housley to include the opentypemap manager, and drop use
 #   of the _OID routine.
 #
-# Copyright (c) 2018-2019, Vigil Security, LLC
+# Copyright (c) 2018-2022, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 #  AES-CCM and AES-GCM Algorithms fo use with the Authenticated-Enveloped-Data

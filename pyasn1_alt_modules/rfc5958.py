@@ -5,7 +5,7 @@
 # Modified by Russ Housley to add a map for use with opentypes.
 # Modified by Russ Housley to include the opentypemap manager.
 #
-# Copyright (c) 2019-2021, Vigil Security, LLC
+# Copyright (c) 2019-2022, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 # Asymmetric Key Packages, which is essentially version 2 of

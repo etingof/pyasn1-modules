@@ -2,7 +2,7 @@
 # This file is part of pyasn1-modules.
 #
 # Copyright (c) 2017, Danielle Madeley <danielle@madeley.id.au>
-# Copyright (c) 2019-2021, Vigil Security, LLC
+# Copyright (c) 2019-2022, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 # Modified by Russ Housley to add maps for use with opentypes.

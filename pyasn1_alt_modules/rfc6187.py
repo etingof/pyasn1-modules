@@ -3,7 +3,7 @@
 #
 # Created by Russ Housley.
 #
-# Copyright (c) 2019-2021, Vigil Security, LLC
+# Copyright (c) 2019-2022, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 # X.509v3 Certificates for Secure Shell Authentication
