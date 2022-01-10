@@ -4,6 +4,8 @@
 # Created by Russ Housley with assistance from asn1ate v.0.6.0.
 # Modified by Russ Housley to add maps for use with opentypes.
 # Modified by Russ Housley to include the opentypemap manager.
+# Modified by Russ Housley to add WITH COMPONENTS constraints for
+#   requirements from the text, but stated in the ASN.1 module.
 #
 # Copyright (c) 2019-2022, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -135,6 +137,13 @@ LogotypeData.componentType = namedtype.NamedTypes(
             tag.tagFormatSimple, 1)))
 )
 
+LogotypeData.subtypeSpec = constraint.ConstraintsUnion(
+    constraint.WithComponentsConstraint(
+        ('image', constraint.ComponentPresentConstraint())),
+    constraint.WithComponentsConstraint(
+        ('audio', constraint.ComponentPresentConstraint()))
+)
+
 
 class LogotypeReference(univ.Sequence):
     pass
@@ -198,6 +207,17 @@ LogotypeExtn.componentType = namedtype.NamedTypes(
     namedtype.OptionalNamedType('otherLogos', univ.SequenceOf(
         componentType=OtherLogotypeInfo()).subtype(explicitTag=tag.Tag(
             tag.tagClassContext, tag.tagFormatSimple, 3)))
+)
+
+LogotypeExtn.subtypeSpec = constraint.ConstraintsUnion(
+    constraint.WithComponentsConstraint(
+        ('communityLogos', constraint.ComponentPresentConstraint())),
+    constraint.WithComponentsConstraint(
+        ('issuerLogo', constraint.ComponentPresentConstraint())),
+    constraint.WithComponentsConstraint(
+        ('subjectLogo', constraint.ComponentPresentConstraint())),
+    constraint.WithComponentsConstraint(
+        ('otherLogos', constraint.ComponentPresentConstraint()))
 )
 
 
