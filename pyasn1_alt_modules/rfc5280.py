@@ -1599,6 +1599,16 @@ _orAddressExtensionAttributesMapUpdate = {
 orAddressExtensionAttributesMap.update(_orAddressExtensionAttributesMapUpdate)
 
 
+# map of PolicyQualifierId -> Qualifier
+
+_policyQualifierInfosMapUpdate = {
+    id_qt_cps: CPSuri(),
+    id_qt_unotice: UserNotice(),
+}
+
+policyQualifierInfosMap.update(_policyQualifierInfosMapUpdate)
+
+
 # map of AttributeType -> AttributeValue
 
 _certificateAttributesMapUpdate = {
