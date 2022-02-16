@@ -1,4 +1,4 @@
-Revision 0.4.1, released XX-XX-2022
+Revision 0.4.1, released 16-02-2022
 -----------------------------------
 - Update RFC4210 to import from RFC 5280, RFC 4211, and RFC6402 instead of
   earlier RFCs covering the same things
@@ -16,7 +16,7 @@ Revision 0.4.1, released XX-XX-2022
 - Improve the test for RFC9174
 - Update the copyright lines for 2022
 - Improve RFC3709 to enforce WITH COMPONENTS constraints
-- Add Python 3.9 and Python 3.10 to travis.yml
+- Add RFC9189 providing GOST Cipher Suites for TLS 1.2
 
 Revision 0.4.0, released 10-07-2021
 -----------------------------------
