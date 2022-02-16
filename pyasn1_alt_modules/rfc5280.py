@@ -7,6 +7,7 @@
 # Updated by Russ Housley for AlgorithmIdentifier opentype support.
 # Updated by Russ Housley for https://github.com/etingof/pyasn1-modules/pull/139.
 # Updated by Russ Housley to include the opentypemap manager.
+# Updated by CBonnell to populate the policyQualifierInfosMap.
 #
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # Copyright (c) 2021-2022, Vigil Security, LLC
