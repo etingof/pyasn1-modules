@@ -1,9 +1,8 @@
 
 Alternative ASN.1 modules for pyasn1
 ------------------------------------
-[![PyPI](https://img.shields.io/pypi/v/pyasn1-modules.svg?maxAge=2592000)](https://pypi.org/project/pyasn1-alt-modules)
-[![Python Versions](https://img.shields.io/pypi/pyversions/pyasn1-modules.svg)](https://pypi.org/project/pyasn1-alt-modules/)
-[![Build status](https://travis-ci.org/russhousley/pyasn1-alt-modules.svg?branch=master)](https://travis-ci.org/russhousley/pyasn1-alt-modules)
+[![PyPI](https://img.shields.io/pypi/v/pyasn1-alt-modules.svg?maxAge=2592000)](https://pypi.org/project/pyasn1-alt-modules)
+[![Python Versions](https://img.shields.io/pypi/pyversions/pyasn1-alt-modules.svg)](https://pypi.org/project/pyasn1-alt-modules/)
 [![GitHub license](https://img.shields.io/badge/license-BSD-blue.svg)](https://raw.githubusercontent.com/russhousley/pyasn1-alt-modules/master/LICENSE.txt)
 
 The `pyasn1-alt-modules` package contains a collection of
