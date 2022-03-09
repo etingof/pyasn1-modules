@@ -1,6 +1,7 @@
 Revision 0.4.2, released XX-XX-2022
 -----------------------------------
 - Added RFC2898 providing PKCS #5, Version 2.0
+- Added RFC9215 providing GOST R 34.10-2012 and GOST R 34.11-2012 Algorithms
 
 Revision 0.4.1, released 16-02-2022
 -----------------------------------
