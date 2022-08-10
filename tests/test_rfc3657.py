@@ -135,7 +135,7 @@ Sz0BAQMEBQA=
         count = 0
         for cap in asn1Object:
             self.assertEqual(cap['parameters'], param)
-            self.assertTrue(cap['capabilityID'] in alg_oid_list)
+            self.assertIn(cap['capabilityID'], alg_oid_list)
             count += 1
 
         self.assertEqual(count, 6)

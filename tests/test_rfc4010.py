@@ -92,7 +92,7 @@ pgjZF3edo0Cez10epK+S
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertTrue(asn1Object['contentType'] in rfc5652.cmsContentTypesMap.keys())
+        self.assertIn(asn1Object['contentType'], rfc5652.cmsContentTypesMap.keys())
 
         kekri = asn1Object['content']['recipientInfos'][0]['kekri']
         kwa = kekri['keyEncryptionAlgorithm']
