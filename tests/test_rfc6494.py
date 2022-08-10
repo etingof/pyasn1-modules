@@ -61,7 +61,7 @@ Ydk2mhKOR6JwKQ==
                 self.assertEqual(extn['extnValue'], der_encoder(extnValue))
 
                 if extn['extnID'] == rfc5280.id_ce_extKeyUsage:
-                    self.assertTrue(rfc6494.id_kp_sendRouter, extnValue[0])
+                    self.assertEqual(rfc6494.id_kp_sendRouter, extnValue[0])
                     found = True
 
         self.assertTrue(found)

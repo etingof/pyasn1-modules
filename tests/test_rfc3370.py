@@ -102,7 +102,7 @@ wwqly11MDVPAb0tcQW20auWmCNkXd52jQJ7PXR6kr5I=
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
         cmsContentTypesMap = opentypemap.get('cmsContentTypesMap')
-        self.assertTrue(asn1Object['contentType'] in cmsContentTypesMap)
+        self.assertIn(asn1Object['contentType'], cmsContentTypesMap)
 
         ri0 = asn1Object['content']['recipientInfos'][0]
         kwa = ri0['kekri']['keyEncryptionAlgorithm']
@@ -199,7 +199,7 @@ BwIBOg==
                         self.assertTrue(kwa.prettyPrint())
                         self.assertEqual(cap['parameters'], der_encoder(kwa))
 
-                        self.assertTrue(kwa['algorithm'] in algorithmIdentifierMap)
+                        self.assertIn(kwa['algorithm'], algorithmIdentifierMap)
                         self.assertEqual(rfc3370.id_alg_CMSRC2wrap, kwa['algorithm'])
                         kwa_p, rest = der_decoder(kwa['parameters'],
                             asn1Spec=algorithmIdentifierMap[kwa['algorithm']])

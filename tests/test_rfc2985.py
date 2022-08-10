@@ -250,7 +250,7 @@ HktMK+isIjxOTk4yJTOOAgIH0A==
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         for attr in asn1Object:
-            self.assertTrue(attr['type'], openTypesMap)
+            self.assertIn(attr['type'], openTypesMap)
 
             if attr['type'] == rfc2985.pkcs_9_at_userPKCS12:
 

@@ -4,7 +4,9 @@ Revision 0.4.2, released XX-XX-2022
 - Added RFC9215 providing GOST R 34.10-2012 and GOST R 34.11-2012 Algorithms
 - Added RFC5698 providing Data Structure for the Security Suitability of
   Cryptographic Algorithms (DSSC)
-- Added RFC9286 providing RPKI Manifests, which obsoletes RFC6484.
+- Added RFC9286 providing RPKI Manifests, which obsoletes RFC6484
+- Improve tests for RFC2985, RFC370, RFC3657, RFC4010, RFC4055, RFC6494,
+  RFC7914, and RFC8692
 
 Revision 0.4.1, released 16-02-2022
 -----------------------------------

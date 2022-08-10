@@ -29,8 +29,7 @@ class PSSDefautTestCase(unittest.TestCase):
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
-        self.assertTrue(rfc4055.id_RSASSA_PSS, asn1Object[0])
-        self.assertEqual(substrate, der_encoder.encode(asn1Object))
+        self.assertEqual(rfc4055.id_RSASSA_PSS, asn1Object[0])
         self.assertEqual(substrate, der_encoder.encode(asn1Object))
 
     def testOpenTypes(self):
@@ -58,8 +57,7 @@ class PSSSHA512TestCase(unittest.TestCase):
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
-        self.assertTrue(rfc4055.id_RSASSA_PSS, asn1Object[0])
-        self.assertEqual(substrate, der_encoder.encode(asn1Object))
+        self.assertEqual(rfc4055.id_RSASSA_PSS, asn1Object[0])
         self.assertEqual(substrate, der_encoder.encode(asn1Object))
 
     def testOpenTypes(self):
@@ -85,8 +83,7 @@ class OAEPDefautTestCase(unittest.TestCase):
         asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
-        self.assertTrue(rfc4055.id_RSAES_OAEP, asn1Object[0])
-        self.assertEqual(substrate, der_encoder.encode(asn1Object))
+        self.assertEqual(rfc4055.id_RSAES_OAEP, asn1Object[0])
         self.assertEqual(substrate, der_encoder.encode(asn1Object))
 
     def testOpenTypes(self):
@@ -113,8 +110,7 @@ class OAEPSHA256TestCase(unittest.TestCase):
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
-        self.assertTrue(rfc4055.id_RSAES_OAEP, asn1Object[0])
-        self.assertEqual(substrate, der_encoder.encode(asn1Object))
+        self.assertEqual(rfc4055.id_RSAES_OAEP, asn1Object[0])
         self.assertEqual(substrate, der_encoder.encode(asn1Object))
 
     def testOpenTypes(self):
@@ -147,10 +143,7 @@ class OAEPFullTestCase(unittest.TestCase):
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
-
-        self.assertTrue(rfc4055.id_RSAES_OAEP, asn1Object[0])
-
-        self.assertEqual(substrate, der_encoder.encode(asn1Object))
+        self.assertEqual(rfc4055.id_RSAES_OAEP, asn1Object[0])
         self.assertEqual(substrate, der_encoder.encode(asn1Object))
 
     def testOpenTypes(self):

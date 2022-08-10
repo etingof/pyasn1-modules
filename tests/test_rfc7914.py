@@ -59,7 +59,7 @@ iBGY/Dls7B1TsWeGObE0sS1MXEpuREuloZjcsNVcNXWPlLdZtkSH6uwWzR0PyG/Z
             asn1Spec=algorithmIdentifierMap[kdf['algorithm']])
         self.assertFalse(rest)
         self.assertTrue(kdfp.prettyPrint())
-        self.assertTrue(kdf['parameters'], der_encoder(kdfp))
+        self.assertEqual(kdf['parameters'], der_encoder(kdfp))
         self.assertEqual(1048576, kdfp['costParameter'])
 
     def testOpenTypes(self):

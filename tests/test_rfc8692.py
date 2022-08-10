@@ -42,10 +42,10 @@ BQcGHzAKBggrBgEFBQcGIDAKBggrBgEFBQcGIQ==
 
         count = 0
         for algid in asn1Object:
-            self.assertTrue(algid['capabilityID'] in oid_list)
+            self.assertIn(algid['capabilityID'], oid_list)
             count += 1
 
-        self.assertTrue(len(oid_list), count)
+        self.assertEqual(len(oid_list), count)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
