@@ -7,6 +7,7 @@ Revision 0.4.2, released XX-XX-2022
 - Added RFC9286 providing RPKI Manifests, which obsoletes RFC6484
 - Improve tests for RFC2985, RFC370, RFC3657, RFC4010, RFC4055, RFC6494,
   RFC7914, and RFC8692
+- Add RFC9289 providing Extended Key Usage values for RPC over TLS
 
 Revision 0.4.1, released 16-02-2022
 -----------------------------------
