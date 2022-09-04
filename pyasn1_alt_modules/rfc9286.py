@@ -3,6 +3,7 @@
 #
 # Created by Russ Housley from rfc6486.py, adding the permitted alphabet
 #   constraint to the file name.  Note that RFC 9286 obsoletes RFC 6486.
+# Modified by Russ Housley to apply eid7118.
 #
 # Copyright (c) 2022, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -11,6 +12,7 @@
 #
 # ASN.1 source from:
 # https://www.rfc-editor.org/rfc/rfc9286.txt
+# https://www.rfc-editor.org/errata/eid7118
 #
 
 from pyasn1.type import char
@@ -63,7 +65,7 @@ class Manifest(univ.Sequence):
             univ.ObjectIdentifier()),
         namedtype.NamedType('fileList',
             univ.SequenceOf(componentType=FileAndHash()).subtype(
-                subtypeSpec=constraint.ValueSizeConstraint(0, MAX)))
+                subtypeSpec=constraint.ValueSizeConstraint(1, MAX)))
     )
 
 
