@@ -10,6 +10,7 @@ Revision 0.4.2, released XX-XX-2022
 - Added RFC9289 providing Extended Key Usage values for RPC over TLS
 - Modified RFC9286 to apply https://www.rfc-editor.org/errata/eid7118
 - Added RFC9323 providing RPKI Signed Checklist (RSC)
+- Added RFC9336 providing Extended Key Usage (EKU) for Document Signing
 
 Revision 0.4.1, released 16-02-2022
 -----------------------------------
