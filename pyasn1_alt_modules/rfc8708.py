@@ -38,4 +38,5 @@ class HSS_LMS_HashSig_PublicKey(univ.OctetString):
 
 pk_HSS_LMS_HashSig = rfc5280.SubjectPublicKeyInfo()
 pk_HSS_LMS_HashSig['algorithm'] = sa_HSS_LMS_HashSig
-# pk_HSS_LMS_HashSig['parameters'] CONTAINS a DER-encoded HSS_LMS_HashSig_PublicKey
+# pk_HSS_LMS_HashSig['subjectPublicKey'] CONTAINS a
+#     DER-encoded HSS_LMS_HashSig_PublicKey
