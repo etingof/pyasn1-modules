@@ -7,7 +7,7 @@
 # Modified by Russ Housley to add WITH COMPONENTS constraints for
 #   requirements from the text, but stated in the ASN.1 module.
 #
-# Copyright (c) 2019-2022, Vigil Security, LLC
+# Copyright (c) 2019-2023, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 # Logotypes in X.509 Certificates

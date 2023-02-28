@@ -5,7 +5,7 @@
 # Modified by Russ Housley to include the opentypemap manager and
 #   update the S/MIME Capability map.
 #
-# Copyright (c) 2021-2022, Vigil Security, LLC
+# Copyright (c) 2021-2023, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 # Identifiers for RC5

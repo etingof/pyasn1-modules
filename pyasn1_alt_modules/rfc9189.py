@@ -3,7 +3,7 @@
 #
 # Created by Russ Housley.
 #
-# Copyright (c) 2022, Vigil Security, LLC
+# Copyright (c) 2022-2023, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 # GOST Cipher Suites for TLS 1.2

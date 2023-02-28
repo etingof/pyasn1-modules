@@ -3,7 +3,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
-# Copyright (c) 2021-2022, Vigil Security, LLC
+# Copyright (c) 2021-2023, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 import sys
@@ -14,7 +14,7 @@ doclines = """A alternate collection of ASN.1-based protocols modules.
 
    A collection of ASN.1 modules expressed in form of pyasn1 classes.
    Includes protocols PDUs definition (SNMP, LDAP, OCSP, and so on) as 
-   various data structures (X.509, PKCS, and so on).
+   well as various data structures (X.509, PKCS, and so on).
 """
 
 doclines = [x.strip() for x in doclines.split('\n') if x]
@@ -40,6 +40,7 @@ Programming Language :: Python :: 3.7
 Programming Language :: Python :: 3.8
 Programming Language :: Python :: 3.9
 Programming Language :: Python :: 3.10
+Programming Language :: Python :: 3.11
 Topic :: Communications
 Topic :: System :: Monitoring
 Topic :: System :: Networking :: Monitoring
