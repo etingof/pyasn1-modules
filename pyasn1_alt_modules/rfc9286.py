@@ -5,7 +5,7 @@
 #   constraint to the file name.  Note that RFC 9286 obsoletes RFC 6486.
 # Modified by Russ Housley to apply eid7118.
 #
-# Copyright (c) 2022, Vigil Security, LLC
+# Copyright (c) 2022-2023, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 # RPKI Manifests

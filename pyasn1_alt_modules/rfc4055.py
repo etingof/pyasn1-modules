@@ -8,7 +8,7 @@
 #   are not in the ASN.1 module, but they are discussed in RFC 4055.
 # Modified by Russ Housley to include the opentypemap manager.
 #
-# Copyright (c) 2019-2022, Vigil Security, LLC
+# Copyright (c) 2019-2023, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 # Additional Algorithms and Identifiers for RSA Cryptography

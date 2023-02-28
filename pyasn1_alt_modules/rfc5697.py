@@ -5,7 +5,7 @@
 #   which did not exist at the time this module was first written.  Also,
 #   include the opentypemap manager.
 #
-# Copyright (c) 2019-2022, Vigil Security, LLC
+# Copyright (c) 2019-2023, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 # Other Certificates Extension

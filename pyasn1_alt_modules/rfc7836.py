@@ -3,7 +3,7 @@
 #
 # Created by Russ Housley with some assistance from asn1ate v.0.6.0.
 #
-# Copyright (c) 2021-2022, Vigil Security, LLC
+# Copyright (c) 2021-2023, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 # Cryptographic Algorithms for GOST R 34.10-2012 and GOST R 34.11-2012

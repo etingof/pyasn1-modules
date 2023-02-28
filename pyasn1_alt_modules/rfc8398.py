@@ -4,7 +4,7 @@
 # Created by Russ Housley with some assistance from asn1ate v.0.6.0.
 # Modified by Russ Housley to include the opentypemap manager.
 #
-# Copyright (c) 2019-2022, Vigil Security, LLC
+# Copyright (c) 2019-2023, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 # Internationalized Email Addresses in X.509 Certificates
