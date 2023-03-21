@@ -2,6 +2,8 @@ Revision 0.4.3, released <TBD>
 -----------------------------------
 - Update the copyright lines for 2023
 - Include support for Python 3.11 in setup.py
+- Update RFC9215 to use OID names from RFC 9215 for GOST R 34.10-2012
+- Added RFC9385 providing GOST R 34.10-2012 Algorithm for IKEv2
 
 Revision 0.4.2, released 09-01-2023
 -----------------------------------

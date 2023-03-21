@@ -2,6 +2,8 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley.
+# Modified by Russ Housley to add synonyms with two digit years for
+#   some of the OIDs to align with the ASN.1 module in RFC 9215.
 #
 # Copyright (c) 2022-2023, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -43,7 +45,11 @@ id_tc26_gost_3410_2012_512_constants = id_tc26_sign_constants + (2,)
 
 id_tc26_gost3410_2012_256 = id_tc26_sign + (1,)
 
+id_tc26_gost3410_12_256 = id_tc26_gost3410_2012_256
+
 id_tc26_gost3410_2012_512 = id_tc26_sign + (2,)
+
+id_tc26_gost3410_12_512 = id_tc26_gost3410_2012_512
 
 id_tc26_gost3411_12_256 = id_tc26_digest + (2,)
 
@@ -53,7 +59,11 @@ id_tc26_signwithdigest = id_tc26 + (1, 3)
 
 id_tc26_signwithdigest_gost3410_2012_256 = id_tc26_signwithdigest + (2,)
 
+id_tc26_signwithdigest_gost3410_12_256 = id_tc26_signwithdigest_gost3410_2012_256
+
 id_tc26_signwithdigest_gost3410_2012_512 = id_tc26_signwithdigest + (3,)
+
+id_tc26_signwithdigest_gost3410_12_512 = id_tc26_signwithdigest_gost3410_2012_512
 
 id_tc26_gost_3410_2012_256_paramSetA = id_tc26_gost_3410_2012_256_constants + (1,)
 
