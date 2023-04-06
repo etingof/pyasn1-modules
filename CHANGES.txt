@@ -5,6 +5,7 @@ Revision 0.4.3, released <TBD>
 - Update RFC9215 to use OID names from RFC 9215 for GOST R 34.10-2012
 - Added RFC9385 providing GOST R 34.10-2012 Algorithm for IKEv2
 - Added RFC9345 providing Delegated Credentials for TLS and DTLS
+- Added RFC3546 providing PkiPath as used in TLS Extensions
 
 Revision 0.4.2, released 09-01-2023
 -----------------------------------
