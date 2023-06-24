@@ -6,24 +6,28 @@
 # used to make additions at runtime.
 #
 # Created by Russ Housley
+# Modified by Russ Housley to properly import error and readFromStream.
 # Copyright (c) 2021-2023, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
 #
 
+from pyasn1 import error
+
 from pyasn1.type import base
 from pyasn1.type import constraint
-from pyasn1.type import error
 from pyasn1.type import tag
 
 from pyasn1.codec.ber import encoder
 from pyasn1.codec.ber import decoder
+
+from pyasn1.codec.streaming import readFromStream
 
 from pyasn1.compat.octets import isStringType, octs2ints
 
 
 # ----------------------------------------------------------------------
 #
-# Implementation of the ASN.1 RELATIVE-OID typ1
+# Implementation of the ASN.1 RELATIVE-OID type
 #
 # ----------------------------------------------------------------------
 
@@ -236,7 +240,7 @@ class RelativeOIDPayloadDecoder(decoder.AbstractSimplePayloadDecoder):
             raise error.PyAsn1Error('Simple tag format expected')
 
         for chunk in readFromStream(substrate, length, options):
-            if isinstance(chunk, SubstrateUnderrunError):
+            if isinstance(chunk, error.SubstrateUnderrunError):
                 yield chunk
 
         if not chunk:
