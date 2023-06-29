@@ -9,6 +9,7 @@ Revision 0.4.3, released <TBD>
 - Added RFC4366 providing PkiPath as used in TLS Extensions
 - Added RFC9399 providing Logotypes in X.509 Certificates
 - Fixed import-related bugs in addon.py for RelativeOID handling
+- Update RFC5794 to use to use opentypemap.
 
 Revision 0.4.2, released 09-01-2023
 -----------------------------------

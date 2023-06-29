@@ -2,6 +2,7 @@
 # This file is part of pyasn1-alt-modules software.
 #
 # Created by Russ Housley.
+# Modified by Russ Housley to use opentypemap.
 #
 # Copyright (c) 2020-2023, Vigil Security, LLC
 # License: http://vigilsec.com/pyasn1-alt-modules-license.txt
@@ -19,6 +20,11 @@ from pyasn1.type import univ
 
 from pyasn1_alt_modules import addon
 from pyasn1_alt_modules import rfc5280
+
+from pyasn1_alt_modules import opentypemap
+
+
+algorithmIdentifierMap = opentypemap.get('algorithmIdentifierMap')
 
 
 # Import from RFC 5280
@@ -356,7 +362,7 @@ aria256kwp = AlgorithmIdentifier()
 aria256kwp['algorithm'] = id_aria256_kwp
 
 
-# Update the Algorithm Identifier map in rfc5280.py
+# Update the Algorithm Identifier map
 
 _algorithmIdentifierMapUpdate = {
     id_aria128_ecb: AriaEcbParameters(),
@@ -388,4 +394,4 @@ _algorithmIdentifierMapUpdate = {
     id_aria256_ccm: AriaCcmParameters(),
 }
 
-rfc5280.algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
+algorithmIdentifierMap.update(_algorithmIdentifierMapUpdate)
